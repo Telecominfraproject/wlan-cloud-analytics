@@ -10,6 +10,7 @@
 #include "framework/OpenWifiTypes.h"
 #include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 
+
 namespace OpenWifi {
 	class AnalyticsDashboard {
 	  public:
