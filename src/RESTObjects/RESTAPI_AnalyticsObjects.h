@@ -11,7 +11,6 @@ namespace OpenWifi {
 
         struct Report {
             uint64_t            snapShot=0;
-            Types::CountedMap   tenants;
 
             void        reset();
             void to_json(Poco::JSON::Object &Obj) const;
