@@ -284,11 +284,21 @@ namespace OpenWifi::ProvObjects {
         std::string     deviceConfiguration;
         std::string     rrm;
         Types::UUID_t   managementPolicy;
+        std::string     state;
 
         void to_json(Poco::JSON::Object &Obj) const;
         bool from_json(const Poco::JSON::Object::Ptr &Obj);
     };
+
     typedef std::vector<InventoryTag>      InventoryTagVec;
+
+    struct InventoryTagList {
+        InventoryTagVec     taglist;
+
+        void to_json(Poco::JSON::Object &Obj) const;
+        bool from_json(const Poco::JSON::Object::Ptr &Obj);
+    };
+
 
     struct Report {
         uint64_t            snapShot=0;

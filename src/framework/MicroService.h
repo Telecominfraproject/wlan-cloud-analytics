@@ -100,7 +100,8 @@ namespace OpenWifi {
         EXPIRED_TOKEN,
         RATE_LIMIT_EXCEEDED,
         BAD_MFA_TRANSACTION,
-        MFA_FAILURE
+        MFA_FAILURE,
+        SECURITY_SERVICE_UNREACHABLE
     };
 
 	class AppServiceRegistry {
@@ -236,6 +237,23 @@ namespace OpenWifi::RESTAPI_utils {
             A.add(O);
         }
         Obj.set(Field,A);
+    }
+
+    inline void field_to_json(Poco::JSON::Object &Obj, const char *Field, const Types::Counted3DMapSII &M) {
+        Poco::JSON::Array	A;
+        for(const auto &[OrgName,MonthlyNumberMap]:M) {
+            Poco::JSON::Object  OrgObject;
+            OrgObject.set("tag",OrgName);
+            Poco::JSON::Array   MonthlyArray;
+            for(const auto &[Month,Counter]:MonthlyNumberMap) {
+                Poco::JSON::Object  Inner;
+                Inner.set("value", Month);
+                Inner.set("counter", Counter);
+                MonthlyArray.add(Inner);
+            }
+            OrgObject.set("index",MonthlyArray);
+            A.add(OrgObject);
+        }
     }
 
     template<typename T> void field_to_json(Poco::JSON::Object &Obj,
@@ -1078,6 +1096,53 @@ namespace OpenWifi {
 
 	typedef std::map<std::string,ConfigurationEntry>    ConfigurationMap_t;
 
+	template <typename T> class FIFO {
+	  public:
+		explicit FIFO(uint32_t Size) : Size_(Size) {
+			Buffer_->reserve(Size_);
+		}
+
+		mutable Poco::BasicEvent<bool> Writable_;
+		mutable Poco::BasicEvent<bool> Readable_;
+
+		inline bool Read(T &t) {
+			{
+				std::lock_guard M(Mutex_);
+				if (Write_ == Read_) {
+					return false;
+				}
+
+				t = (*Buffer_)[Read_++];
+				if (Read_ == Size_) {
+					Read_ = 0;
+				}
+			}
+			bool flag = true;
+			Writable_.notify(this, flag);
+			return true;
+		}
+
+		inline bool Write(const T &t) {
+			{
+				std::lock_guard M(Mutex_);
+				(*Buffer_)[Write_++] = t;
+				if (Write_ == Size_) {
+					Write_ = 0;
+				}
+			}
+			bool flag = true;
+			Readable_.notify(this, flag);
+			return false;
+		}
+
+	  private:
+		std::mutex      Mutex_;
+		uint32_t        Size_;
+		uint32_t        Read_=0;
+		uint32_t                        Write_=0;
+		std::unique_ptr<std::vector<T>>  Buffer_=std::make_unique<std::vector<T>>();
+	};
+
 	template <class Record, typename KeyType = std::string, int Size=256, int Expiry=60000> class RecordCache {
     public:
         explicit RecordCache( KeyType Record::* Q) :
@@ -1643,11 +1708,14 @@ namespace OpenWifi {
 	            if (!ContinueProcessing())
 	                return;
 
-	            bool Expired=false;
-	            if (AlwaysAuthorize_ && !IsAuthorized(Expired, SubOnlyService_)) {
+	            bool Expired=false, Contacted=false;
+	            if (AlwaysAuthorize_ && !IsAuthorized(Expired, Contacted, SubOnlyService_)) {
 	                if(Expired)
 	                    return UnAuthorized(RESTAPI::Errors::ExpiredToken, EXPIRED_TOKEN);
-	                return UnAuthorized(RESTAPI::Errors::InvalidCredentials, INVALID_TOKEN);
+                    if(Contacted)
+	                    return UnAuthorized(RESTAPI::Errors::InvalidCredentials, INVALID_TOKEN);
+                    else
+                        return UnAuthorized(RESTAPI::Errors::InvalidCredentials, SECURITY_SERVICE_UNREACHABLE);
 	            }
 
 	            std::string Reason;
@@ -2029,7 +2097,7 @@ namespace OpenWifi {
 	        return true;
 	    }
 
-	        inline bool IsAuthorized(bool & Expired, bool SubOnly = false );
+	        inline bool IsAuthorized(bool & Expired, bool & Contacted, bool SubOnly = false );
 
 	        inline void ReturnObject(Poco::JSON::Object &Object) {
 	            PrepareResponse();
@@ -2105,20 +2173,20 @@ namespace OpenWifi {
 	        virtual void DoPost() = 0 ;
 	        virtual void DoPut() = 0 ;
 
+            Poco::Net::HTTPServerRequest        *Request= nullptr;
+            Poco::Net::HTTPServerResponse       *Response= nullptr;
+            SecurityObjects::UserInfoAndPolicy 	UserInfo_;
 	    protected:
 	        BindingMap 					Bindings_;
 	        Poco::URI::QueryParameters 	Parameters_;
 	        Poco::Logger 				&Logger_;
 	        std::string 				SessionToken_;
-	        SecurityObjects::UserInfoAndPolicy 	UserInfo_;
 	        std::vector<std::string> 	Methods_;
 	        QueryBlock					QB_;
 	        bool                        Internal_=false;
 	        bool                        RateLimited_=false;
 	        bool                        QueryBlockInitialized_=false;
 	        bool                        SubOnlyService_=false;
-	        Poco::Net::HTTPServerRequest    *Request= nullptr;
-	        Poco::Net::HTTPServerResponse   *Response= nullptr;
 	        bool                        AlwaysAuthorize_=true;
 	        Poco::JSON::Parser          IncomingParser_;
 	        RESTAPI_GenericServer       & Server_;
@@ -2238,6 +2306,26 @@ namespace OpenWifi {
 	    uint64_t 				msTimeout_;
 	    Poco::JSON::Object      Body_;
 	};
+
+    class OpenAPIRequestDelete {
+    public:
+        explicit OpenAPIRequestDelete( const std::string & Type,
+                                     const std::string & EndPoint,
+                                     const Types::StringPairVec & QueryData,
+                                     uint64_t msTimeout):
+                Type_(Type),
+                EndPoint_(EndPoint),
+                QueryData_(QueryData),
+                msTimeout_(msTimeout){};
+        inline Poco::Net::HTTPServerResponse::HTTPStatus Do(const std::string & BearerToken = "");
+
+    private:
+        std::string 			Type_;
+        std::string 			EndPoint_;
+        Types::StringPairVec 	QueryData_;
+        uint64_t 				msTimeout_;
+        Poco::JSON::Object      Body_;
+    };
 
     class KafkaProducer : public Poco::Runnable {
     public:
@@ -2424,16 +2512,24 @@ namespace OpenWifi {
 
 	    inline bool RetrieveTokenInformation(const std::string & SessionToken,
 											 SecurityObjects::UserInfoAndPolicy & UInfo,
-											 bool & Expired, bool Sub=false) {
+											 bool & Expired, bool & Contacted, bool Sub=false) {
 	        try {
 	            Types::StringPairVec QueryData;
 	            QueryData.push_back(std::make_pair("token",SessionToken));
 	            OpenAPIRequestGet	Req(    uSERVICE_SECURITY,
                                              Sub ? "/api/v1/validateSubToken" : "/api/v1/validateToken",
                                              QueryData,
-                                             5000);
+                                             10000);
 	            Poco::JSON::Object::Ptr Response;
-	            if(Req.Do(Response)==Poco::Net::HTTPServerResponse::HTTP_OK) {
+
+                auto StatusCode = Req.Do(Response);
+                if(StatusCode==Poco::Net::HTTPServerResponse::HTTP_GATEWAY_TIMEOUT) {
+                    Contacted = false;
+                    return false;
+                }
+
+                Contacted = true;
+	            if(StatusCode==Poco::Net::HTTPServerResponse::HTTP_OK) {
 	                if(Response->has("tokenInfo") && Response->has("userInfo")) {
 	                    UInfo.from_json(Response);
 	                    if(IsTokenExpired(UInfo.webtoken)) {
@@ -2444,17 +2540,18 @@ namespace OpenWifi {
                         std::lock_guard	G(Mutex_);
 	                    Cache_.update(SessionToken, UInfo);
 	                    return true;
-	                }
+	                } else {
+                        return false;
+                    }
 	            }
 	        } catch (...) {
-
 	        }
 	        Expired = false;
 	        return false;
 	    }
 
         inline bool IsAuthorized(const std::string &SessionToken, SecurityObjects::UserInfoAndPolicy & UInfo,
-								 bool & Expired, bool Sub = false) {
+								 bool & Expired, bool & Contacted, bool Sub = false) {
             std::lock_guard	G(Mutex_);
 	        auto User = Cache_.get(SessionToken);
 	        if(!User.isNull()) {
@@ -2466,7 +2563,7 @@ namespace OpenWifi {
                 UInfo = *User;
                 return true;
 	        }
-	        return RetrieveTokenInformation(SessionToken, UInfo, Expired, Sub);
+	        return RetrieveTokenInformation(SessionToken, UInfo, Expired, Contacted, Sub);
 	    }
 
 	private:
@@ -3519,11 +3616,51 @@ namespace OpenWifi {
 	    KafkaEnabled_ = MicroService::instance().ConfigGetBool("openwifi.kafka.enable",false);
 	}
 
+	inline void KafkaLoggerFun(cppkafka::KafkaHandleBase & handle, int level, const std::string & facility, const std::string &messqge) {
+		switch ((cppkafka::LogLevel) level) {
+			case cppkafka::LogLevel::LogNotice: {
+					KafkaManager()->Logger().notice(Poco::format("kafka-log: facility: %s message: %s",facility, messqge));
+				}
+				break;
+			case cppkafka::LogLevel::LogDebug: {
+					KafkaManager()->Logger().debug(Poco::format("kafka-log: facility: %s message: %s",facility, messqge));
+				}
+				break;
+			case cppkafka::LogLevel::LogInfo: {
+					KafkaManager()->Logger().information(Poco::format("kafka-log: facility: %s message: %s",facility, messqge));
+				}
+				break;
+				case cppkafka::LogLevel::LogWarning: {
+					KafkaManager()->Logger().warning(Poco::format("kafka-log: facility: %s message: %s",facility, messqge));
+				}
+				break;
+			case cppkafka::LogLevel::LogAlert:
+			case cppkafka::LogLevel::LogCrit: {
+					KafkaManager()->Logger().critical(Poco::format("kafka-log: facility: %s message: %s",facility, messqge));
+				}
+				break;
+			case cppkafka::LogLevel::LogErr:
+			case cppkafka::LogLevel::LogEmerg:
+			default: {
+				KafkaManager()->Logger().error(Poco::format("kafka-log: facility: %s message: %s",facility, messqge));
+				}
+				break;
+		}
+	}
+
+	inline void KafkaErrorFun(cppkafka::KafkaHandleBase & handle, int error, const std::string &reason) {
+		KafkaManager()->Logger().error(Poco::format("kafka-error: %d, reason: %s", error, reason));
+	}
+
 	inline void KafkaProducer::run() {
 	    cppkafka::Configuration Config({
 	        { "client.id", MicroService::instance().ConfigGetString("openwifi.kafka.client.id") },
 	        { "metadata.broker.list", MicroService::instance().ConfigGetString("openwifi.kafka.brokerlist") }
 	    });
+
+		Config.set_log_callback(KafkaLoggerFun);
+		Config.set_error_callback(KafkaErrorFun);
+
 	    KafkaManager()->SystemInfoWrapper_ = 	R"lit({ "system" : { "id" : )lit" +
 	            std::to_string(MicroService::instance().ID()) +
 	            R"lit( , "host" : ")lit" + MicroService::instance().PrivateEndPoint() +
@@ -3563,6 +3700,9 @@ namespace OpenWifi {
 	        { "auto.offset.reset", "latest" } ,
 	        { "enable.partition.eof", false }
 	    });
+
+		Config.set_log_callback(KafkaLoggerFun);
+		Config.set_error_callback(KafkaErrorFun);
 
 	    cppkafka::TopicConfiguration topic_config = {
 	            { "auto.offset.reset", "smallest" }
@@ -3930,6 +4070,52 @@ namespace OpenWifi {
         return Poco::Net::HTTPServerResponse::HTTP_GATEWAY_TIMEOUT;
     }
 
+    inline Poco::Net::HTTPServerResponse::HTTPStatus OpenAPIRequestDelete::Do(const std::string & BearerToken) {
+        try {
+            auto Services = MicroService::instance().GetServices(Type_);
+
+            for(auto const &Svc:Services) {
+                Poco::URI	URI(Svc.PrivateEndPoint);
+                Poco::Net::HTTPSClientSession Session(URI.getHost(), URI.getPort());
+
+                URI.setPath(EndPoint_);
+                for (const auto &qp : QueryData_)
+                    URI.addQueryParameter(qp.first, qp.second);
+
+                std::string Path(URI.getPathAndQuery());
+                Session.setTimeout(Poco::Timespan(msTimeout_/1000, msTimeout_ % 1000));
+
+                Poco::Net::HTTPRequest Request(Poco::Net::HTTPRequest::HTTP_DELETE,
+                                               Path,
+                                               Poco::Net::HTTPMessage::HTTP_1_1);
+                std::ostringstream obody;
+                Poco::JSON::Stringifier::stringify(Body_,obody);
+
+                Request.setContentType("application/json");
+                Request.setContentLength(obody.str().size());
+
+                if(BearerToken.empty()) {
+                    Request.add("X-API-KEY", Svc.AccessKey);
+                    Request.add("X-INTERNAL-NAME", MicroService::instance().PublicEndPoint());
+                } else {
+                    // Authorization: Bearer ${token}
+                    Request.add("Authorization", "Bearer " + BearerToken);
+                }
+
+                std::ostream & os = Session.sendRequest(Request);
+                os << obody.str();
+
+                Poco::Net::HTTPResponse Response;
+                Session.receiveResponse(Response);
+                return Response.getStatus();
+            }
+        }
+        catch (const Poco::Exception &E)
+        {
+            std::cerr << E.displayText() << std::endl;
+        }
+        return Poco::Net::HTTPServerResponse::HTTP_GATEWAY_TIMEOUT;
+    }
 
     inline void RESTAPI_GenericServer::InitLogging() {
         std::string Public = MicroService::instance().ConfigGetString("apilogging.public.methods","PUT,POST,DELETE");
@@ -3946,7 +4132,7 @@ namespace OpenWifi {
 #ifdef    TIP_SECURITY_SERVICE
     [[nodiscard]] bool AuthServiceIsAuthorized(Poco::Net::HTTPServerRequest & Request,std::string &SessionToken, SecurityObjects::UserInfoAndPolicy & UInfo, bool & Expired , bool Sub );
 #endif
-    inline bool RESTAPIHandler::IsAuthorized( bool & Expired , bool Sub ) {
+    inline bool RESTAPIHandler::IsAuthorized( bool & Expired , bool & Contacted , bool Sub ) {
         if(Internal_ && Request->has("X-INTERNAL-NAME")) {
             auto Allowed = MicroService::instance().IsValidAPIKEY(*Request);
             if(!Allowed) {
@@ -3978,7 +4164,7 @@ namespace OpenWifi {
 #ifdef    TIP_SECURITY_SERVICE
             if (AuthServiceIsAuthorized(*Request, SessionToken_, UserInfo_, Expired, Sub)) {
 #else
-            if (AuthClient()->IsAuthorized( SessionToken_, UserInfo_, Expired, Sub)) {
+            if (AuthClient()->IsAuthorized( SessionToken_, UserInfo_, Expired, Contacted, Sub)) {
 #endif
                 if(Server_.LogIt(Request->getMethod(),true)) {
                     Logger_.debug(Poco::format("X-REQ-ALLOWED(%s): User='%s@%s' Method='%s' Path='%s'",

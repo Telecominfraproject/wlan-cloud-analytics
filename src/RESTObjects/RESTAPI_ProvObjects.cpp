@@ -309,6 +309,7 @@ namespace OpenWifi::ProvObjects {
         field_to_json( Obj,"deviceConfiguration",deviceConfiguration);
         field_to_json( Obj,"rrm",rrm);
         field_to_json( Obj,"managementPolicy",managementPolicy);
+        field_to_json( Obj,"state",state);
     }
 
     bool InventoryTag::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -326,12 +327,27 @@ namespace OpenWifi::ProvObjects {
             field_from_json( Obj,"deviceConfiguration",deviceConfiguration);
             field_from_json( Obj,"rrm",rrm);
             field_from_json( Obj,"managementPolicy",managementPolicy);
+            field_from_json( Obj,"state",state);
             return true;
         } catch(...) {
 
         }
         return false;
     }
+
+    void InventoryTagList::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json( Obj,"taglist",taglist);
+    }
+
+    bool InventoryTagList::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json( Obj,"taglist",taglist);
+            return false;
+        } catch (...) {
+
+        }
+        return false;
+    };
 
     void DeviceConfigurationElement::to_json(Poco::JSON::Object &Obj) const {
         field_to_json( Obj,"name", name);

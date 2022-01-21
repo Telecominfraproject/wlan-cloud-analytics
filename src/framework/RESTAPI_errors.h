@@ -14,7 +14,7 @@ namespace OpenWifi::RESTAPI::Errors {
     static const std::string CouldNotBeDeleted{"Element could not be deleted."};
     static const std::string NameMustBeSet{"The name property must be set."};
     static const std::string ConfigBlockInvalid{"Configuration block type invalid."};
-    static const std::string UnknownId{"Unknown management policy."};
+    static const std::string UnknownId{"Unknown UUID."};
     static const std::string InvalidDeviceTypes{"Unknown or invalid device type(s)."};
     static const std::string RecordNotCreated{"Record could not be created."};
     static const std::string RecordNotUpdated{"Record could not be updated."};
@@ -59,5 +59,6 @@ namespace OpenWifi::RESTAPI::Errors {
     static const std::string MissingAuthenticationInformation{"Missing authentication information."};
     static const std::string InsufficientAccessRights{"Insufficient access rights to complete the operation."};
     static const std::string ExpiredToken{"Token has expired, user must login."};
+    static const std::string SubscriberMustExist{"Subscriber must exist."};
 }
 
