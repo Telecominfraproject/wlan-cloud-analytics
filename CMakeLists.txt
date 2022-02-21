@@ -72,12 +72,10 @@ add_executable(owanalytics
         src/framework/MicroService.h
         src/framework/OpenWifiTypes.h
         src/framework/orm.h
-        src/framework/RESTAPI_errors.h
-        src/framework/RESTAPI_protocol.h
         src/framework/StorageClass.h
-        src/framework/uCentral_Protocol.h
         src/framework/ConfigurationValidator.cpp
         src/framework/ConfigurationValidator.h
+        src/framework/ow_constants.h
         src/RESTObjects/RESTAPI_SecurityObjects.h src/RESTObjects/RESTAPI_SecurityObjects.cpp
         src/RESTObjects/RESTAPI_ProvObjects.cpp src/RESTObjects/RESTAPI_ProvObjects.h
         src/RESTObjects/RESTAPI_GWobjects.h src/RESTObjects/RESTAPI_GWobjects.cpp
