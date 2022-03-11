@@ -915,12 +915,10 @@ namespace OpenWifi::Utils {
     [[nodiscard]] inline bool ValidEMailAddress(const std::string &email) {
         // define a regular expression
         static const std::regex pattern
-        (("(\\w+)(\\.|_\\+)?(\\w*)@(\\w+)(\\.(\\w+))+"));
-
+                (("(\\w+)(\\.|_|\\++)?(\\w*)@(\\w+)(\\.(\\w+))+"));
         // try to match the string with the regular expression
         return std::regex_match(email, pattern);
     }
-
 
     [[nodiscard]] inline std::string LoadFile( const Poco::File & F) {
         std::string Result;
@@ -1809,14 +1807,14 @@ namespace OpenWifi {
 	        return std::stoull(Hint->second);
 	    }
 
-		[[nodiscard]] inline bool GetBoolParameter(const std::string &Name, bool Default) {
+		[[nodiscard]] inline bool GetBoolParameter(const std::string &Name, bool Default=false) {
 	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==end(Parameters_) || !is_bool(Hint->second))
 	            return Default;
 	        return Hint->second=="true";
 	    }
 
-	    [[nodiscard]] inline std::string GetParameter(const std::string &Name, const std::string &Default) {
+	    [[nodiscard]] inline std::string GetParameter(const std::string &Name, const std::string &Default="") {
 	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==end(Parameters_))
 	            return Default;

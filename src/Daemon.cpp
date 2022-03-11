@@ -13,6 +13,7 @@
 
 #include "Daemon.h"
 #include "StorageService.h"
+#include "VenueCoordinator.h"
 
 namespace OpenWifi {
 	class Daemon *Daemon::instance_ = nullptr;
@@ -25,7 +26,8 @@ namespace OpenWifi {
 								   vDAEMON_APP_NAME,
 								   vDAEMON_BUS_TIMER,
 								   SubSystemVec{
-									   OpenWifi::StorageService()
+									   OpenWifi::StorageService(),
+                                       VenueCoordinator()
 								   });
 		}
 		return instance_;

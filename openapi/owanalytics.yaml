@@ -1,0 +1,586 @@
+openapi: 3.0.1
+info:
+  title: OpenWiFi Analytics Service
+  description: Definitions and APIs to analyze OpenWiFi network.
+  version: 2.6.0
+  license:
+    name: BSD3
+    url: https://github.com/Telecominfraproject/wlan-cloud-ucentralgw/blob/master/LICENSE
+
+servers:
+  - url: 'https://localhost:16009/api/v1'
+
+security:
+  - bearerAuth: []
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            properties:
+              ErrorCode:
+                type: integer
+              ErrorDetails:
+                type: string
+              ErrorDescription:
+                type: string
+
+    Unauthorized:
+      description: The requested does not have sufficient rights to perform the operation.
+      content:
+        application/json:
+          schema:
+            properties:
+              ErrorCode:
+                type: integer
+                enum:
+                  - 0     # Success
+                  - 1     # PASSWORD_CHANGE_REQUIRED,
+                  - 2     # INVALID_CREDENTIALS,
+                  - 3     # PASSWORD_ALREADY_USED,
+                  - 4     # USERNAME_PENDING_VERIFICATION,
+                  - 5     # PASSWORD_INVALID,
+                  - 6     # INTERNAL_ERROR,
+                  - 7     # ACCESS_DENIED,
+                  - 8     # INVALID_TOKEN
+                  - 9     # EXPIRED_TOKEN
+                  - 10    # RATE_LIMIT_EXCEEDED
+                  - 11    # BAD_MFA_TRANSACTION
+                  - 12    # MFA_FAILURE
+                  - 13    # SECURITY_SERVICE_UNREACHABLE
+              ErrorDetails:
+                type: string
+              ErrorDescription:
+                type: string
+
+    Success:
+      description: The requested operation was performed.
+      content:
+        application/json:
+          schema:
+            properties:
+              Operation:
+                type: string
+              Details:
+                type: string
+              Code:
+                type: integer
+
+    BadRequest:
+      description: The requested operation failed.
+      content:
+        application/json:
+          schema:
+            properties:
+              ErrorCode:
+                type: integer
+              ErrorDetails:
+                type: string
+              ErrorDescription:
+                type: integer
+
+  schemas:
+    ObjectInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteInfo'
+        created:
+          type: integer
+          format: int64
+        modified:
+          type: integer
+          format: int64
+        tags:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    VenueInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        retention:
+          type: integer
+        interval:
+          type: integer
+        monitorSubVenues:
+          type: boolean
+
+    BoardInfo:
+      type: object
+      properties:
+        allOf:
+          $ref: '#/components/schemas/ObjectInfo'
+        venueList:
+          type: array
+          items:
+            $ref: '#/components/schemas/VenueInfo'
+
+    BoardInfoList:
+      type: object
+      properties:
+        boards:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoardInfo'
+
+    #########################################################################################
+    ##
+    ## These are endpoints that all services in the OPenWiFI stack must provide
+    ##
+    #########################################################################################
+    AnyPayload:
+      type: object
+      properties:
+        Document:
+          type: string
+
+    StringList:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            type: string
+
+    TagValuePair:
+      type: object
+      properties:
+        tag:
+          type: string
+        value:
+          type: string
+
+    TagValuePairList:
+      type: object
+      properties:
+        tagList:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+    TagIntPair:
+      type: object
+      properties:
+        tag:
+          type: string
+        value:
+          type: integer
+          format: int64
+
+    TagIntPairList:
+      type: object
+      properties:
+        tagList:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagIntPair'
+
+    SystemCommandDetails:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - setloglevels
+            - getloglevels
+            - getSubSystemNames
+            - getLogLevelNames
+            - stats
+        parameters:
+          oneOf:
+            - $ref: '#/components/schemas/StringList'
+            - $ref: '#/components/schemas/TagValuePairList'
+
+    SystemCommandResults:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/StringList'
+        - $ref: '#/components/schemas/TagValuePairList'
+
+    NoteInfo:
+      type: object
+      properties:
+        created:
+          type: integer
+          format: int64
+        createdBy:
+          type: string
+        note:
+          type: string
+
+    SystemInfoResults:
+      type: object
+      properties:
+        version:
+          type: string
+        uptime:
+          type: integer
+          format: integer64
+        start:
+          type: integer
+          format: integer64
+        os:
+          type: string
+        processors:
+          type: integer
+        hostname:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: object
+            properties:
+              filename:
+                type: string
+              expires:
+                type: integer
+                format: int64
+
+    Dashboard:
+      type: object
+      properties:
+        snapshot:
+          type: integer
+          format: int64
+        tenants:
+          $ref: '#/components/schemas/TagIntPairList'
+
+    SystemCommandSetLogLevel:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - setloglevel
+        subsystems:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+    SystemCommandReload:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - reload
+        subsystems:
+          type: array
+          items:
+            type: string
+            example: these are the SubSystems names retrieve with the GetSubSystemsNamesResult.
+
+    SystemCommandGetLogLevels:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - getloglevels
+
+    SystemGetLogLevelsResult:
+      type: object
+      properties:
+        taglist:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+    SystemCommandGetLogLevelNames:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - getloglevelnames
+
+    SystemCommandGetSubsystemNames:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - getsubsystemnames
+
+    SystemCommandGetLogLevelNamesResult:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            type: string
+
+    SystemGetSubSystemNamesResult:
+      type: object
+      properties:
+        taglist:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+paths:
+  /boards:
+    get:
+      tags:
+        - Boards
+      operationId: getBoards
+      summary: Retrieve a list of boards.
+      parameters:
+        - in: query
+          description: Pagination start (starts at 1. If not specified, 1 is assumed)
+          name: offset
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: limit
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Filter the results
+          name: filter
+          schema:
+            type: string
+          required: false
+        - in: query
+          description: return the number of boards
+          name: countOnly
+          schema:
+            type: boolean
+          required: false
+
+      responses:
+        200:
+          description: Return a list of boards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoardInfoList'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /board/{id}:
+    get:
+      tags:
+        - Boards
+      operationId: getBoard
+      summary: Retrieve a board
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: Return a list of boards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoardInfo'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - Boards
+      operationId: deleteBoard
+      summary: Remove a board
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+        - Boards
+      operationId: createBoard
+      summary: Create a board
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          example: value should be 0 for a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BoardInfo'
+      responses:
+        200:
+          $ref: '#/components/schemas/BoardInfo'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Boards
+      operationId: modifyBoard
+      summary: Modify a board
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BoardInfo'
+      responses:
+        200:
+          $ref: '#/components/schemas/BoardInfo'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /iptocountry:
+    get:
+      tags:
+        - Utility
+      summary: Get the country code for an IP address
+      operationId: getIpToCountry
+      parameters:
+        - in: query
+          name: iplist
+          schema:
+            type: string
+            example:
+              10.2.2.2,10.3.4.3
+          required: true
+      responses:
+        200:
+          description: List of country codes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                  countryCodes:
+                    type: array
+                    items:
+                      type: string
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  #########################################################################################
+  ##
+  ## These are endpoints that all services in the OpenWiFi stack must provide
+  ##
+  #########################################################################################
+  /system:
+    post:
+      tags:
+        - System Commands
+      summary: Perform some system wide commands.
+      operationId: systemCommand
+      requestBody:
+        description: Command details
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/SystemCommandSetLogLevel'
+                - $ref: '#/components/schemas/SystemCommandReload'
+                - $ref: '#/components/schemas/SystemCommandGetLogLevels'
+                - $ref: '#/components/schemas/SystemCommandGetLogLevelNames'
+                - $ref: '#/components/schemas/SystemCommandGetSubsystemNames'
+      responses:
+        200:
+          description: Successful command execution
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SystemGetLogLevelsResult'
+                  - $ref: '#/components/schemas/SystemCommandGetLogLevelNamesResult'
+                  - $ref: '#/components/schemas/SystemGetSubSystemNamesResult'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+        - System Commands
+      summary: Retrieve different values from the running service.
+      operationId: getSystemCommand
+      parameters:
+        - in: query
+          description: Get a value
+          name: command
+          schema:
+            type: string
+            enum:
+              - info
+          required: true
+
+      responses:
+        200:
+          description: Successful command execution
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SystemInfoResults'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'

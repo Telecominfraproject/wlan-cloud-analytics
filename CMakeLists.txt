@@ -83,7 +83,7 @@ add_executable(owanalytics
         src/RESTAPI/RESTAPI_routers.cpp
         src/Daemon.cpp src/Daemon.h
         src/Dashboard.h src/Dashboard.cpp
-        src/StorageService.cpp src/StorageService.h src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h)
+        src/StorageService.cpp src/StorageService.h src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h src/StateReceiver.cpp src/StateReceiver.h src/VenueWatcher.cpp src/VenueWatcher.h src/VenueCoordinator.cpp src/VenueCoordinator.h)
 
 target_link_libraries(owanalytics PUBLIC
         ${Poco_LIBRARIES} ${MySQL_LIBRARIES}
