@@ -41,7 +41,7 @@ namespace OpenWifi {
         }
     }
 
-    void VenueWatcher::SetSerialNumbers(const std::vector<uint64_t> &SerialNumbers) {
+    void VenueWatcher::ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers) {
         std::lock_guard G(Mutex_);
 
         std::vector<uint64_t>  Diff;

@@ -42,7 +42,7 @@ namespace OpenWifi {
 
         void run() final;
         inline Poco::Logger & Logger() { return Logger_; }
-        void SetSerialNumbers(const std::vector<uint64_t> &SerialNumbers);
+        void ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers);
 
     private:
         std::recursive_mutex    Mutex_;
