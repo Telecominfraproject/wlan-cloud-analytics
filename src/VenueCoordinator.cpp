@@ -24,8 +24,8 @@ namespace OpenWifi {
 
         Watchers_.push_back(std::make_shared<VenueWatcher>(std::string{"id-1"},Logger(),Numbers));
 
-
-
+        for(const auto &i:Watchers_)
+            i->Start();
 
         Worker_.start(*this);
         return 0;
