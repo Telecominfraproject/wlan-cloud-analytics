@@ -15,8 +15,21 @@ namespace OpenWifi {
 		std::lock_guard		Guard(Mutex_);
 
 		StorageClass::Start();
+
+        BoardsDB_ = std::make_unique<OpenWifi::BoardsDB>(dbType_,*Pool_, Logger());
+        BoardsDB_->Create();
+
         Updater_.start(*this);
+
+        TimerCallback_ = std::make_unique<Poco::TimerCallback<Storage>>(*this,&Storage::onTimer);
+        Timer_.setStartInterval( 20 * 1000);  // first run in 20 seconds
+        Timer_.setPeriodicInterval(1 * 60 * 60 * 1000); // 1 hours
+        Timer_.start(*TimerCallback_);
+
         return 0;
+    }
+
+    void Storage::onTimer(Poco::Timer &timer) {
     }
 
     void Storage::run() {

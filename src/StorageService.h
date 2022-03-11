@@ -10,6 +10,7 @@
 
 #include "framework/MicroService.h"
 #include "framework/StorageClass.h"
+#include "storage/storage_boards.h"
 
 namespace OpenWifi {
     class Storage : public StorageClass, Poco::Runnable {
@@ -23,10 +24,15 @@ namespace OpenWifi {
             void 	Stop() override;
 
             void run() final;
+            OpenWifi::BoardsDB & BoardsDB() { return *BoardsDB_; };
+            void onTimer(Poco::Timer & timer);
 
           private:
+            std::unique_ptr<OpenWifi::BoardsDB>                 BoardsDB_;
             Poco::Thread                                        Updater_;
             std::atomic_bool                                    Running_=false;
+            Poco::Timer                                         Timer_;
+            std::unique_ptr<Poco::TimerCallback<Storage>>       TimerCallback_;
    };
    inline auto StorageService() { return Storage::instance(); }
 }  // namespace
