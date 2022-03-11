@@ -17,7 +17,7 @@ namespace OpenWifi {
         inline std::shared_ptr<nlohmann::json> & Payload() { return Payload_; }
         inline auto SerialNumber() { return SerialNumber_; }
     private:
-        std::shared_ptr<nlohmann::json> &Payload_;
+        std::shared_ptr<nlohmann::json> Payload_;
         uint64_t SerialNumber_=0;
     };
 
