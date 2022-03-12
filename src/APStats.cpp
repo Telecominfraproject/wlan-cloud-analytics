@@ -8,6 +8,7 @@ namespace OpenWifi {
 
     void AP::Update(std::shared_ptr<nlohmann::json> &State) {
         std::cout << "MAC: " << Utils::IntToSerialNumber(mac_) << std::endl;
+        std::cout << *State << std::endl;
     }
 
 }
