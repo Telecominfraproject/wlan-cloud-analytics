@@ -44,4 +44,16 @@ namespace OpenWifi {
         }
     }
 
+    void VenueCoordinator::StopVenue(const std::string &id) {
+
+    }
+
+    void VenueCoordinator::ModifyVenue(const std::string &id) {
+
+    }
+
+    void VenueCoordinator::AddVenue(const std::string &id) {
+
+    }
+
 }

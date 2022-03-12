@@ -20,6 +20,10 @@ namespace OpenWifi {
         void Stop() override;
         void run() override;
 
+        void StopVenue(const std::string &id);
+        void ModifyVenue(const std::string &id);
+        void AddVenue(const std::string &id);
+
     private:
         Poco::Thread                                Worker_;
         std::atomic_bool                            Running_=false;

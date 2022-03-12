@@ -35,7 +35,7 @@ namespace OpenWifi {
 		return instance_;
 	}
 
-	void Daemon::initialize() {
+    void Daemon::initialize() {
     }
 
     void MicroServicePostInitialization() {

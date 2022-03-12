@@ -27,8 +27,10 @@ namespace OpenWifi {
             if(MsgContent!= nullptr) {
                 try {
                     auto State = MsgContent->Payload();
-                    std::cout << "SerialNumber: " << Utils::IntToSerialNumber(MsgContent->SerialNumber()) << std::endl;
-                    std::cout << to_string(*State) << std::endl;
+                    auto It = APs_.find(MsgContent->SerialNumber());
+                    if(It!=end(APs_)) {
+                        It->second->Update(MsgContent->Payload());
+                    }
                 } catch (const Poco::Exception &E) {
                     Logger().log(E);
                 } catch (...) {

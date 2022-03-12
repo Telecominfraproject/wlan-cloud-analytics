@@ -5,6 +5,7 @@
 #pragma once
 
 #include "framework/MicroService.h"
+#include "APStats.h"
 
 namespace OpenWifi {
 
@@ -27,9 +28,15 @@ namespace OpenWifi {
             Id_(id),
             Logger_(L),
             SerialNumbers_(SerialNumbers) {
+
             std::sort(SerialNumbers_.begin(),SerialNumbers_.end());
             auto last = std::unique(SerialNumbers_.begin(),SerialNumbers_.end());
             SerialNumbers_.erase(last,SerialNumbers_.end());
+
+            for(const auto &mac:SerialNumbers_) {
+                auto ap = std::make_shared<AP>(mac);
+                APs_[mac ] = ap;
+            }
         }
 
         void Post(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
@@ -45,13 +52,14 @@ namespace OpenWifi {
         void ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers);
 
     private:
-        std::recursive_mutex    Mutex_;
-        std::string             Id_;
-        Poco::NotificationQueue Queue_;
-        Poco::Logger            &Logger_;
-        Poco::Thread            Worker_;
-        std::atomic_bool        Running_=false;
-        std::vector<uint64_t>   SerialNumbers_;
+        std::recursive_mutex        Mutex_;
+        std::string                 Id_;
+        Poco::NotificationQueue     Queue_;
+        Poco::Logger                &Logger_;
+        Poco::Thread                Worker_;
+        std::atomic_bool            Running_=false;
+        std::vector<uint64_t>       SerialNumbers_;
+        std::map<uint64_t, std::shared_ptr<AP>>    APs_;
     };
 
 }
