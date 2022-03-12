@@ -29,7 +29,8 @@ namespace OpenWifi {
                     auto State = MsgContent->Payload();
                     auto It = APs_.find(MsgContent->SerialNumber());
                     if(It!=end(APs_)) {
-                        It->second->Update(MsgContent->Payload());
+                        std::thread T([&] {It->second->Update(MsgContent->Payload());});
+                        T.detach();
                     }
                 } catch (const Poco::Exception &E) {
                     Logger().log(E);
