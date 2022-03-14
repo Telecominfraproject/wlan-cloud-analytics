@@ -34,14 +34,12 @@ namespace OpenWifi {
                     if(MsgContent->Type()==VenueMessage::connection) {
                         auto It = APs_.find(MsgContent->SerialNumber());
                         if(It!=end(APs_)) {
-                            std::thread T([&] {It->second->UpdateConnection(MsgContent->Payload());});
-                            T.detach();
+                            It->second->UpdateConnection(MsgContent->Payload());
                         }
                     } else if(MsgContent->Type()==VenueMessage::state) {
                         auto It = APs_.find(MsgContent->SerialNumber());
                         if(It!=end(APs_)) {
-                            std::thread T([&] {It->second->UpdateStats(MsgContent->Payload());});
-                            T.detach();
+                            It->second->UpdateStats(MsgContent->Payload());
                         }
                     }
                 } catch (const Poco::Exception &E) {
