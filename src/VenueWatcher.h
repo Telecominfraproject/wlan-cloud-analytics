@@ -11,15 +11,24 @@ namespace OpenWifi {
 
     class VenueMessage : public Poco::Notification {
     public:
-        explicit VenueMessage(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &M ) :
+        enum MsgType {
+            connection,
+            state
+        };
+
+        explicit VenueMessage(uint64_t SerialNumber, MsgType Msg, std::shared_ptr<nlohmann::json> &M ) :
                 Payload_(M),
+                Type_(Msg),
                 SerialNumber_(SerialNumber) {
         }
         inline std::shared_ptr<nlohmann::json> & Payload() { return Payload_; }
-        inline auto SerialNumber() { return SerialNumber_; }
+        inline const auto SerialNumber() { return SerialNumber_; }
+        inline uint64_t Type() { return Type_; }
+
     private:
         std::shared_ptr<nlohmann::json> Payload_;
-        uint64_t SerialNumber_=0;
+        uint64_t                        SerialNumber_=0;
+        MsgType                         Type_;
     };
 
     class VenueWatcher : public Poco::Runnable {
@@ -39,9 +48,14 @@ namespace OpenWifi {
             }
         }
 
-        void Post(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
+        inline void PostState(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
             std::lock_guard G(Mutex_);
-            Queue_.enqueueNotification(new VenueMessage(SerialNumber, Msg));
+            Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::state, Msg));
+        }
+
+        inline void PostConnection(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
+            std::lock_guard G(Mutex_);
+            Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::connection, Msg));
         }
 
         void Start();

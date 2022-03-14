@@ -15,6 +15,7 @@
 #include "StorageService.h"
 #include "VenueCoordinator.h"
 #include "StateReceiver.h"
+#include "DeviceStatusReceiver.h"
 
 namespace OpenWifi {
 	class Daemon *Daemon::instance_ = nullptr;
@@ -29,6 +30,7 @@ namespace OpenWifi {
 								   SubSystemVec{
 									   OpenWifi::StorageService(),
                                        StateReceiver(),
+                                       DeviceStatusReceiver(),
                                        VenueCoordinator()
 								   });
 		}

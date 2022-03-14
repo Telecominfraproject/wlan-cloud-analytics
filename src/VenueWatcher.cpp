@@ -4,16 +4,20 @@
 
 #include "VenueWatcher.h"
 #include "StateReceiver.h"
+#include "DeviceStatusReceiver.h"
 
 namespace OpenWifi {
 
     void VenueWatcher::Start() {
         for(const auto &i:SerialNumbers_)
             StateReceiver()->Register(i,this);
+
+        DeviceStatusReceiver()->Register(SerialNumbers_,this);
         Worker_.start(*this);
     }
 
     void VenueWatcher::Stop() {
+        DeviceStatusReceiver()->DeRegister(this);
         Running_ = false;
         Queue_.wakeUpAll();
         Worker_.join();
@@ -27,10 +31,18 @@ namespace OpenWifi {
             if(MsgContent!= nullptr) {
                 try {
                     auto State = MsgContent->Payload();
-                    auto It = APs_.find(MsgContent->SerialNumber());
-                    if(It!=end(APs_)) {
-                        std::thread T([&] {It->second->Update(MsgContent->Payload());});
-                        T.detach();
+                    if(MsgContent->Type()==VenueMessage::connection) {
+                        auto It = APs_.find(MsgContent->SerialNumber());
+                        if(It!=end(APs_)) {
+                            std::thread T([&] {It->second->UpdateConnection(MsgContent->Payload());});
+                            T.detach();
+                        }
+                    } else if(MsgContent->Type()==VenueMessage::state) {
+                        auto It = APs_.find(MsgContent->SerialNumber());
+                        if(It!=end(APs_)) {
+                            std::thread T([&] {It->second->UpdateStats(MsgContent->Payload());});
+                            T.detach();
+                        }
                     }
                 } catch (const Poco::Exception &E) {
                     Logger().log(E);

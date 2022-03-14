@@ -34,10 +34,11 @@ namespace OpenWifi {
                         if (payload.contains("state") && payload.contains("serial")) {
                             auto serialNumber = payload["serial"].get<std::string>();
                             auto state = std::make_shared<nlohmann::json>(payload["state"]);
+                            std::lock_guard     G(Mutex_);
                             auto it = Notifiers_.find(Utils::SerialNumberToInt(serialNumber));
                             if(it!=Notifiers_.end()) {
                                 for(const auto &i:it->second) {
-                                    i->Post(Utils::SerialNumberToInt(serialNumber), state);
+                                    i->PostState(Utils::SerialNumberToInt(serialNumber), state);
                                 }
                             }
                         }

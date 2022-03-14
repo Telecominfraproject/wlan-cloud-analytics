@@ -55,7 +55,9 @@ namespace OpenWifi {
 
         }
 
-        void Update(std::shared_ptr<nlohmann::json> & State);
+        void UpdateStats(std::shared_ptr<nlohmann::json> & State);
+        void UpdateConnection(std::shared_ptr<nlohmann::json> & Connection);
+
 
     private:
         uint64_t    mac_=0;
