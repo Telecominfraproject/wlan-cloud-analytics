@@ -36,7 +36,7 @@ namespace OpenWifi {
         if(!StorageService()->BoardsDB().DeleteRecord("id",id)) {
             return NotFound();
         }
-        VenueCoordinator()->StopVenue(id);
+        VenueCoordinator()->StopBoard(id);
         return OK();
     }
 
@@ -55,7 +55,7 @@ namespace OpenWifi {
         ProvObjects::CreateObjectInfo(RawObject,UserInfo_.userinfo,NewObject.info);
 
         if(StorageService()->BoardsDB().CreateRecord(NewObject)) {
-            VenueCoordinator()->AddVenue(NewObject.info.id);
+            VenueCoordinator()->AddBoard(NewObject.info.id);
             AnalyticsObjects::BoardInfo NewBoard;
             StorageService()->BoardsDB().GetRecord("id",NewObject.info.id,NewBoard);
             Poco::JSON::Object  Answer;
@@ -87,7 +87,7 @@ namespace OpenWifi {
         }
 
         if(StorageService()->BoardsDB().CreateRecord(NewObject)) {
-            VenueCoordinator()->ModifyVenue(NewObject.info.id);
+            VenueCoordinator()->ModifyBoard(NewObject.info.id);
             AnalyticsObjects::BoardInfo NewBoard;
             StorageService()->BoardsDB().GetRecord("id",NewObject.info.id,NewBoard);
             Poco::JSON::Object  Answer;

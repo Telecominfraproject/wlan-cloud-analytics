@@ -1,0 +1,237 @@
+#!/bin/bash
+
+#
+#	License type: BSD 3-Clause License
+#	License copy: https://github.com/Telecominfraproject/wlan-cloud-ucentralgw/blob/master/LICENSE
+#
+#	Created by Stephane Bourque on 2021-03-04.
+#	Arilia Wireless Inc.
+#
+
+if [[ "$(which jq)" == "" ]]
+then
+  echo "You need the package jq installed to use this script."
+  exit 1
+fi
+
+if [[ "$(which curl)" == "" ]]
+then
+  echo "You need the package curl installed to use this script."
+  exit 1
+fi
+
+if [[ "${OWSEC}" == "" ]]
+then
+  echo "You must set the variable OWSEC in order to use this script. Something like"
+  echo "OWSEC=security.isp.com:16001"
+  exit 1
+fi
+
+if [[ "${FLAGS}" == "" ]]
+then
+	FLAGS="-s"
+fi
+
+token=""
+result_file=result.json
+browser_list=(firefox sensible-browser xdg-open w3m links links2 lynx youtube-dl)
+browser=""
+
+if [ -z ${OWSEC_USERNAME+x} ]; then
+  username="script.runner@arilia.com"
+else
+  username=${OWSEC_USERNAME}
+fi
+if [ -z ${OWSEC_PASSWORD+x} ]; then
+  password="Snoopy99!!!"
+else
+  password=${OWSEC_PASSWORD}
+fi
+
+login() {
+  payload="{ \"userId\" : \"$username\" , \"password\" : \"$password\" }"
+  token=$(curl ${FLAGS} -X POST -H "Content-Type: application/json" -d "$payload" "https://${OWSEC}/api/v1/oauth2" | jq -r '.access_token')
+
+  if [[ "${token}" == "null" ]]
+  then
+  	echo "Could not login. Please verify the host and username/password."
+    exit 13
+  fi
+  echo "${token}" > token.json
+  setprov
+  setanalytics
+}
+
+findbrowser() {
+	if [[ "${browser}" != "" ]]
+	then
+		echo
+	elif [[ "$(uname)" == "Darwin" ]]
+	then
+		browser=open
+	else
+		BROWSER_LIST=(firefox sensible-browser xdg-open w3m links links2 lynx youtube-dl)
+		for br_name in "${browser_list[@]}"
+		do
+			if [[ $(which ${br_name}) != "" ]]
+			then
+				browser=${br_name}
+				break
+			fi
+		done
+	fi
+}
+
+setprov() {
+if [ -z ${OWPROV_OVERRIDE+x} ]; then
+	curl  ${FLAGS} -X GET "https://${OWSEC}/api/v1/systemEndpoints" \
+        -H "accept: application/json" \
+        -H "Authorization: Bearer ${token}"  > ${result_file}
+	rawurl="$(cat ${result_file} | jq -r '.endpoints[] | select( .type == "owprov" ) | .uri')"
+	if [[ ! -z "${rawurl}" ]]; then
+		proto="$(echo $rawurl | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+		url="$(echo ${rawurl/$proto/})"
+		user="$(echo $url | grep @ | cut -d@ -f1)"
+		hostport="$(echo ${url/$user@/} | cut -d/ -f1)"
+		host="$(echo $hostport | sed -e 's,:.*,,g')"
+		port="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
+		path="$(echo $url | grep / | cut -d/ -f2-)"
+		export OWPROV=${url}
+		echo "Using ${OWPROV}..."
+	else
+		echo "OWPROV endpoint is not found:"
+		jq < ${result_file}
+		exit 1
+	fi
+else
+       export OWPROV=${OWPROV_OVERRIDE}
+fi
+}
+
+setanalytics() {
+    if [ -z ${OWPROV_OVERRIDE+x} ]; then
+    curl  ${FLAGS} -X GET "https://${OWSEC}/api/v1/systemEndpoints" \
+        -H "accept: application/json" \
+        -H "Authorization: Bearer ${token}"  > ${result_file}
+    rawurl="$(cat ${result_file} | jq -r '.endpoints[] | select( .type == "owanalytics" ) | .uri')"
+    if [[ ! -z "${rawurl}" ]]; then
+            proto="$(echo $rawurl | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+    url="$(echo ${rawurl/$proto/})"
+    user="$(echo $url | grep @ | cut -d@ -f1)"
+    hostport="$(echo ${url/$user@/} | cut -d/ -f1)"
+    host="$(echo $hostport | sed -e 's,:.*,,g')"
+    port="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
+    path="$(echo $url | grep / | cut -d/ -f2-)"
+    export OWANALYTICS=${url}
+    echo "Using ${OWANALYTICS}..."
+    else
+    echo "OWANALYTICS endpoint is not found:"
+    jq < ${result_file}
+    exit 1
+    fi
+    else
+    export OWANALYTICS=${OWANALYTICS_OVERRIDE}
+    fi
+}
+
+
+logout() {
+  curl  ${FLAGS} -X DELETE -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        "https://${OWSEC}/api/v1/oauth2/${token}"
+  rm -rf token.json
+}
+
+venuecount() {
+    curl ${FLAGS} "https://${OWPROV}/api/v1/venue?countOnly=true" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${token}" \
+    -H "accept: application/json" > ${result_file}
+    jq < ${result_file}
+}
+
+contactcount() {
+    curl ${FLAGS} "https://${OWPROV}/api/v1/contact?countOnly=true" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${token}" \
+    -H "accept: application/json" > ${result_file}
+    jq < ${result_file}
+}
+
+setloglevel() {
+    payload="{ \"command\" : \"setloglevel\" , \"subsystems\" : [ { \"tag\" : \"$1\" , \"value\" : \"$2\" } ] }"
+            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+            -H  "accept: application/json" \
+            -H "Authorization: Bearer ${token}" \
+            -d "$payload"
+}
+
+getloglevels() {
+    payload="{ \"command\" : \"getloglevels\" }"
+            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+            -H  "accept: application/json" \
+            -H "Authorization: Bearer ${token}" \
+            -d "$payload"
+}
+
+getloglevelnames() {
+    payload="{ \"command\" : \"getloglevelnames\" }"
+            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+            -H  "accept: application/json" \
+            -H "Authorization: Bearer ${token}" \
+            -d "$payload"
+}
+
+getsubsystemnames() {
+    payload="{ \"command\" : \"getsubsystemnames\" }"
+            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+            -H  "accept: application/json" \
+            -H "Authorization: Bearer ${token}" \
+            -d "$payload"
+}
+
+systeminfo() {
+    curl  ${FLAGS} -X GET "https://${OWPROV}/api/v1/system?command=info" \
+    -H "accept: application/json" \
+    -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
+reloadsubsystem() {
+    payload="{ \"command\" : \"reload\", \"subsystems\" : [ \"$1\" ] }"
+            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+            -H  "accept: application/json" \
+            -H "Authorization: Bearer ${token}" \
+            -d "$payload"
+}
+
+tree() {
+    curl    ${FLAGS} "https://${OWPROV}/api/v1/entity?getTree=true" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${token}" \
+    -H "accept: application/json" > ${result_file}
+    jq < ${result_file}
+}
+
+createboard() {
+    payload="{ \"name\" : \"MegaLab\", \"venueList\" : [ { \"id\" : \"$1\" , \"name\" : \"MegaLab Venue\" , \"retention\" : 86000 , \"interval\" : 60, \"monitorSubVenues\" : true } ] }"
+    curl ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/board/0" \
+    -H  "accept: application/json" \
+    -H "Authorization: Bearer ${token}" \
+    -d "$payload" > ${result_file}
+    jq < ${result_file}
+}
+
+shopt -s nocasematch
+case "$1" in
+    "login") login; echo "You are logged in..."  ; logout ;;
+    "tree") login; tree ; logout;;
+    "setloglevel") login; setloglevel "$2" "$3"  ; logout ;;
+    "getloglevels") login; getloglevels; logout ;;
+    "getloglevelnames") login; getloglevelnames; logout ;;
+    "getsubsystemnames") login; getsubsystemnames; logout ;;
+    "reloadsubsystem") login; reloadsubsystem "$2"; logout ;;
+    "systeminfo") login; systeminfo ; logout;;
+    *) help ;;
+esac
+

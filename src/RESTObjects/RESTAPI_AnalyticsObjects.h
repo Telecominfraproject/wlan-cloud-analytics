@@ -36,6 +36,14 @@ namespace OpenWifi {
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
+
+            inline bool operator<(const BoardInfo &bb) const {
+                return info.id < bb.info.id;
+            }
+
+            inline bool operator==(const BoardInfo &bb) const {
+                return info.id == bb.info.id;
+            }
         };
 
         struct DeviceInfo {

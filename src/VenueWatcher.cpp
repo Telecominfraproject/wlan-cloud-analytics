@@ -19,11 +19,11 @@ namespace OpenWifi {
     }
 
     void VenueWatcher::Stop() {
-        DeviceStatusReceiver()->DeRegister(this);
-        HealthReceiver()->DeRegister(this);
         Running_ = false;
         Queue_.wakeUpAll();
         Worker_.join();
+        DeviceStatusReceiver()->DeRegister(this);
+        HealthReceiver()->DeRegister(this);
     }
 
     void VenueWatcher::run() {

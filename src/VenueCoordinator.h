@@ -20,21 +20,25 @@ namespace OpenWifi {
         void Stop() override;
         void run() override;
 
-        void StopVenue(const std::string &id);
-        void ModifyVenue(const std::string &id);
-        void AddVenue(const std::string &id);
+        void StopBoard(const std::string &id);
+        void ModifyBoard(const std::string &id);
+        void AddBoard(const std::string &id);
 
         void GetDevices(std::string &id, AnalyticsObjects::DeviceInfoList & DIL);
 
     private:
-        Poco::Thread                                Worker_;
-        std::atomic_bool                            Running_=false;
-        std::map<std::string,std::shared_ptr<VenueWatcher>>  Watchers_;
+        Poco::Thread                                        Worker_;
+        std::atomic_bool                                    Running_=false;
+        std::set<AnalyticsObjects::BoardInfo>               BoardsToWatch_;
+        std::map<std::string,std::shared_ptr<VenueWatcher>> Watchers_;
 
         VenueCoordinator() noexcept:
                 SubSystemServer("VenueCoordinator", "VENUE-COORD", "venue.coordinator")
                 {
                 }
+
+        bool StartBoard(const AnalyticsObjects::BoardInfo &B);
+
     };
     inline auto VenueCoordinator() { return VenueCoordinator::instance(); }
 

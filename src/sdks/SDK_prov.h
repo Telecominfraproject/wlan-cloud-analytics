@@ -10,7 +10,7 @@
 namespace OpenWifi::SDK::Prov {
 
     namespace Venue {
-        bool GetDevices(RESTAPIHandler *client, const std::string &VenueId, bool WithChildren, ProvObjects::VenueDeviceList & Device);
+        bool GetDevices(RESTAPIHandler *client, const std::string &VenueId, bool WithChildren, ProvObjects::VenueDeviceList & Devices);
     }
 
     namespace Device {
