@@ -30,7 +30,10 @@ namespace OpenWifi {
     void VenueCoordinator::run() {
         Running_=true;
         while(Running_) {
-            Poco::Thread::trySleep(20000);
+            Poco::Thread::trySleep(2000);
+
+            if(!Running_)
+                break;
 
             std::lock_guard         G(Mutex_);
             if(!BoardsToWatch_.empty()) {
@@ -89,7 +92,6 @@ namespace OpenWifi {
     }
 
     void VenueCoordinator::ModifyBoard(const std::string &id) {
-
         AnalyticsObjects::BoardInfo B;
         if(StorageService()->BoardsDB().GetRecord("id",id,B)) {
             std::vector<uint64_t>   Devices;

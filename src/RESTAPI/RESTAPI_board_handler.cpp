@@ -86,10 +86,10 @@ namespace OpenWifi {
             // reconsile new venuelist compared to old...
         }
 
-        if(StorageService()->BoardsDB().CreateRecord(NewObject)) {
-            VenueCoordinator()->ModifyBoard(NewObject.info.id);
+        if(StorageService()->BoardsDB().CreateRecord(Existing)) {
+            VenueCoordinator()->ModifyBoard(Existing.info.id);
             AnalyticsObjects::BoardInfo NewBoard;
-            StorageService()->BoardsDB().GetRecord("id",NewObject.info.id,NewBoard);
+            StorageService()->BoardsDB().GetRecord("id",Existing.info.id,NewBoard);
             Poco::JSON::Object  Answer;
             NewBoard.to_json(Answer);
             return ReturnObject(Answer);
