@@ -43,7 +43,6 @@ namespace OpenWifi {
             std::sort(SerialNumbers_.begin(),SerialNumbers_.end());
             auto last = std::unique(SerialNumbers_.begin(),SerialNumbers_.end());
             SerialNumbers_.erase(last,SerialNumbers_.end());
-            std::cout << "Creating venue with " << SerialNumbers.size() << " devices" << std::endl;
         }
 
         inline void PostState(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {

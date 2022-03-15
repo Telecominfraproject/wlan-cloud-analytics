@@ -14,7 +14,6 @@ namespace OpenWifi {
         auto F = [&](const AnalyticsObjects::BoardInfo &B) ->bool {
             BoardsToWatch_.insert(B);
             Logger().information(Poco::format("Starting watch for %s.", B.info.name));
-            std::cout << "Starting " << B.info.name << std::endl;
             return true;
         };
         StorageService()->BoardsDB().Iterate(F);
@@ -48,7 +47,6 @@ namespace OpenWifi {
     }
 
     bool VenueCoordinator::StartBoard(const AnalyticsObjects::BoardInfo &B) {
-        std::cout << __LINE__ << std::endl;
         if(B.venueList.empty())
             return true;
 
@@ -56,7 +54,6 @@ namespace OpenWifi {
         if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL)) {
             std::vector<uint64_t>   Devices;
             for(const auto &device:VDL.devices) {
-                std::cout << "Serial: " << device << std::endl;
                 Devices.push_back(Utils::SerialNumberToInt(device));
             }
 
@@ -64,12 +61,11 @@ namespace OpenWifi {
             auto LastDevice = std::unique(Devices.begin(),Devices.end());
             Devices.erase(LastDevice,Devices.end());
 
-            Watchers_[B.venueList[0].id] = std::make_shared<VenueWatcher>(B.info.id,Logger(),Devices);
-            Watchers_[B.venueList[0].id]->Start();
+            Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id,Logger(),Devices);
+            Watchers_[B.info.id]->Start();
             Logger().information(Poco::format("Started board %s",B.info.name));
             return true;
         }
-        std::cout << __LINE__ << std::endl;
 
         Logger().information(Poco::format("Could not start board %s",B.info.name));
         return false;
