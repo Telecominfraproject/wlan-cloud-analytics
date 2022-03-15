@@ -178,9 +178,11 @@ components:
         lastState:
           type: integer
           format: int64
-        lastFirmware:
+        lastFirmwareUpdate:
           type: integer
           format: int64
+        lastFirmware:
+          type: string
         lastConnection:
           type: integer
           format: int64
