@@ -50,53 +50,57 @@ namespace OpenWifi {
             std::cout << Utils::IntToSerialNumber(mac_) << ": stats ";
             std::cout << "2G: " << DI_.associations_2g << "   5G: " << DI_.associations_5g << "   6G: " << DI_.associations_6g << std::endl;
         } catch (...) {
-            std::cout << "Could not parse stats for " << Utils::IntToSerialNumber(mac_) << std::endl;
+            std::cout << Utils::IntToSerialNumber(mac_) << ": stats failed parsing." << std::endl;
         }
     }
 
     void AP::UpdateConnection(const std::shared_ptr<nlohmann::json> &Connection) {
         DI_.pings++;
         DI_.lastContact = OpenWifi::Now();
-        if (Connection->contains("ping")) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": ping" << std::endl;
-            DI_.connected = true;
-            DI_.lastPing = OpenWifi::Now();
-            auto ping = (*Connection)["ping"];
-            if (ping.contains("compatible"))
-                DI_.deviceType = ping["compatible"];
-            if (ping.contains("firmware")) {
-                auto NewFirmware = ping["firmware"];
-                if (NewFirmware != DI_.lastFirmware) {
-                    DI_.lastFirmware = NewFirmware;
-                    DI_.lastFirmwareUpdate = OpenWifi::Now();
+        try {
+            if (Connection->contains("ping")) {
+                std::cout << Utils::IntToSerialNumber(mac_) << ": ping" << std::endl;
+                DI_.connected = true;
+                DI_.lastPing = OpenWifi::Now();
+                auto ping = (*Connection)["ping"];
+                if (ping.contains("compatible"))
+                    DI_.deviceType = ping["compatible"];
+                if (ping.contains("firmware")) {
+                    auto NewFirmware = ping["firmware"];
+                    if (NewFirmware != DI_.lastFirmware) {
+                        DI_.lastFirmware = NewFirmware;
+                        DI_.lastFirmwareUpdate = OpenWifi::Now();
+                    }
+                }
+                if (ping.contains("connectionIp")) {
+                    DI_.connectionIp = ping["connectionIp"];
+                }
+                if (ping.contains("timestamp")) {
+                    DI_.lastConnection = ping["timestamp"];
+                }
+            } else if (Connection->contains("disconnection")) {
+                std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
+                auto Disconnection = (*Connection)["disconnection"];
+                DI_.lastDisconnection = Disconnection["timestamp"];
+                DI_.connected = false;
+            } else if (Connection->contains("capabilities")) {
+                std::cout << Utils::IntToSerialNumber(mac_) << ": connection" << std::endl;
+                DI_.connected = true;
+                DI_.lastConnection = OpenWifi::Now();
+                auto ConnectionData = (*Connection)["capabilities"];
+                if (ConnectionData.contains("firmware")) {
+                    auto NewFirmware = ConnectionData["firmware"];
+                    if (NewFirmware != DI_.lastFirmware) {
+                        DI_.lastFirmware = NewFirmware;
+                        DI_.lastFirmwareUpdate = OpenWifi::Now();
+                    }
+                }
+                if (ConnectionData.contains("connectionIp")) {
+                    DI_.connectionIp = ConnectionData["connectionIp"];
                 }
             }
-            if (ping.contains("connectionIp")) {
-                DI_.connectionIp = ping["connectionIp"];
-            }
-            if(ping.contains("timestamp")) {
-                DI_.lastConnection = ping["timestamp"];
-            }
-        } else if (Connection->contains("disconnection")) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
-            auto Disconnection = (*Connection)["disconnection"];
-            DI_.lastDisconnection = Disconnection["timestamp"];
-            DI_.connected = false;
-        } else if (Connection->contains("capabilities")) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": connection" << std::endl;
-            DI_.connected = true;
-            DI_.lastConnection = OpenWifi::Now();
-            auto ConnectionData = (*Connection)["capabilities"];
-            if (ConnectionData.contains("firmware")) {
-                auto NewFirmware = ConnectionData["firmware"];
-                if (NewFirmware != DI_.lastFirmware) {
-                    DI_.lastFirmware = NewFirmware;
-                    DI_.lastFirmwareUpdate = OpenWifi::Now();
-                }
-            }
-            if (ConnectionData.contains("connectionIp")) {
-                DI_.connectionIp = ConnectionData["connectionIp"];
-            }
+        } catch (...) {
+            std::cout << Utils::IntToSerialNumber(mac_) << ": connection failed parsing." << std::endl;
         }
     }
 
@@ -106,7 +110,7 @@ namespace OpenWifi {
             DI_.lastHealth = (*Health)["timestamp"];
             std::cout << Utils::IntToSerialNumber(mac_) << ": health " << DI_.health << std::endl;
         } catch(...) {
-            std::cout << "Could not parse health for " << Utils::IntToSerialNumber(mac_) << std::endl;
+            std::cout << Utils::IntToSerialNumber(mac_) << ": health failed parsing." << std::endl;
         }
     }
 
