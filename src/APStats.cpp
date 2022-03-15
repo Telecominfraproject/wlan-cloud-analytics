@@ -101,8 +101,13 @@ namespace OpenWifi {
     }
 
     void AP::UpdateHealth(const std::shared_ptr<nlohmann::json> & Health) {
-        std::cout << Utils::IntToSerialNumber(mac_) << ": health" << std::endl;
-        std::cout << *Health << std::endl;
+        try {
+            DI_.health = (*Health)["sanity"];
+            DI_.lastHealth = (*Health)["timestamp"];
+            std::cout << Utils::IntToSerialNumber(mac_) << ": health " << DI_.health << std::endl;
+        } catch(...) {
+            std::cout << "Could not parse health for " << Utils::IntToSerialNumber(mac_) << std::endl;
+        }
     }
 
 }
