@@ -44,10 +44,15 @@ namespace OpenWifi {
             auto last = std::unique(SerialNumbers_.begin(),SerialNumbers_.end());
             SerialNumbers_.erase(last,SerialNumbers_.end());
 
+            std::cout << "Creatign venue with " << SerialNumbers.size() << " devices" << std::endl;
+
             for(const auto &mac:SerialNumbers_) {
+                std::cout << __LINE__ << std::endl;
                 auto ap = std::make_shared<AP>(mac);
                 APs_[mac ] = ap;
+                std::cout << __LINE__ << std::endl;
             }
+            std::cout << __LINE__ << std::endl;
         }
 
         inline void PostState(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
