@@ -91,7 +91,7 @@ namespace OpenWifi {
                 }
             }
             std::cout << "Stats update for MAC: " << Utils::IntToSerialNumber(mac_) << std::endl;
-            std::cout << "2G:" << DI_.associations_2g << "  5G" << DI_.associations_5g << " 6G:" << DI_.associations_6g << std::endl;
+            std::cout << "2G: " << DI_.associations_2g << "   5G: " << DI_.associations_5g << "   6G: " << DI_.associations_6g << std::endl;
         } catch (...) {
             std::cout << "Could not parse stats for " << Utils::IntToSerialNumber(mac_) << std::endl;
         }
