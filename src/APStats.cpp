@@ -51,7 +51,6 @@ namespace OpenWifi {
         DI_.states++;
         DI_.connected =true;
         DI_.lastPing = DI_.lastState = OpenWifi::Now();
-        std::cout << "Stats update for MAC: " << Utils::IntToSerialNumber(mac_) << std::endl;
 //        std::cout << *State << std::endl;
 
         // find radios first to get associations.
