@@ -10,6 +10,15 @@
 namespace OpenWifi {
 
     void VenueWatcher::Start() {
+
+        std::cout << "Starting the venue: " << Id_ << std::endl;
+        for(const auto &mac:SerialNumbers_) {
+            std::cout << "Starting API: " << Utils::IntToSerialNumber(mac) << std::endl;
+            auto ap = std::make_shared<AP>(mac);
+            APs_[mac ] = ap;
+            std::cout << __LINE__ << std::endl;
+        }
+
         for(const auto &i:SerialNumbers_)
             StateReceiver()->Register(i,this);
 

@@ -52,25 +52,19 @@ namespace OpenWifi {
         if(B.venueList.empty())
             return true;
 
-        std::cout << __LINE__ << std::endl;
         ProvObjects::VenueDeviceList    VDL;
         if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL)) {
-            std::cout << __LINE__ << std::endl;
             std::vector<uint64_t>   Devices;
             for(const auto &device:VDL.devices) {
-                std::cout << __LINE__ << std::endl;
                 Devices.push_back(Utils::SerialNumberToInt(device));
             }
 
-            std::cout << __LINE__ << std::endl;
             std::sort(Devices.begin(),Devices.end());
             auto LastDevice = std::unique(Devices.begin(),Devices.end());
             Devices.erase(LastDevice,Devices.end());
-            std::cout << __LINE__ << std::endl;
 
             Watchers_[B.venueList[0].id] = std::make_shared<VenueWatcher>(B.info.id,Logger(),Devices);
             Watchers_[B.venueList[0].id]->Start();
-            std::cout << __LINE__ << std::endl;
             Logger().information(Poco::format("Started board %s",B.info.name));
             return true;
         }
