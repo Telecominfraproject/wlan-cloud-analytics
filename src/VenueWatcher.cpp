@@ -77,4 +77,12 @@ namespace OpenWifi {
         SerialNumbers_ = SerialNumbers;
     }
 
+    void VenueWatcher::GetDevices(std::vector<AnalyticsObjects::DeviceInfo> & DIL) {
+        std::lock_guard G(Mutex_);
+
+        DIL.reserve(APs_.size());
+        for(const auto &[serialNumber,DI]:APs_)
+            DIL.push_back(DI->Info());
+    }
+
 }

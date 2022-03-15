@@ -56,4 +56,67 @@ namespace OpenWifi::AnalyticsObjects {
         }
         return false;
     }
+
+    void DeviceInfo::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"boardId",boardId);
+        field_to_json(Obj,"type",type);
+        field_to_json(Obj,"serialNumber",serialNumber);
+        field_to_json(Obj,"deviceType",deviceType);
+        field_to_json(Obj,"lastContact",lastContact);
+        field_to_json(Obj,"lastPing",lastPing);
+        field_to_json(Obj,"lastState",lastState);
+        field_to_json(Obj,"lastFirmware",lastFirmware);
+        field_to_json(Obj,"lastFirmwareUpdate",lastFirmwareUpdate);
+        field_to_json(Obj,"lastConnection",lastConnection);
+        field_to_json(Obj,"lastDisconnection",lastDisconnection);
+        field_to_json(Obj,"pings",pings);
+        field_to_json(Obj,"states",states);
+        field_to_json(Obj,"connected",connected);
+        field_to_json(Obj,"connectionIp",connectionIp);
+        field_to_json(Obj,"associations_2g",associations_2g);
+        field_to_json(Obj,"associations_5g",associations_5g);
+        field_to_json(Obj,"associations_6g",associations_6g);
+    }
+
+    bool DeviceInfo::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"boardId",boardId);
+            field_from_json(Obj,"type",type);
+            field_from_json(Obj,"serialNumber",serialNumber);
+            field_from_json(Obj,"deviceType",deviceType);
+            field_from_json(Obj,"lastContact",lastContact);
+            field_from_json(Obj,"lastPing",lastPing);
+            field_from_json(Obj,"lastState",lastState);
+            field_from_json(Obj,"lastFirmware",lastFirmware);
+            field_from_json(Obj,"lastFirmwareUpdate",lastFirmwareUpdate);
+            field_from_json(Obj,"lastConnection",lastConnection);
+            field_from_json(Obj,"lastDisconnection",lastDisconnection);
+            field_from_json(Obj,"pings",pings);
+            field_from_json(Obj,"states",states);
+            field_from_json(Obj,"connected",connected);
+            field_from_json(Obj,"connectionIp",connectionIp);
+            field_from_json(Obj,"associations_2g",associations_2g);
+            field_from_json(Obj,"associations_5g",associations_5g);
+            field_from_json(Obj,"associations_6g",associations_6g);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
+    void DeviceInfoList::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"devices",devices);
+    }
+
+    bool DeviceInfoList::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"devices",devices);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
 }

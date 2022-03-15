@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 project(owanalytics VERSION 2.6.0)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_GENERATOR "Unix Makefiles")
 
 if(UNIX AND APPLE)
     set(OPENSSL_ROOT_DIR /usr/local/opt/openssl)
@@ -83,7 +84,7 @@ add_executable(owanalytics
         src/RESTAPI/RESTAPI_routers.cpp
         src/Daemon.cpp src/Daemon.h
         src/Dashboard.h src/Dashboard.cpp
-        src/StorageService.cpp src/StorageService.h src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h src/StateReceiver.cpp src/StateReceiver.h src/VenueWatcher.cpp src/VenueWatcher.h src/VenueCoordinator.cpp src/VenueCoordinator.h src/sdks/SDK_prov.cpp src/sdks/SDK_prov.h src/storage/storage_boards.cpp src/storage/storage_boards.h src/RESTAPI/RESTAPI_board_list_handler.cpp src/RESTAPI/RESTAPI_board_list_handler.h src/RESTAPI/RESTAPI_board_handler.cpp src/RESTAPI/RESTAPI_board_handler.h src/RESTAPI/RESTAPI_analytics_db_helpers.h src/APStats.cpp src/APStats.h src/dict_ssid.h src/dict_ue.h src/dict_bssid.h src/DeviceStatusReceiver.cpp src/DeviceStatusReceiver.h)
+        src/StorageService.cpp src/StorageService.h src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h src/StateReceiver.cpp src/StateReceiver.h src/VenueWatcher.cpp src/VenueWatcher.h src/VenueCoordinator.cpp src/VenueCoordinator.h src/sdks/SDK_prov.cpp src/sdks/SDK_prov.h src/storage/storage_boards.cpp src/storage/storage_boards.h src/RESTAPI/RESTAPI_board_list_handler.cpp src/RESTAPI/RESTAPI_board_list_handler.h src/RESTAPI/RESTAPI_board_handler.cpp src/RESTAPI/RESTAPI_board_handler.h src/RESTAPI/RESTAPI_analytics_db_helpers.h src/APStats.cpp src/APStats.h src/dict_ssid.h src/dict_ue.h src/dict_bssid.h src/DeviceStatusReceiver.cpp src/DeviceStatusReceiver.h src/RESTAPI/RESTAPI_board_devices_handler.cpp src/RESTAPI/RESTAPI_board_devices_handler.h)
 
 target_link_libraries(owanalytics PUBLIC
         ${Poco_LIBRARIES} ${MySQL_LIBRARIES}

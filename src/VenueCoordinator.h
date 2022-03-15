@@ -24,10 +24,12 @@ namespace OpenWifi {
         void ModifyVenue(const std::string &id);
         void AddVenue(const std::string &id);
 
+        void GetDevices(std::string &id, AnalyticsObjects::DeviceInfoList & DIL);
+
     private:
         Poco::Thread                                Worker_;
         std::atomic_bool                            Running_=false;
-        std::vector<std::shared_ptr<VenueWatcher>>  Watchers_;
+        std::map<std::string,std::shared_ptr<VenueWatcher>>  Watchers_;
 
         VenueCoordinator() noexcept:
                 SubSystemServer("VenueCoordinator", "VENUE-COORD", "venue.coordinator")

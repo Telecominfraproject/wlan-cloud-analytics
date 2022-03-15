@@ -5,6 +5,7 @@
 #pragma once
 
 #include "RESTAPI_ProvObjects.h"
+#include <vector>
 
 namespace OpenWifi {
 
@@ -37,6 +38,36 @@ namespace OpenWifi {
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
+        struct DeviceInfo {
+            std::string     boardId;
+            std::string     type;
+            std::string     serialNumber;
+            std::string     deviceType;
+            uint64_t        lastContact;
+            uint64_t        lastPing;
+            uint64_t        lastState;
+            std::string     lastFirmware;
+            uint64_t        lastFirmwareUpdate;
+            uint64_t        lastConnection;
+            uint64_t        lastDisconnection;
+            uint64_t        pings;
+            uint64_t        states;
+            bool            connected;
+            std::string     connectionIp;
+            uint64_t        associations_2g;
+            uint64_t        associations_5g;
+            uint64_t        associations_6g;
+
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+        };
+
+        struct DeviceInfoList {
+            std::vector<DeviceInfo>     devices;
+
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+        };
     }
 
 }

@@ -6,6 +6,7 @@
 
 #include "framework/MicroService.h"
 #include "APStats.h"
+#include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 
 namespace OpenWifi {
 
@@ -64,6 +65,7 @@ namespace OpenWifi {
         void run() final;
         inline Poco::Logger & Logger() { return Logger_; }
         void ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers);
+        void GetDevices(std::vector<AnalyticsObjects::DeviceInfo> & DI);
 
     private:
         std::recursive_mutex        Mutex_;

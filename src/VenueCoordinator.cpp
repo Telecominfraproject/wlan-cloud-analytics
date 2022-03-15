@@ -20,12 +20,13 @@ namespace OpenWifi {
         std::vector<uint64_t> Numbers;
         for(const auto &i:S)
             Numbers.push_back(Utils::SerialNumberToInt(i));
+
         std::sort(Numbers.begin(),Numbers.end());
 
-        Watchers_.push_back(std::make_shared<VenueWatcher>(std::string{"id-1"},Logger(),Numbers));
+        Watchers_["id"] = std::make_shared<VenueWatcher>(std::string{"id-1"},Logger(),Numbers);
 
-        for(const auto &i:Watchers_)
-            i->Start();
+        for(const auto &[_,watcher]:Watchers_)
+            watcher->Start();
 
         Worker_.start(*this);
         return 0;
@@ -56,4 +57,12 @@ namespace OpenWifi {
 
     }
 
+    void VenueCoordinator::GetDevices(std::string &id, AnalyticsObjects::DeviceInfoList &DIL) {
+        std::lock_guard     G(Mutex_);
+
+        auto it = Watchers_.find(id);
+        if(it!=end(Watchers_)) {
+            it->second->GetDevices(DIL.devices);
+        }
+    }
 }

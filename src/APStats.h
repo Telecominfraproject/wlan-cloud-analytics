@@ -7,6 +7,7 @@
 #include <mutex>
 #include "framework/MicroService.h"
 #include "nlohmann/json.hpp"
+#include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 
 namespace OpenWifi {
     const uint32_t interval = 20;                    //  how big per sample
@@ -51,17 +52,16 @@ namespace OpenWifi {
 
     class AP {
     public:
-        AP(uint64_t mac) : mac_(mac) {
+        explicit AP(uint64_t mac) : mac_(mac) {
 
         }
 
-        void UpdateStats(std::shared_ptr<nlohmann::json> & State);
-        void UpdateConnection(std::shared_ptr<nlohmann::json> & Connection);
-
-
+        void UpdateStats(const std::shared_ptr<nlohmann::json> & State);
+        void UpdateConnection(const std::shared_ptr<nlohmann::json> & Connection);
+        const AnalyticsObjects::DeviceInfo & Info() const { return DI_; }
     private:
-        uint64_t    mac_=0;
-        uint64_t    last_contact_=0;
+        uint64_t                        mac_=0;
+        AnalyticsObjects::DeviceInfo    DI_;
         std::array<AP_Point,ap_buffer_size> Data_;
     };
 }

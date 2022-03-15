@@ -5,6 +5,7 @@
 #include "framework/MicroService.h"
 #include "RESTAPI/RESTAPI_board_list_handler.h"
 #include "RESTAPI/RESTAPI_board_handler.h"
+#include "RESTAPI/RESTAPI_board_devices_handler.h"
 
 namespace OpenWifi {
 
@@ -12,6 +13,7 @@ namespace OpenWifi {
                                                             Poco::Logger & L, RESTAPI_GenericServer & S, uint64_t TransactionId) {
         return  RESTAPI_Router<
                     RESTAPI_system_command,
+                    RESTAPI_board_devices_handler,
                     RESTAPI_board_handler,
                     RESTAPI_board_list_handler
                 >(Path,Bindings,L, S, TransactionId);
@@ -20,9 +22,10 @@ namespace OpenWifi {
     Poco::Net::HTTPRequestHandler * RESTAPI_IntRouter(const char *Path, RESTAPIHandler::BindingMap &Bindings,
                                                             Poco::Logger & L, RESTAPI_GenericServer & S, uint64_t TransactionId) {
         return RESTAPI_Router_I<
-                    RESTAPI_system_command,
-                    RESTAPI_board_handler,
-                    RESTAPI_board_list_handler
+                RESTAPI_system_command,
+                RESTAPI_board_devices_handler,
+                RESTAPI_board_handler,
+                RESTAPI_board_list_handler
             >(Path, Bindings, L, S, TransactionId);
     }
 

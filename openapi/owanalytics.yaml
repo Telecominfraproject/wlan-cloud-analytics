@@ -155,6 +155,66 @@ components:
           items:
             $ref: '#/components/schemas/BoardInfo'
 
+    DeviceInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - ap
+            - switch
+            - iot
+            - unknown
+        serialNumber:
+          type: string
+        deviceType:
+          type: string
+        lastContact:
+          type: integer
+          format: int64
+        lastPing:
+          type: integer
+          format: int64
+        lastState:
+          type: integer
+          format: int64
+        lastFirmware:
+          type: integer
+          format: int64
+        lastConnection:
+          type: integer
+          format: int64
+        lastDisconnection:
+          type: integer
+          format: int64
+        pings:
+          type: integer
+          format: int64
+        states:
+          type: integer
+          format: int64
+        connected:
+          type: boolean
+        connectionIp:
+          type: string
+        associations_2g:
+          type: integer
+          format: int64
+        associations_5g:
+          type: integer
+          format: int64
+        associations_6g:
+          type: integer
+          format: int64
+
+    DeviceInfoList:
+      type: object
+      properties:
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceInfo'
+
     #########################################################################################
     ##
     ## These are endpoints that all services in the OPenWiFI stack must provide
@@ -390,6 +450,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BoardInfoList'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -415,6 +477,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BoardInfo'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -434,6 +498,8 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/Success'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -459,6 +525,8 @@ paths:
       responses:
         200:
           $ref: '#/components/schemas/BoardInfo'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -483,6 +551,32 @@ paths:
       responses:
         200:
           $ref: '#/components/schemas/BoardInfo'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /board/{id}/devices:
+    get:
+      tags:
+        - Board Devices
+      summary: Get basic information about all the devices for a venue.
+      operationId: getBoardDevices
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+      responses:
+        200:
+          $ref: '#/components/schemas/DeviceInfoList'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -516,6 +610,8 @@ paths:
                     type: array
                     items:
                       type: string
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -553,6 +649,8 @@ paths:
                   - $ref: '#/components/schemas/SystemGetLogLevelsResult'
                   - $ref: '#/components/schemas/SystemCommandGetLogLevelNamesResult'
                   - $ref: '#/components/schemas/SystemGetSubSystemNamesResult'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -580,6 +678,8 @@ paths:
               schema:
                 oneOf:
                   - $ref: '#/components/schemas/SystemInfoResults'
+        400:
+          $ref: '#/components/responses/BadRequest'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
