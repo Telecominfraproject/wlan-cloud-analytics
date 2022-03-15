@@ -56,6 +56,7 @@ namespace OpenWifi {
         if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL)) {
             std::vector<uint64_t>   Devices;
             for(const auto &device:VDL.devices) {
+                std::cout << "Serial: " << device << std::endl;
                 Devices.push_back(Utils::SerialNumberToInt(device));
             }
 
