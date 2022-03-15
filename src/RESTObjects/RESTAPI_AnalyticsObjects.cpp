@@ -76,6 +76,8 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"associations_2g",associations_2g);
         field_to_json(Obj,"associations_5g",associations_5g);
         field_to_json(Obj,"associations_6g",associations_6g);
+        field_to_json(Obj,"health",health);
+        field_to_json(Obj,"lastHealth",lastHealth);
     }
 
     bool DeviceInfo::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -98,6 +100,8 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"associations_2g",associations_2g);
             field_from_json(Obj,"associations_5g",associations_5g);
             field_from_json(Obj,"associations_6g",associations_6g);
+            field_from_json(Obj,"health",health);
+            field_from_json(Obj,"lastHealth",lastHealth);
             return true;
         } catch(...) {
 

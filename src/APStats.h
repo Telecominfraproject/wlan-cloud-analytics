@@ -58,6 +58,8 @@ namespace OpenWifi {
 
         void UpdateStats(const std::shared_ptr<nlohmann::json> & State);
         void UpdateConnection(const std::shared_ptr<nlohmann::json> & Connection);
+        void UpdateHealth(const std::shared_ptr<nlohmann::json> & Health);
+
         const AnalyticsObjects::DeviceInfo & Info() const { return DI_; }
     private:
         uint64_t                        mac_=0;

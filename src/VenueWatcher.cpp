@@ -38,8 +38,13 @@ namespace OpenWifi {
                         }
                     } else if(MsgContent->Type()==VenueMessage::state) {
                         auto It = APs_.find(MsgContent->SerialNumber());
-                        if(It!=end(APs_)) {
+                        if (It != end(APs_)) {
                             It->second->UpdateStats(MsgContent->Payload());
+                        }
+                    } else if(MsgContent->Type()==VenueMessage::health) {
+                        auto It = APs_.find(MsgContent->SerialNumber());
+                        if (It != end(APs_)) {
+                            It->second->UpdateHealth(MsgContent->Payload());
                         }
                     }
                 } catch (const Poco::Exception &E) {

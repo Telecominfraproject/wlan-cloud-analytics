@@ -169,6 +169,12 @@ components:
           type: string
         deviceType:
           type: string
+        lastHealth:
+          type: integer
+          format: int64
+        health:
+          type: integer
+          format: int64
         lastContact:
           type: integer
           format: int64

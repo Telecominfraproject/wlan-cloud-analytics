@@ -14,7 +14,8 @@ namespace OpenWifi {
     public:
         enum MsgType {
             connection,
-            state
+            state,
+            health
         };
 
         explicit VenueMessage(uint64_t SerialNumber, MsgType Msg, std::shared_ptr<nlohmann::json> &M ) :
@@ -57,6 +58,11 @@ namespace OpenWifi {
         inline void PostConnection(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
             std::lock_guard G(Mutex_);
             Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::connection, Msg));
+        }
+
+        inline void PostHealth(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
+            std::lock_guard G(Mutex_);
+            Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::health, Msg));
         }
 
         void Start();

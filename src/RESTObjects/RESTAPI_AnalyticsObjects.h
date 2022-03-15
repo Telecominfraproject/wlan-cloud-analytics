@@ -57,6 +57,8 @@ namespace OpenWifi {
             uint64_t        associations_2g;
             uint64_t        associations_5g;
             uint64_t        associations_6g;
+            uint64_t        health;
+            uint64_t        lastHealth;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
