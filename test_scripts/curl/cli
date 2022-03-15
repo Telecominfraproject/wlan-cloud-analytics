@@ -222,6 +222,13 @@ createboard() {
     jq < ${result_file}
 }
 
+listboards() {
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/boards" \
+    -H "accept: application/json" \
+    -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
 shopt -s nocasematch
 case "$1" in
     "login") login; echo "You are logged in..."  ; logout ;;
@@ -231,6 +238,8 @@ case "$1" in
     "getloglevelnames") login; getloglevelnames; logout ;;
     "getsubsystemnames") login; getsubsystemnames; logout ;;
     "reloadsubsystem") login; reloadsubsystem "$2"; logout ;;
+    "listboards") login; listboards ; logout;;
+    "createboard") login; createboard $2 ; logout ;;
     "systeminfo") login; systeminfo ; logout;;
     *) help ;;
 esac

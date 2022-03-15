@@ -14,6 +14,7 @@ namespace OpenWifi {
         auto F = [&](const AnalyticsObjects::BoardInfo &B) ->bool {
             BoardsToWatch_.insert(B);
             Logger().information(Poco::format("Starting watch for %s.", B.info.name));
+            std::cout << "Starting " << B.info.name << std::endl;
             return true;
         };
         StorageService()->BoardsDB().Iterate(F);
