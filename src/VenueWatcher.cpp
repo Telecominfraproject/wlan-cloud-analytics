@@ -84,10 +84,15 @@ namespace OpenWifi {
         std::set_intersection(SerialNumbers.begin(),SerialNumbers.end(),Diff.begin(),
                               Diff.end(),std::inserter(ToAdd,ToAdd.begin()));
 
-        for(const auto &i:ToRemove)
-            StateReceiver()->DeRegister(i,this);
-        for(const auto &i:ToAdd)
-            StateReceiver()->Register(i,this);
+        for(const auto &i:ToRemove) {
+            StateReceiver()->DeRegister(i, this);
+        }
+        for(const auto &i:ToAdd) {
+            StateReceiver()->Register(i, this);
+        }
+
+        HealthReceiver()->Register(SerialNumbers,this);
+        DeviceStatusReceiver()->Register(SerialNumbers,this);
 
         SerialNumbers_ = SerialNumbers;
     }

@@ -32,6 +32,8 @@ namespace OpenWifi {
         std::set<AnalyticsObjects::BoardInfo>               BoardsToWatch_;
         std::map<std::string,std::shared_ptr<VenueWatcher>> Watchers_;
 
+        std::map<std::string,std::vector<uint64_t>>            ExistingBoards_;
+
         VenueCoordinator() noexcept:
                 SubSystemServer("VenueCoordinator", "VENUE-COORD", "venue.coordinator")
                 {

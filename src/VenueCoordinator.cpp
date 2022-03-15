@@ -46,13 +46,10 @@ namespace OpenWifi {
         }
     }
 
-    bool VenueCoordinator::StartBoard(const AnalyticsObjects::BoardInfo &B) {
-        if(B.venueList.empty())
-            return true;
-
+    bool GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices) {
         ProvObjects::VenueDeviceList    VDL;
         if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL)) {
-            std::vector<uint64_t>   Devices;
+            Devices.clear();
             for(const auto &device:VDL.devices) {
                 Devices.push_back(Utils::SerialNumberToInt(device));
             }
@@ -60,13 +57,23 @@ namespace OpenWifi {
             std::sort(Devices.begin(),Devices.end());
             auto LastDevice = std::unique(Devices.begin(),Devices.end());
             Devices.erase(LastDevice,Devices.end());
+            return true;
+        }
+        return false;
+    }
 
+    bool VenueCoordinator::StartBoard(const AnalyticsObjects::BoardInfo &B) {
+        if(B.venueList.empty())
+            return true;
+
+        std::vector<uint64_t>   Devices;
+        if(GetDevicesForBoard(B,Devices)) {
+            ExistingBoards_[B.info.id] = Devices;
             Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id,Logger(),Devices);
             Watchers_[B.info.id]->Start();
             Logger().information(Poco::format("Started board %s",B.info.name));
             return true;
         }
-
         Logger().information(Poco::format("Could not start board %s",B.info.name));
         return false;
     }
@@ -83,6 +90,28 @@ namespace OpenWifi {
 
     void VenueCoordinator::ModifyBoard(const std::string &id) {
 
+        AnalyticsObjects::BoardInfo B;
+        if(StorageService()->BoardsDB().GetRecord("id",id,B)) {
+            std::vector<uint64_t>   Devices;
+            if(GetDevicesForBoard(B,Devices)) {
+
+                auto it = ExistingBoards_.find(id);
+                if(it!=ExistingBoards_.end()) {
+                    if(it->second!=Devices) {
+                        auto it2 = Watchers_.find(id);
+                        if(it2!=Watchers_.end())
+                            it2->second->ModifySerialNumbers(Devices);
+                        ExistingBoards_[id] = Devices;
+                        Logger().information(Poco::format("Modified board %s",B.info.name));
+                    } else {
+                        Logger().information(Poco::format("No device changes in board %s",B.info.name));
+                    }
+                }
+                Logger().information(Poco::format("Modified board %s",B.info.name));
+                return;
+            }
+            Logger().information(Poco::format("Could not start board %s",B.info.name));
+        }
     }
 
     void VenueCoordinator::AddBoard(const std::string &id) {
