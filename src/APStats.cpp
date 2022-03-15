@@ -110,9 +110,9 @@ namespace OpenWifi {
     void AP::UpdateConnection(const std::shared_ptr<nlohmann::json> &Connection) {
         DI_.pings++;
         DI_.lastContact = OpenWifi::Now();
-        std::cout << "Connection update for MAC: " << Utils::IntToSerialNumber(mac_) << std::endl;
-        std::cout << *Connection << std::endl;
+//        std::cout << *Connection << std::endl;
         if (Connection->contains("ping")) {
+            std::cout << Utils::IntToSerialNumber(mac_) << ": ping" << std::endl;
             DI_.connected = true;
             DI_.lastPing = OpenWifi::Now();
             auto ping = (*Connection)["ping"];
@@ -132,10 +132,12 @@ namespace OpenWifi {
                 DI_.lastConnection = ping["timestamp"];
             }
         } else if (Connection->contains("disconnection")) {
+            std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
             auto Disconnection = (*Connection)["disconnection"];
             DI_.lastDisconnection = Disconnection["timestamp"];
             DI_.connected = false;
         } else if (Connection->contains("capabilities")) {
+            std::cout << Utils::IntToSerialNumber(mac_) << ": connection" << std::endl;
             DI_.connected = true;
             DI_.lastConnection = OpenWifi::Now();
             auto ConnectionData = (*Connection)["capabilities"];
