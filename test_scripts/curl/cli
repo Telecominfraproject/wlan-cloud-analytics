@@ -222,6 +222,13 @@ createboard() {
     jq < ${result_file}
 }
 
+deleteboard() {
+    curl ${FLAGS} -X DELETE "https://${OWANALYTICS}/api/v1/board/$1" \
+    -H  "accept: application/json" \
+    -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
 listboards() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/boards" \
     -H "accept: application/json" \
@@ -249,6 +256,7 @@ case "$1" in
     "createboard") login; createboard $2 ; logout ;;
     "systeminfo") login; systeminfo ; logout;;
     "boarddevices") login; boarddevices $2 ; logout ;;
+    "deleteboard") login; deleteboard $2; logout ;;
     *) help ;;
 esac
 

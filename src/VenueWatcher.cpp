@@ -27,6 +27,8 @@ namespace OpenWifi {
         Running_ = false;
         Queue_.wakeUpAll();
         Worker_.join();
+        for(const auto &i:SerialNumbers_)
+            StateReceiver()->DeRegister(i,this);
         DeviceStatusReceiver()->DeRegister(this);
         HealthReceiver()->DeRegister(this);
     }
