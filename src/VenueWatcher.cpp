@@ -5,6 +5,7 @@
 #include "VenueWatcher.h"
 #include "StateReceiver.h"
 #include "DeviceStatusReceiver.h"
+#include "HealthReceiver.h"
 
 namespace OpenWifi {
 
@@ -13,11 +14,13 @@ namespace OpenWifi {
             StateReceiver()->Register(i,this);
 
         DeviceStatusReceiver()->Register(SerialNumbers_,this);
+        HealthReceiver()->Register(SerialNumbers_,this);
         Worker_.start(*this);
     }
 
     void VenueWatcher::Stop() {
         DeviceStatusReceiver()->DeRegister(this);
+        HealthReceiver()->DeRegister(this);
         Running_ = false;
         Queue_.wakeUpAll();
         Worker_.join();
