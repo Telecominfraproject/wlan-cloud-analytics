@@ -44,21 +44,30 @@ namespace OpenWifi {
                     auto ssids = interface["ssids"];
                     auto uptime = interface["uptime"];
                     for (const auto &ssid: ssids) {
-                        auto radio = ssid["radio"]["$ref"];
-                        auto radio_parts = Poco::StringTokenizer(radio, "/");
-                        auto radio_location = std::atoi(radio_parts[2].c_str());
+                        uint radio_location = 2;
+                        if(ssid.contains("radio")) {
+                            auto radio = ssid["radio"];
+                            if(radio.contains("$ref")) {
+                                auto ref = radio["$ref"];
+                                auto radio_parts = Poco::StringTokenizer(ref, "/");
+                                radio_location = std::atoi(radio_parts[2].c_str());
+                            }
+                        }
                         auto bssid = ssid["bssid"];
                         auto mode = ssid["mode"];
                         auto ssid_name = ssid["ssid"];
                         if (ssid.contains("associations")) {
                             auto associations = ssid["associations"];
-                            auto the_radio = radio_band.find(radio_location)->second;
-                            if(the_radio==2)
-                                DI_.associations_2g += associations.size();
-                            else if(the_radio==5)
-                                DI_.associations_5g += associations.size();
-                            else if(the_radio==6)
-                                DI_.associations_6g += associations.size();
+                            auto it = radio_band.find(radio_location);
+                            if(it!=radio_band.end()) {
+                                auto the_radio = it->second;
+                                if (the_radio == 2)
+                                    DI_.associations_2g += associations.size();
+                                else if (the_radio == 5)
+                                    DI_.associations_5g += associations.size();
+                                else if (the_radio == 6)
+                                    DI_.associations_6g += associations.size();
+                            }
                             for(const auto &association:associations) {
                                 std::string association_bssid = association.contains("bssid") ? association["bssid"] : "";
                                 std::string station = association.contains("station") ? association["station"] : "";
