@@ -60,18 +60,18 @@ namespace OpenWifi {
                             else if(the_radio==6)
                                 DI_.associations_6g += associations.size();
                             for(const auto &association:associations) {
-                                auto association_bssid = association["bssid"];
-                                auto station = association["station"];
-                                auto rssi = association["rssi"].get<uint32_t>();
-                                auto tx_bytes = association["tx_bytes"].get<uint64_t>();
-                                auto rx_bytes = association["rx_bytes"].get<uint64_t>();
-                                auto tx_duration = association["tx_duration"].get<uint64_t>();
-                                auto rx_packets = association["rx_packets"].get<uint64_t>();
-                                auto tx_packets = association["tx_packets"].get<uint64_t>();
-                                auto tx_retries = association["tx_retries"].get<uint64_t>();
-                                auto tx_failed = association["tx_failed"].get<uint64_t>();
-                                auto connected = association["connected"].get<uint64_t>();
-                                auto inactive = association["inactive"].get<uint64_t>();
+                                std::string association_bssid = association.contains("bssid") ? association["bssid"] : "";
+                                std::string station = association.contains("station") ? association["station"] : "";
+                                int64_t rssi = association.contains("rssi") ? association["rssi"].get<int64_t>() : 0;
+                                uint64_t tx_bytes = association.contains("tx_bytes") ? association["tx_bytes"].get<uint64_t>() : 0;
+                                uint64_t rx_bytes = association.contains("rx_bytes") ?  association["rx_bytes"].get<uint64_t>() : 0;
+                                uint64_t tx_duration = association.contains("tx_duration") ? association["tx_duration"].get<uint64_t>() : 0;
+                                uint64_t rx_packets = association.contains("rx_packets") ? association["rx_packets"].get<uint64_t>() : 0;
+                                uint64_t tx_packets = association.contains("tx_packets") ? association["tx_packets"].get<uint64_t>() : 0;
+                                uint64_t tx_retries = association.contains("tx_retries") ? association["tx_retries"].get<uint64_t>() : 0;
+                                uint64_t tx_failed = association.contains("tx_failed") ? association["tx_failed"].get<uint64_t>() : 0;
+                                uint64_t connected = association.contains("connected") ? association["connected"].get<uint64_t>() : 0;
+                                uint64_t inactive = association.contains("inactive") ? association["inactive"].get<uint64_t>() : 0;
                             }
                         }
                     }
