@@ -9,16 +9,26 @@ namespace OpenWifi {
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
-        DI_.lastPing = DI_.lastState = OpenWifi::Now();
 
         // find radios first to get associations.
         try {
+
+            DI_.lastState = (*State)["unit"]["localtime"];
+
             auto radios = (*State)["radios"];
             uint radio_index=0;
             std::map<uint,uint> radio_band;
             for(const auto &radio:radios) {
                 if(radio.contains("channel")) {
                     radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
+                    auto active_ms = radio["active_ms"].get<uint64_t>();
+                    auto busy_ms = radio["busy_ms"].get<uint64_t>();
+                    auto receive_ms = radio["receive_ms"].get<uint64_t>();
+                    auto transmit_ms = radio["transmit_ms"].get<uint64_t>();
+                    auto tx_power = radio["tx_power"].get<uint64_t>();
+                    auto temperature = radio["temperature"].get<uint64_t>();
+                    auto channel = radio["channel"].get<uint64_t>();
+                    auto noise = radio["noise"].get<uint64_t>();
                 }
             }
 
@@ -26,12 +36,20 @@ namespace OpenWifi {
             auto interfaces = (*State)["interfaces"];
             DI_.associations_2g = DI_.associations_5g = DI_.associations_6g = 0;
             for(const auto &interface:interfaces) {
+                if(interface.contains("counters")) {
+                    auto counters = interface["counters"];
+
+                }
                 if(interface.contains("ssids")) {
                     auto ssids = interface["ssids"];
+                    auto uptime = interface["uptime"];
                     for (const auto &ssid: ssids) {
                         auto radio = ssid["radio"]["$ref"];
                         auto radio_parts = Poco::StringTokenizer(radio, "/");
                         auto radio_location = std::atoi(radio_parts[2].c_str());
+                        auto bssid = ssid["bssid"];
+                        auto mode = ssid["mode"];
+                        auto ssid_name = ssid["ssid"];
                         if (ssid.contains("associations")) {
                             auto associations = ssid["associations"];
                             auto the_radio = radio_band.find(radio_location)->second;
@@ -42,6 +60,18 @@ namespace OpenWifi {
                             else if(the_radio==6)
                                 DI_.associations_6g += associations.size();
                             for(const auto &association:associations) {
+                                auto association_bssid = association["bssid"];
+                                auto station = association["station"];
+                                auto rssi = association["rssi"].get<uint32_t>();
+                                auto tx_bytes = association["tx_bytes"].get<uint64_t>();
+                                auto rx_bytes = association["rx_bytes"].get<uint64_t>();
+                                auto tx_duration = association["tx_duration"].get<uint64_t>();
+                                auto rx_packets = association["rx_packets"].get<uint64_t>();
+                                auto tx_packets = association["tx_packets"].get<uint64_t>();
+                                auto tx_retries = association["tx_retries"].get<uint64_t>();
+                                auto tx_failed = association["tx_failed"].get<uint64_t>();
+                                auto connected = association["connected"].get<uint64_t>();
+                                auto inactive = association["inactive"].get<uint64_t>();
                             }
                         }
                     }
