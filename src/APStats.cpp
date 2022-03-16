@@ -33,15 +33,15 @@ namespace OpenWifi {
                     uint64_t active_ms, busy_ms, receive_ms, transmit_ms, tx_power, channel;
                     int64_t temperature, noise;
 
-                    GetJSON("busy_ms",radio,busy_ms, 0ULL);
-                    GetJSON("receive_ms",radio,receive_ms, 0ULL);
-                    GetJSON("transmit_ms",radio,transmit_ms, 0ULL);
-                    GetJSON("active_ms",radio,active_ms, 0ULL);
-                    GetJSON("tx_power",radio,tx_power, 0ULL);
-                    GetJSON("active_ms",radio,active_ms, 0ULL);
-                    GetJSON("channel",radio,channel, 0ULL);
-                    GetJSON("temperature",radio,temperature, 0LL);
-                    GetJSON("noise",radio,noise, 0LL);
+                    GetJSON("busy_ms",radio,busy_ms, (uint64_t)0 );
+                    GetJSON("receive_ms",radio,receive_ms, (uint64_t)0);
+                    GetJSON("transmit_ms",radio,transmit_ms, (uint64_t)0);
+                    GetJSON("active_ms",radio,active_ms, (uint64_t)0);
+                    GetJSON("tx_power",radio,tx_power, (uint64_t)0);
+                    GetJSON("active_ms",radio,active_ms, (uint64_t)0);
+                    GetJSON("channel",radio,channel, (uint64_t)0);
+                    GetJSON("temperature",radio,temperature, (int64_t)0);
+                    GetJSON("noise",radio,noise, (int64_t)0);
                 }
             }
 
