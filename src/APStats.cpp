@@ -53,9 +53,9 @@ namespace OpenWifi {
                                 radio_location = std::atoi(radio_parts[2].c_str());
                             }
                         }
-                        auto bssid = ssid["bssid"];
-                        auto mode = ssid["mode"];
-                        auto ssid_name = ssid["ssid"];
+                        auto bssid = ssid.contains("bssid") ? ssid["bssid"] : "";
+                        auto mode = ssid.contains("mode") ? ssid["mode"] : "";
+                        auto ssid_name = ssid.contains("ssid") ? ssid["ssid"] : "";
                         if (ssid.contains("associations")) {
                             auto associations = ssid["associations"];
                             auto it = radio_band.find(radio_location);
@@ -146,7 +146,8 @@ namespace OpenWifi {
                 }
             }
         } catch (...) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": connection failed parsing." << std::endl;
+            std::cout << Utils::IntToSerialNumber(mac_) << ": connection failed parsing." ;
+            std::cout << *Connection << std::endl;
         }
     }
 
