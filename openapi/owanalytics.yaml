@@ -214,6 +214,8 @@ components:
         associations_6g:
           type: integer
           format: int64
+        locale:
+          type: string
 
     DeviceInfoList:
       type: object

@@ -78,6 +78,9 @@ namespace OpenWifi {
                 if (ping.contains("timestamp")) {
                     DI_.lastConnection = ping["timestamp"];
                 }
+                if (ping.contains("locale")) {
+                    DI_.lastConnection = ping["locale"];
+                }
             } else if (Connection->contains("disconnection")) {
                 std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
                 auto Disconnection = (*Connection)["disconnection"];
@@ -97,6 +100,9 @@ namespace OpenWifi {
                 }
                 if (ConnectionData.contains("connectionIp")) {
                     DI_.connectionIp = ConnectionData["connectionIp"];
+                }
+                if (ConnectionData.contains("locale")) {
+                    DI_.lastConnection = ConnectionData["locale"];
                 }
             }
         } catch (...) {
