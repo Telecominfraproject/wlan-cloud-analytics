@@ -126,7 +126,7 @@ namespace OpenWifi {
                 GetJSON("compatible", ping, DI_.deviceType, std::string{} );
                 GetJSON("connectionIp", ping, DI_.connectionIp, std::string{} );
                 GetJSON("locale", ping, DI_.locale, std::string{} );
-                GetJSON("timestamp", ping, DI_.lastConnection, 0ULL );
+                GetJSON("timestamp", ping, DI_.lastConnection, (uint64_t)0 );
                 if (ping.contains("firmware")) {
                     auto NewFirmware = ping["firmware"];
                     if (NewFirmware != DI_.lastFirmware) {
