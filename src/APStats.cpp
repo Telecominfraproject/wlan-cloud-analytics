@@ -6,6 +6,14 @@
 
 namespace OpenWifi {
 
+    template <typename T> void GetJSON(const char *field, const nlohmann::json & doc, T & v , const T & def ) {
+        if(doc.contains(field) && !doc[field].is_null()) {
+            v = doc[field].get<T>();
+        } else {
+            v = def;
+        }
+    }
+
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
@@ -21,16 +29,19 @@ namespace OpenWifi {
             for(const auto &radio:radios) {
                 if(radio.contains("channel")) {
                     radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
-                    uint64_t active_ms = radio.contains("active_ms") ? radio["active_ms"].get<uint64_t>() : 0;
-                    uint64_t busy_ms = radio.contains("busy_ms") ? radio["busy_ms"].get<uint64_t>() : 0;
-                    uint64_t receive_ms = radio.contains("receive_ms") ? radio["receive_ms"].get<uint64_t>() : 0;
-                    uint64_t transmit_ms = radio.contains("transmit_ms") ? radio["transmit_ms"].get<uint64_t>() : 0;
-                    uint64_t tx_power = 0;
-                    if(radio.contains("tx_power") && !radio["tx_power"].is_null())
-                        tx_power = radio["tx_power"].get<uint64_t>();
-                    int64_t temperature = radio.contains("temperature") ? radio["temperature"].get<int64_t>() : 0;
-                    uint64_t channel = radio.contains("channel") ? radio["channel"].get<uint64_t>() : 0;
-                    int64_t noise = radio.contains("noise") ? radio["noise"].get<int64_t>() : 0;
+                    // uint64_t active_ms = radio.contains("active_ms") ? radio["active_ms"].get<uint64_t>() : 0;
+                    uint64_t active_ms, busy_ms, receive_ms, transmit_ms, tx_power, channel;
+                    int64_t temperature, noise;
+
+                    GetJSON("busy_ms",radio,busy_ms, 0ULL);
+                    GetJSON("receive_ms",radio,receive_ms, 0ULL);
+                    GetJSON("transmit_ms",radio,transmit_ms, 0ULL);
+                    GetJSON("active_ms",radio,active_ms, 0ULL);
+                    GetJSON("tx_power",radio,tx_power, 0ULL);
+                    GetJSON("active_ms",radio,active_ms, 0ULL);
+                    GetJSON("channel",radio,channel, 0ULL);
+                    GetJSON("temperature",radio,temperature, 0LL);
+                    GetJSON("noise",radio,noise, 0LL);
                 }
             }
 
@@ -112,23 +123,16 @@ namespace OpenWifi {
                 DI_.connected = true;
                 DI_.lastPing = OpenWifi::Now();
                 auto ping = (*Connection)["ping"];
-                if (ping.contains("compatible"))
-                    DI_.deviceType = ping["compatible"];
+                GetJSON("compatible", ping, DI_.deviceType, std::string{} );
+                GetJSON("connectionIp", ping, DI_.connectionIp, std::string{} );
+                GetJSON("locale", ping, DI_.locale, std::string{} );
+                GetJSON("timestamp", ping, DI_.lastConnection, 0ULL );
                 if (ping.contains("firmware")) {
                     auto NewFirmware = ping["firmware"];
                     if (NewFirmware != DI_.lastFirmware) {
                         DI_.lastFirmware = NewFirmware;
                         DI_.lastFirmwareUpdate = OpenWifi::Now();
                     }
-                }
-                if (ping.contains("connectionIp")) {
-                    DI_.connectionIp = ping["connectionIp"];
-                }
-                if (ping.contains("timestamp")) {
-                    DI_.lastConnection = ping["timestamp"];
-                }
-                if (ping.contains("locale")) {
-                    DI_.locale = ping["locale"];
                 }
             } else if (Connection->contains("disconnection")) {
                 std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
