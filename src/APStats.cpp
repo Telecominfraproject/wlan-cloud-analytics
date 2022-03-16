@@ -23,25 +23,26 @@ namespace OpenWifi {
 
             DI_.lastState = (*State)["unit"]["localtime"];
 
-            auto radios = (*State)["radios"];
-            uint radio_index=0;
-            std::map<uint,uint> radio_band;
-            for(const auto &radio:radios) {
-                if(radio.contains("channel")) {
-                    radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
-                    // uint64_t active_ms = radio.contains("active_ms") ? radio["active_ms"].get<uint64_t>() : 0;
-                    uint64_t active_ms, busy_ms, receive_ms, transmit_ms, tx_power, channel;
-                    int64_t temperature, noise;
+            std::map<uint, uint> radio_band;
+            if(State->contains("radios") && (*State)["radios"].is_array()) {
+                auto radios = (*State)["radios"];
+                uint radio_index = 0;
+                for (const auto &radio: radios) {
+                    if (radio.contains("channel")) {
+                        radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
+                        uint64_t active_ms, busy_ms, receive_ms, transmit_ms, tx_power, channel;
+                        int64_t temperature, noise;
 
-                    GetJSON("busy_ms",radio,busy_ms, (uint64_t)0 );
-                    GetJSON("receive_ms",radio,receive_ms, (uint64_t)0);
-                    GetJSON("transmit_ms",radio,transmit_ms, (uint64_t)0);
-                    GetJSON("active_ms",radio,active_ms, (uint64_t)0);
-                    GetJSON("tx_power",radio,tx_power, (uint64_t)0);
-                    GetJSON("active_ms",radio,active_ms, (uint64_t)0);
-                    GetJSON("channel",radio,channel, (uint64_t)0);
-                    GetJSON("temperature",radio,temperature, (int64_t)0);
-                    GetJSON("noise",radio,noise, (int64_t)0);
+                        GetJSON("busy_ms", radio, busy_ms, (uint64_t) 0);
+                        GetJSON("receive_ms", radio, receive_ms, (uint64_t) 0);
+                        GetJSON("transmit_ms", radio, transmit_ms, (uint64_t) 0);
+                        GetJSON("active_ms", radio, active_ms, (uint64_t) 0);
+                        GetJSON("tx_power", radio, tx_power, (uint64_t) 0);
+                        GetJSON("active_ms", radio, active_ms, (uint64_t) 0);
+                        GetJSON("channel", radio, channel, (uint64_t) 0);
+                        GetJSON("temperature", radio, temperature, (int64_t) 0);
+                        GetJSON("noise", radio, noise, (int64_t) 0);
+                    }
                 }
             }
 
@@ -66,10 +67,11 @@ namespace OpenWifi {
                                 radio_location = std::atoi(radio_parts[2].c_str());
                             }
                         }
-                        auto bssid = ssid.contains("bssid") ? ssid["bssid"] : "";
-                        auto mode = ssid.contains("mode") ? ssid["mode"] : "";
-                        auto ssid_name = ssid.contains("ssid") ? ssid["ssid"] : "";
-                        if (ssid.contains("associations")) {
+                        std::string bssid, mode, ssid_name;
+                        GetJSON("bssid",ssid,bssid, std::string{""} );
+                        GetJSON("mode",ssid,mode, std::string{""} );
+                        GetJSON("ssid",ssid,ssid_name, std::string{""} );
+                        if (ssid.contains("associations") && ssid["associations"].is_array()) {
                             auto associations = ssid["associations"];
                             auto it = radio_band.find(radio_location);
                             if(it!=radio_band.end()) {
@@ -82,18 +84,25 @@ namespace OpenWifi {
                                     DI_.associations_6g += associations.size();
                             }
                             for(const auto &association:associations) {
-                                std::string association_bssid = association.contains("bssid") ? association["bssid"] : "";
-                                std::string station = association.contains("station") ? association["station"] : "";
-                                int64_t rssi = association.contains("rssi") ? association["rssi"].get<int64_t>() : 0;
-                                uint64_t tx_bytes = association.contains("tx_bytes") ? association["tx_bytes"].get<uint64_t>() : 0;
-                                uint64_t rx_bytes = association.contains("rx_bytes") ?  association["rx_bytes"].get<uint64_t>() : 0;
-                                uint64_t tx_duration = association.contains("tx_duration") ? association["tx_duration"].get<uint64_t>() : 0;
-                                uint64_t rx_packets = association.contains("rx_packets") ? association["rx_packets"].get<uint64_t>() : 0;
-                                uint64_t tx_packets = association.contains("tx_packets") ? association["tx_packets"].get<uint64_t>() : 0;
-                                uint64_t tx_retries = association.contains("tx_retries") ? association["tx_retries"].get<uint64_t>() : 0;
-                                uint64_t tx_failed = association.contains("tx_failed") ? association["tx_failed"].get<uint64_t>() : 0;
-                                uint64_t connected = association.contains("connected") ? association["connected"].get<uint64_t>() : 0;
-                                uint64_t inactive = association.contains("inactive") ? association["inactive"].get<uint64_t>() : 0;
+                                std::string association_bssid,station;
+                                GetJSON("bssid",association,association_bssid, std::string{""} );
+                                GetJSON("station",association,station, std::string{} );
+
+                                int64_t rssi;
+                                GetJSON("rssi",association,rssi, (int64_t)0 );
+
+                                uint64_t tx_bytes, rx_bytes, tx_duration, rx_packets, tx_packets, tx_retries, tx_failed,
+                                        connected,inactive;
+
+                                GetJSON("tx_bytes",association,tx_bytes, (uint64_t)0 );
+                                GetJSON("rx_bytes",association,rx_bytes, (uint64_t)0 );
+                                GetJSON("tx_duration",association,tx_duration, (uint64_t)0 );
+                                GetJSON("rx_packets",association,rx_packets, (uint64_t)0 );
+                                GetJSON("tx_packets",association,tx_packets, (uint64_t)0 );
+                                GetJSON("tx_retries",association,tx_retries, (uint64_t)0 );
+                                GetJSON("tx_failed",association,tx_failed, (uint64_t)0 );
+                                GetJSON("connected",association,connected, (uint64_t)0 );
+                                GetJSON("inactive",association,inactive, (uint64_t)0 );
                             }
                         }
                     }
@@ -137,7 +146,7 @@ namespace OpenWifi {
             } else if (Connection->contains("disconnection")) {
                 std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
                 auto Disconnection = (*Connection)["disconnection"];
-                DI_.lastDisconnection = Disconnection["timestamp"];
+                GetJSON("timestamp", Disconnection, DI_.lastDisconnection, (uint64_t)0 );
                 DI_.connected = false;
             } else if (Connection->contains("capabilities")) {
                 std::cout << Utils::IntToSerialNumber(mac_) << ": connection" << std::endl;
@@ -151,12 +160,8 @@ namespace OpenWifi {
                         DI_.lastFirmwareUpdate = OpenWifi::Now();
                     }
                 }
-                if (ConnectionData.contains("connectionIp")) {
-                    DI_.connectionIp = ConnectionData["connectionIp"];
-                }
-                if (ConnectionData.contains("locale")) {
-                    DI_.locale = ConnectionData["locale"];
-                }
+                GetJSON("connectionIp", ConnectionData, DI_.connectionIp, std::string{} );
+                GetJSON("locale", ConnectionData, DI_.locale, std::string{} );
             }
         } catch (...) {
             std::cout << Utils::IntToSerialNumber(mac_) << ": connection failed parsing." ;
@@ -166,8 +171,8 @@ namespace OpenWifi {
 
     void AP::UpdateHealth(const std::shared_ptr<nlohmann::json> & Health) {
         try {
-            DI_.health = (*Health)["sanity"];
-            DI_.lastHealth = (*Health)["timestamp"];
+            GetJSON("timestamp", *Health, DI_.lastHealth, (uint64_t)0 );
+            GetJSON("sanity", *Health, DI_.health, (uint64_t)0 );
             std::cout << Utils::IntToSerialNumber(mac_) << ": health " << DI_.health << std::endl;
         } catch(...) {
             std::cout << Utils::IntToSerialNumber(mac_) << ": health failed parsing." << std::endl;
