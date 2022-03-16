@@ -21,14 +21,14 @@ namespace OpenWifi {
             for(const auto &radio:radios) {
                 if(radio.contains("channel")) {
                     radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
-                    auto active_ms = radio["active_ms"].get<uint64_t>();
-                    auto busy_ms = radio["busy_ms"].get<uint64_t>();
-                    auto receive_ms = radio["receive_ms"].get<uint64_t>();
-                    auto transmit_ms = radio["transmit_ms"].get<uint64_t>();
-                    auto tx_power = radio["tx_power"].get<uint64_t>();
-                    auto temperature = radio["temperature"].get<uint64_t>();
-                    auto channel = radio["channel"].get<uint64_t>();
-                    auto noise = radio["noise"].get<uint64_t>();
+                    uint64_t active_ms = radio.contains("active_ms") ? radio["active_ms"].get<uint64_t>() : 0;
+                    uint64_t busy_ms = radio.contains("busy_ms") ? radio["busy_ms"].get<uint64_t>() : 0;
+                    uint64_t receive_ms = radio.contains("receive_ms") ? radio["receive_ms"].get<uint64_t>() : 0;
+                    uint64_t transmit_ms = radio.contains("transmit_ms") ? radio["transmit_ms"].get<uint64_t>() : 0;
+                    uint64_t tx_power = radio.contains("tx_power") ? radio["tx_power"].get<uint64_t>() : 0;
+                    int64_t temperature = radio.contains("temperature") ? radio["temperature"].get<int64_t>() : 0;
+                    uint64_t channel = radio.contains("channel") ? radio["channel"].get<uint64_t>() : 0;
+                    int64_t noise = radio.contains("noise") ? radio["noise"].get<int64_t>() : 0;
                 }
             }
 
