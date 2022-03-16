@@ -52,8 +52,20 @@ namespace OpenWifi {
             for(const auto &interface:interfaces) {
                 if(interface.contains("counters")) {
                     auto counters = interface["counters"];
-
+                    uint64_t collisions,multicast,rx_bytes,rx_dropped,rx_errors,rx_packets,tx_bytes,
+                            tx_dropped,tx_errors,tx_packets;
+                    GetJSON("collisions", counters, collisions, (uint64_t) 0);
+                    GetJSON("multicast", counters, multicast, (uint64_t) 0);
+                    GetJSON("rx_bytes", counters, rx_bytes, (uint64_t) 0);
+                    GetJSON("rx_dropped", counters, rx_dropped, (uint64_t) 0);
+                    GetJSON("rx_errors", counters, rx_errors, (uint64_t) 0);
+                    GetJSON("rx_packets", counters, rx_packets, (uint64_t) 0);
+                    GetJSON("tx_bytes", counters, tx_bytes, (uint64_t) 0);
+                    GetJSON("tx_dropped", counters, tx_dropped, (uint64_t) 0);
+                    GetJSON("tx_errors", counters, tx_errors, (uint64_t) 0);
+                    GetJSON("tx_packets", counters, tx_packets, (uint64_t) 0);
                 }
+
                 if(interface.contains("ssids")) {
                     uint64_t uptime = interface.contains("uptime") ? interface["uptime"].get<uint64_t>() : 0;
                     auto ssids = interface["ssids"];
@@ -64,7 +76,8 @@ namespace OpenWifi {
                             if(radio.contains("$ref")) {
                                 auto ref = radio["$ref"];
                                 auto radio_parts = Poco::StringTokenizer(ref, "/");
-                                radio_location = std::atoi(radio_parts[2].c_str());
+                                if(radio_parts.count()==3)
+                                    radio_location = std::atoi(radio_parts[2].c_str());
                             }
                         }
                         std::string bssid, mode, ssid_name;
