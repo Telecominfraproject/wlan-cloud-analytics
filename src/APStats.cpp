@@ -25,7 +25,9 @@ namespace OpenWifi {
                     uint64_t busy_ms = radio.contains("busy_ms") ? radio["busy_ms"].get<uint64_t>() : 0;
                     uint64_t receive_ms = radio.contains("receive_ms") ? radio["receive_ms"].get<uint64_t>() : 0;
                     uint64_t transmit_ms = radio.contains("transmit_ms") ? radio["transmit_ms"].get<uint64_t>() : 0;
-                    uint64_t tx_power = radio.contains("tx_power") ? radio["tx_power"].get<uint64_t>() : 0;
+                    uint64_t tx_power = 0;
+                    if(radio.contains("tx_power") && !radio["tx_power"].is_null())
+                        tx_power = radio["tx_power"].get<uint64_t>();
                     int64_t temperature = radio.contains("temperature") ? radio["temperature"].get<int64_t>() : 0;
                     uint64_t channel = radio.contains("channel") ? radio["channel"].get<uint64_t>() : 0;
                     int64_t noise = radio.contains("noise") ? radio["noise"].get<int64_t>() : 0;
@@ -41,8 +43,8 @@ namespace OpenWifi {
 
                 }
                 if(interface.contains("ssids")) {
+                    uint64_t uptime = interface.contains("uptime") ? interface["uptime"].get<uint64_t>() : 0;
                     auto ssids = interface["ssids"];
-                    auto uptime = interface["uptime"];
                     for (const auto &ssid: ssids) {
                         uint radio_location = 2;
                         if(ssid.contains("radio")) {
@@ -94,6 +96,13 @@ namespace OpenWifi {
         }
     }
 
+
+    /*
+{"ping":{"compatible":"edgecore_eap101","connectionIp":"903cb3b16e92@24.84.172.236:49620","firmware":"OpenWrt 21.02-SNAPSHOT r16399+116-c67509efd7 / TIP-devel-a0880ed","locale":"CA","serialNumber":"903cb3b16e92","timestamp":1647412525}}
+
+     */
+
+
     void AP::UpdateConnection(const std::shared_ptr<nlohmann::json> &Connection) {
         DI_.pings++;
         DI_.lastContact = OpenWifi::Now();
@@ -119,7 +128,7 @@ namespace OpenWifi {
                     DI_.lastConnection = ping["timestamp"];
                 }
                 if (ping.contains("locale")) {
-                    DI_.lastConnection = ping["locale"];
+                    DI_.locale = ping["locale"];
                 }
             } else if (Connection->contains("disconnection")) {
                 std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
@@ -142,7 +151,7 @@ namespace OpenWifi {
                     DI_.connectionIp = ConnectionData["connectionIp"];
                 }
                 if (ConnectionData.contains("locale")) {
-                    DI_.lastConnection = ConnectionData["locale"];
+                    DI_.locale = ConnectionData["locale"];
                 }
             }
         } catch (...) {
