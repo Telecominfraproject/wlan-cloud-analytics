@@ -53,7 +53,7 @@ namespace OpenWifi {
     class AP {
     public:
         explicit AP(uint64_t mac) : mac_(mac) {
-
+            DI_.serialNumber = Utils::IntToSerialNumber(mac);
         }
 
         void UpdateStats(const std::shared_ptr<nlohmann::json> & State);
