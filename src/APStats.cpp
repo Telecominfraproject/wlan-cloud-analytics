@@ -21,7 +21,22 @@ namespace OpenWifi {
         // find radios first to get associations.
         try {
 
-            DI_.lastState = (*State)["unit"]["localtime"];
+            if(State->contains("unit")) {
+                auto unit = (*State)["unit"];
+                GetJSON("localtime", unit, DI_.lastState, (uint64_t) 0);
+                GetJSON("uptime", unit, DI_.uptime, (uint64_t) 0);
+                if(unit.contains("memory")) {
+                    auto memory = unit["memory"];
+                    uint64_t free_mem, total_mem;
+                    GetJSON("free", memory, free_mem, (uint64_t) 0);
+                    GetJSON("total", memory, total_mem, (uint64_t) 0);
+                    if(total_mem) {
+                        DI_.memory = ((double) (total_mem - free_mem) / (double)total_mem) * 100.0;
+                    } else {
+                        DI_.memory = 0.0;
+                    }
+                }
+            }
 
             std::map<uint, uint> radio_band;
             if(State->contains("radios") && (*State)["radios"].is_array()) {

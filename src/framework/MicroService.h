@@ -280,6 +280,11 @@ namespace OpenWifi::RESTAPI_utils {
             S = Obj->get(Field).toString();
     }
 
+    inline void field_from_json(Poco::JSON::Object::Ptr Obj, const char *Field, double & V) {
+        if(Obj->has(Field))
+            V = Obj->get(Field);
+    }
+
     inline void field_from_json(Poco::JSON::Object::Ptr Obj, const char *Field, uint64_t &V) {
         if(Obj->has(Field))
             V = Obj->get(Field);

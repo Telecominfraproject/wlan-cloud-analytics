@@ -37,7 +37,7 @@ namespace OpenWifi {
 
     class UE {
     public:
-        UE(uint64_t Station):
+        explicit UE(uint64_t Station):
             Station_(Station) {
         }
 

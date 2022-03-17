@@ -68,6 +68,8 @@ namespace OpenWifi {
             uint64_t        health;
             uint64_t        lastHealth;
             std::string     locale;
+            uint64_t        uptime;
+            double          memory;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);

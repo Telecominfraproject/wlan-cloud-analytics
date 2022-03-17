@@ -79,6 +79,8 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"health",health);
         field_to_json(Obj,"lastHealth",lastHealth);
         field_to_json(Obj,"locale",locale);
+        field_to_json(Obj,"uptime",uptime);
+        field_to_json(Obj,"memory",memory);
     }
 
     bool DeviceInfo::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -104,6 +106,8 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"health",health);
             field_from_json(Obj,"lastHealth",lastHealth);
             field_from_json(Obj,"locale",locale);
+            field_from_json(Obj,"uptime",uptime);
+            field_from_json(Obj,"memory",memory);
             return true;
         } catch(...) {
 

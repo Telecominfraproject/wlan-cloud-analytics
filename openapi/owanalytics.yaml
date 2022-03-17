@@ -216,6 +216,11 @@ components:
           format: int64
         locale:
           type: string
+        memory:
+          type: number
+        uptime:
+          type: integer
+          format: int64
 
     DeviceInfoList:
       type: object
