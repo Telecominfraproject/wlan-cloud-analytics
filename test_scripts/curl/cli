@@ -236,6 +236,13 @@ listboards() {
     jq < ${result_file}
 }
 
+boardsforvenue() {
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/boards?forVenue=$1" \
+    -H "accept: application/json" \
+    -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
 boarddevices() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/devices" \
     -H "accept: application/json" \
@@ -257,6 +264,7 @@ case "$1" in
     "systeminfo") login; systeminfo ; logout;;
     "boarddevices") login; boarddevices $2 ; logout ;;
     "deleteboard") login; deleteboard $2; logout ;;
+    "boardsforvenue") login; boardsforvenue $2; logout;;
     *) help ;;
 esac
 

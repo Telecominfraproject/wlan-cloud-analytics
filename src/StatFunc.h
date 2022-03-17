@@ -11,13 +11,13 @@ namespace OpenWifi {
     class RelativeCounter {
     public:
         explicit RelativeCounter(uint64_t iv) {
-            inited = iv;
+            inited = true;
             LastValue = iv;
         }
 
         RelativeCounter() = default;
 
-        inline uint64_t set(uint64_t v) {
+        [[nodiscard]] inline uint64_t set(uint64_t v) {
             if(!inited) {
                 inited=true;
                 LastValue=v;

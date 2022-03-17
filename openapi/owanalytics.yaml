@@ -452,7 +452,13 @@ paths:
           schema:
             type: boolean
           required: false
-
+        - in: query
+          description: list of boards for a given venue
+          name: forVenue
+          schema:
+            type: string
+            format: uuid
+          required: false
       responses:
         200:
           description: Return a list of boards
