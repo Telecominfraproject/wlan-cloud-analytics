@@ -116,23 +116,15 @@ namespace OpenWifi {
                                     radio_location = std::atoi(radio_parts[2].c_str());
                             }
                         }
-                        std::cout << __LINE__ << std::endl;
                         std::string bssid, mode, ssid_name;
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("bssid",ssid,bssid, std::string{""});
                         SSIDTP.bssid = Utils::MACToInt(bssid);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("mode",ssid,mode, std::string{""} );
                         SSIDTP.mode = SSID_Mode(mode);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("ssid",ssid,ssid_name, std::string{""} );
-                        std::cout << __LINE__ << std::endl;
-                        SSIDTP.ssid = AllSSIDs()->Add(ssid_name);
-                        std::cout << __LINE__ << std::endl;
+                        SSIDTP.ssid = SSID_DICT()->Add(ssid_name);
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
-                            std::cout << __LINE__ << std::endl;
                             auto associations = ssid["associations"];
-                            std::cout << __LINE__ << std::endl;
                             auto it = radio_band.find(radio_location);
                             if(it!=radio_band.end()) {
                                 auto the_radio = it->second;
@@ -143,18 +135,13 @@ namespace OpenWifi {
                                 else if (the_radio == 6)
                                     DI_.associations_6g += associations.size();
                             }
-                            std::cout << __LINE__ << std::endl;
                             for(const auto &association:associations) {
                                 UETimePoint TP;
                                 std::string association_bssid,station;
-                                std::cout << __LINE__ << std::endl;
                                 GetJSON("bssid",association,association_bssid, std::string{""} );
-                                std::cout << __LINE__ << std::endl;
                                 GetJSON("station",association,station, std::string{} );
-                                std::cout << __LINE__ << std::endl;
                                 TP.association_bssid = Utils::MACToInt(association_bssid);
                                 TP.station = Utils::MACToInt(station);
-                                std::cout << __LINE__ << std::endl;
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
                                 GetJSON("tx_bytes",association,TP.tx_bytes, (uint64_t)0 );
                                 GetJSON("rx_bytes",association,TP.rx_bytes, (uint64_t)0 );
@@ -166,28 +153,17 @@ namespace OpenWifi {
                                 GetJSON("connected",association,TP.connected, (uint64_t)0 );
                                 GetJSON("inactive",association,TP.inactive, (uint64_t)0 );
 
-                                std::cout << __LINE__ << std::endl;
                                 if(association.contains("msdu") && association["msdu"].is_array()) {
-                                    std::cout << __LINE__ << std::endl;
                                     auto msdus = association["msdu"];
-                                    std::cout << __LINE__ << std::endl;
                                     for(const auto &msdu:msdus) {
-                                        std::cout << __LINE__ << std::endl;
                                         msdu_entry  E;
-                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("rx_msdu",msdu,E.rx_msdu, (uint64_t)0 );
-                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("tx_msdu",msdu,E.tx_msdu, (uint64_t)0 );
-                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("tx_msdu_failed",msdu,E.tx_msdu_failed, (uint64_t)0 );
-                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("tx_msdu_retries",msdu,E.tx_msdu_retries, (uint64_t)0 );
-                                        std::cout << __LINE__ << std::endl;
                                         TP.msdus.push_back(E);
-                                        std::cout << __LINE__ << std::endl;
                                     }
                                 }
-                                std::cout << __LINE__ << std::endl;
 
                                 SSIDTP.associations.push_back(TP);
                             }
