@@ -6,6 +6,8 @@ namespace OpenWifi {
 
     class SSID_DICT {
     public:
+        SSID_DICT() = default;
+
         static auto instance() {
             static auto instance_ = new SSID_DICT;
             return instance_;
