@@ -21,33 +21,86 @@ namespace OpenWifi {
         band_2g=0, band_5g=1, band_6g=2
     };
 
-    struct AP_Point {
-        uint32_t    rx_bytes=0, tx_bytes=0;
-        uint32_t    rx_pkts=0,tx_pkts=0;
-        u_char      bands[4];
+    struct UETimePoint {
+        uint64_t    association_bssid=0,station=0;
+        int64_t     rssi=0;
+        uint64_t    tx_bytes=0,
+                    rx_bytes=0,
+                    tx_duration=0,
+                    rx_packets=0,
+                    tx_packets=0,
+                    tx_retries=0,
+                    tx_failed=0,
+                    connected=0,
+                    inactive=0;
     };
 
-    struct UE_Point {
-        uint32_t    bssid_index;
-        int8_t      rssi;
-        uint32_t    rx_bytes,tx_bytes;
-        uint16_t    tx_retries;
-        wifi_band   band;
+    enum SSID_MODES {
+        unknown=0,
+        ap,
+        mesh,
+        sta,
+        wds_ap,
+        wds_sta,
+        wds_repeater
     };
 
-    class UE {
-    public:
-        explicit UE(uint64_t Station):
-            Station_(Station) {
-        }
+    inline SSID_MODES SSID_Mode(const std::string &m) {
+        if(m=="ap")
+            return ap;
+        if(m=="sta")
+            return sta;
+        if(m=="mesh")
+            return mesh;
+        if(m=="wds-ap")
+            return wds_ap;
+        if(m=="wds-sta")
+            return wds_sta;
+        if(m=="wds-repeater")
+            return wds_repeater;
+        return unknown;
+    }
 
-    private:
-        uint64_t    last_contact_=0;
-        uint64_t    Station_=0;
-        uint64_t    Start_=std::time(nullptr);
-        uint64_t    Current_BSSID_=0;
-        uint32_t    Current_BSSID_index_=0;
-        std::array<UE_Point,ue_buffer_size> Data_;
+    struct SSIDTimePoint {
+        uint64_t                    bssid=0,
+                                    mode=0,
+                                    ssid=0;
+        std::vector<UETimePoint>    associations;
+    };
+
+
+    struct APTimePoint {
+        uint64_t    collisions=0,
+                    multicast=0,
+                    rx_bytes=0,
+                    rx_dropped=0,
+                    rx_errors=0,
+                    rx_packets=0,
+                    tx_bytes=0,
+                    tx_dropped=0,
+                    tx_errors=0,
+                    tx_packets=0;
+    };
+
+    struct RadioTimePoint {
+        uint        band=0,
+                    radio_channel=0;
+        uint64_t    active_ms=0,
+                    busy_ms=0,
+                    receive_ms=0,
+                    transmit_ms=0,
+                    tx_power=0,
+                    channel=0;
+        int64_t     temperature=0,
+                    noise=0;
+    };
+
+
+    struct DeviceTimePoint {
+        uint64_t                    timestamp=0;
+        APTimePoint                 ap_data;
+        std::vector<SSIDTimePoint>  ssid_data;
+        std::vector<RadioTimePoint> radio_data;
     };
 
     class AP {
@@ -64,6 +117,6 @@ namespace OpenWifi {
     private:
         uint64_t                        mac_=0;
         AnalyticsObjects::DeviceInfo    DI_;
-        std::array<AP_Point,ap_buffer_size> Data_;
+        std::vector<DeviceTimePoint>    DTP_;
     };
 }

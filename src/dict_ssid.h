@@ -11,12 +11,12 @@ namespace OpenWifi {
             return instance_;
         }
 
-        inline uint32_t Add(const std::string &ssid) {
+        inline uint64_t Add(const std::string &ssid) {
             std::lock_guard G(Mutex_);
             auto it = Dict_.find(ssid);
             if (it == end(Dict_)) {
                 auto Id = Index_++;
-                Dict_[station] = Id;
+                Dict_[ssid] = Id;
                 return Id;
             } else {
                 return it->second;
@@ -28,10 +28,19 @@ namespace OpenWifi {
             Dict_.erase(ssid);
         }
 
+        inline std::string Get(uint64_t ssid_id) {
+            std::lock_guard G(Mutex_);
+            for(const auto &[name,id]:Dict_) {
+                if(ssid_id==id)
+                    return name;
+            }
+            return "";
+        }
+
     private:
         std::mutex                      Mutex_;
-        uint32_t                        Index_=1;
-        std::map<std::string,uint32_t>  Dict_;
+        uint64_t                        Index_=1;
+        std::map<std::string,uint64_t>  Dict_;
     };
 
     inline auto SSID_DICT() { return SSID_DICT::instance(); }

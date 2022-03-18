@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <ostream>
 
 namespace OpenWifi {
 
@@ -17,7 +18,28 @@ namespace OpenWifi {
 
         RelativeCounter() = default;
 
-        [[nodiscard]] inline uint64_t set(uint64_t v) {
+        RelativeCounter & operator=(uint64_t v) {
+            set(v);
+            return *this;
+        }
+
+        bool operator==(uint64_t v) const {
+            return v == Value;
+        }
+        bool operator>=(uint64_t v) const {
+            return v >= Value;
+        }
+        bool operator>(uint64_t v) const {
+            return v > Value;
+        }
+        bool operator<=(uint64_t v) const {
+            return v <= Value;
+        }
+        bool operator<(uint64_t v) const {
+            return v < Value;
+        }
+
+        inline uint64_t set(uint64_t v) {
             if(!inited) {
                 inited=true;
                 LastValue=v;
@@ -39,10 +61,16 @@ namespace OpenWifi {
             return Value;
         }
 
+        friend std::ostream& operator<<(std::ostream& os, const RelativeCounter& rc);
+
     private:
         uint64_t Value = 0 ;
         bool inited = false;
         uint64_t LastValue=0;
     };
+    std::ostream & operator<<(std::ostream &os, const RelativeCounter &rc) {
+        os << rc.get() ;
+        return os;
+    }
 
 }

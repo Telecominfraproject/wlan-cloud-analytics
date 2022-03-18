@@ -661,6 +661,23 @@ namespace OpenWifi::Utils {
         return buf;
     }
 
+    inline uint64_t MACToInt(const std::string &MAC) {
+        uint64_t Result = 0 ;
+        for(const auto &c:MAC) {
+            if(c==':')
+                continue;
+            Result <<= 4;
+            if(c>='0' && c<='9') {
+                Result += (c - '0');
+            } else if (c>='a' && c<='f') {
+                Result += (c-'a'+10);
+            } else if (c>='A' && c<='F') {
+                Result += (c-'A'+10);
+            }
+        }
+        return Result;
+    }
+
     [[nodiscard]] inline std::string ToHex(const std::vector<unsigned char> & B) {
         std::string R;
         R.reserve(B.size()*2);
