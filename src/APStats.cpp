@@ -134,15 +134,29 @@ namespace OpenWifi {
                                 GetJSON("tx_failed",association,TP.tx_failed, (uint64_t)0 );
                                 GetJSON("connected",association,TP.connected, (uint64_t)0 );
                                 GetJSON("inactive",association,TP.inactive, (uint64_t)0 );
+
+                                if(association.contains("msdu") && association["msdu"].is_array()) {
+                                    auto msdus = association["msdu"];
+                                    for(const auto &msdu:msdus) {
+                                        msdu_entry  E;
+                                        GetJSON("rx_msdu",msdu,E.rx_msdu, (uint64_t)0 );
+                                        GetJSON("tx_msdu",msdu,E.tx_msdu, (uint64_t)0 );
+                                        GetJSON("tx_msdu_failed",msdu,E.tx_msdu_failed, (uint64_t)0 );
+                                        GetJSON("tx_msdu_retries",msdu,E.tx_msdu_retries, (uint64_t)0 );
+                                        TP.msdus.push_back(E);
+                                    }
+                                }
                                 SSIDTP.associations.push_back(TP);
                             }
                         }
                         DTP.ssid_data.push_back(SSIDTP);
                     }
                 }
+
             }
-            std::cout << Utils::IntToSerialNumber(mac_) << ": stats ";
-            std::cout << "2G: " << DI_.associations_2g << "   5G: " << DI_.associations_5g << "   6G: " << DI_.associations_6g << std::endl;
+            DTP.device_info = DI_;
+//            std::cout << Utils::IntToSerialNumber(mac_) << ": stats ";
+//            std::cout << "2G: " << DI_.associations_2g << "   5G: " << DI_.associations_5g << "   6G: " << DI_.associations_6g << std::endl;
         } catch (...) {
             std::cout << Utils::IntToSerialNumber(mac_) << ": stats failed parsing." ;
             std::cout << *State << std::endl;
@@ -152,6 +166,7 @@ namespace OpenWifi {
         if(DTP_.size()>1000) {
             DTP_.erase(DTP_.begin());
         }
+        std::cout << "Serial: " << Utils::IntToSerialNumber(mac_) << "  points: " << DTP_.size() << std::endl;
     }
 
     /*

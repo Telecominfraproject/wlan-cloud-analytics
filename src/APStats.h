@@ -21,6 +21,13 @@ namespace OpenWifi {
         band_2g=0, band_5g=1, band_6g=2
     };
 
+    struct msdu_entry {
+        uint64_t    rx_msdu=0,
+                    tx_msdu=0,
+                    tx_msdu_failed=0,
+                    tx_msdu_retries=0;
+    };
+
     struct UETimePoint {
         uint64_t    association_bssid=0,station=0;
         int64_t     rssi=0;
@@ -33,6 +40,7 @@ namespace OpenWifi {
                     tx_failed=0,
                     connected=0,
                     inactive=0;
+        std::vector<msdu_entry>     msdus;
     };
 
     enum SSID_MODES {
@@ -97,10 +105,11 @@ namespace OpenWifi {
 
 
     struct DeviceTimePoint {
-        uint64_t                    timestamp=0;
-        APTimePoint                 ap_data;
-        std::vector<SSIDTimePoint>  ssid_data;
-        std::vector<RadioTimePoint> radio_data;
+        uint64_t                        timestamp=0;
+        APTimePoint                     ap_data;
+        std::vector<SSIDTimePoint>      ssid_data;
+        std::vector<RadioTimePoint>     radio_data;
+        AnalyticsObjects::DeviceInfo    device_info;
     };
 
     class AP {
