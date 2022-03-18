@@ -135,17 +135,29 @@ namespace OpenWifi {
                                 GetJSON("connected",association,TP.connected, (uint64_t)0 );
                                 GetJSON("inactive",association,TP.inactive, (uint64_t)0 );
 
+                                std::cout << __LINE__ << std::endl;
                                 if(association.contains("msdu") && association["msdu"].is_array()) {
+                                    std::cout << __LINE__ << std::endl;
                                     auto msdus = association["msdu"];
+                                    std::cout << __LINE__ << std::endl;
                                     for(const auto &msdu:msdus) {
+                                        std::cout << __LINE__ << std::endl;
                                         msdu_entry  E;
+                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("rx_msdu",msdu,E.rx_msdu, (uint64_t)0 );
+                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("tx_msdu",msdu,E.tx_msdu, (uint64_t)0 );
+                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("tx_msdu_failed",msdu,E.tx_msdu_failed, (uint64_t)0 );
+                                        std::cout << __LINE__ << std::endl;
                                         GetJSON("tx_msdu_retries",msdu,E.tx_msdu_retries, (uint64_t)0 );
+                                        std::cout << __LINE__ << std::endl;
                                         TP.msdus.push_back(E);
+                                        std::cout << __LINE__ << std::endl;
                                     }
                                 }
+                                std::cout << __LINE__ << std::endl;
+
                                 SSIDTP.associations.push_back(TP);
                             }
                         }
