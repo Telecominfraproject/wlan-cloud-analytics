@@ -23,19 +23,12 @@ namespace OpenWifi {
 
         // find radios first to get associations.
         try {
-            std::cout << __LINE__ << std::endl;
             if(State->contains("unit")) {
-                std::cout << __LINE__ << std::endl;
                 auto unit = (*State)["unit"];
-                std::cout << __LINE__ << std::endl;
                 GetJSON("localtime", unit, DI_.lastState, (uint64_t) 0);
-                std::cout << __LINE__ << std::endl;
                 GetJSON("uptime", unit, DI_.uptime, (uint64_t) 0);
-                std::cout << __LINE__ << std::endl;
                 if(unit.contains("memory")) {
-                    std::cout << __LINE__ << std::endl;
                     auto memory = unit["memory"];
-                    std::cout << __LINE__ << std::endl;
                     uint64_t free_mem, total_mem;
                     GetJSON("free", memory, free_mem, (uint64_t) 0);
                     GetJSON("total", memory, total_mem, (uint64_t) 0);
@@ -50,9 +43,7 @@ namespace OpenWifi {
             DTP.timestamp = DI_.lastState;
 
             std::map<uint, uint> radio_band;
-            std::cout << __LINE__ << std::endl;
             if(State->contains("radios") && (*State)["radios"].is_array()) {
-                std::cout << __LINE__ << std::endl;
                 auto radios = (*State)["radios"];
                 uint radio_index = 0;
                 for (const auto &radio: radios) {
@@ -75,14 +66,10 @@ namespace OpenWifi {
             }
 
             //  now that we know the radio bands, look for associations
-            std::cout << __LINE__ << std::endl;
             auto interfaces = (*State)["interfaces"];
-            std::cout << __LINE__ << std::endl;
             DI_.associations_2g = DI_.associations_5g = DI_.associations_6g = 0;
             for(const auto &interface:interfaces) {
-                std::cout << __LINE__ << std::endl;
                 if(interface.contains("counters")) {
-                    std::cout << __LINE__ << std::endl;
                     auto counters = interface["counters"];
                     GetJSON("collisions", counters, DTP.ap_data.collisions, (uint64_t) 0);
                     GetJSON("multicast", counters, DTP.ap_data.multicast, (uint64_t) 0);
@@ -96,17 +83,11 @@ namespace OpenWifi {
                     GetJSON("tx_packets", counters, DTP.ap_data.tx_packets, (uint64_t) 0);
                 }
 
-                std::cout << __LINE__ << std::endl;
                 if(interface.contains("ssids")) {
-                    std::cout << __LINE__ << std::endl;
                     auto ssids = interface["ssids"];
-                    std::cout << __LINE__ << std::endl;
                     for (const auto &ssid: ssids) {
-                        std::cout << __LINE__ << std::endl;
                         SSIDTimePoint   SSIDTP;
-                        std::cout << __LINE__ << std::endl;
                         uint radio_location = 2;
-                        std::cout << __LINE__ << std::endl;
                         if(ssid.contains("radio")) {
                             auto radio = ssid["radio"];
                             if(radio.contains("$ref")) {
