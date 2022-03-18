@@ -50,5 +50,5 @@ std::cout << "Adding SSID: " << ssid << std::endl;
         std::map<std::string,uint64_t>  Dict_;
     };
 
-    inline auto SSID_DICT() { return SSID_DICT::instance(); }
+    inline auto AllSSIDs() { return SSID_DICT::instance(); }
 }

@@ -127,7 +127,7 @@ namespace OpenWifi {
                         std::cout << __LINE__ << std::endl;
                         GetJSON("ssid",ssid,ssid_name, std::string{""} );
                         std::cout << __LINE__ << std::endl;
-                        SSIDTP.ssid = SSID_DICT()->Add(ssid);
+                        SSIDTP.ssid = AllSSIDs()->Add(ssid);
                         std::cout << __LINE__ << std::endl;
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
                             std::cout << __LINE__ << std::endl;
