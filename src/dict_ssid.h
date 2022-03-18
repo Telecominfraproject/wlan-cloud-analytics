@@ -18,9 +18,8 @@ namespace OpenWifi {
                 auto Id = Index_++;
                 Dict_[ssid] = Id;
                 return Id;
-            } else {
-                return it->second;
             }
+            return it->second;
         }
 
         inline void Remove(const std::string &ssid) {
@@ -38,7 +37,7 @@ namespace OpenWifi {
         }
 
     private:
-        std::mutex                      Mutex_;
+        std::recursive_mutex            Mutex_;
         uint64_t                        Index_=1;
         std::map<std::string,uint64_t>  Dict_;
     };
