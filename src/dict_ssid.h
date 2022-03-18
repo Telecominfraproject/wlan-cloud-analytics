@@ -15,7 +15,6 @@ namespace OpenWifi {
 
         inline uint64_t Add(const std::string &ssid) {
             std::lock_guard G(Mutex_);
-std::cout << "Adding SSID: " << ssid << std::endl;
             auto it = Dict_.find(ssid);
             if (it == end(Dict_)) {
                 auto Id = Index_++;
