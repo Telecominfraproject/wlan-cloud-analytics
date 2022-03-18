@@ -100,9 +100,13 @@ namespace OpenWifi {
                 if(interface.contains("ssids")) {
                     std::cout << __LINE__ << std::endl;
                     auto ssids = interface["ssids"];
+                    std::cout << __LINE__ << std::endl;
                     for (const auto &ssid: ssids) {
+                        std::cout << __LINE__ << std::endl;
                         SSIDTimePoint   SSIDTP;
+                        std::cout << __LINE__ << std::endl;
                         uint radio_location = 2;
+                        std::cout << __LINE__ << std::endl;
                         if(ssid.contains("radio")) {
                             auto radio = ssid["radio"];
                             if(radio.contains("$ref")) {
@@ -112,15 +116,22 @@ namespace OpenWifi {
                                     radio_location = std::atoi(radio_parts[2].c_str());
                             }
                         }
+                        std::cout << __LINE__ << std::endl;
                         std::string bssid, mode, ssid_name;
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("bssid",ssid,bssid, std::string{""});
                         SSIDTP.bssid = Utils::MACToInt(bssid);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("mode",ssid,mode, std::string{""} );
                         SSIDTP.mode = SSID_Mode(mode);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("ssid",ssid,ssid_name, std::string{""} );
                         SSIDTP.ssid = SSID_DICT()->Add(ssid);
+                        std::cout << __LINE__ << std::endl;
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
+                            std::cout << __LINE__ << std::endl;
                             auto associations = ssid["associations"];
+                            std::cout << __LINE__ << std::endl;
                             auto it = radio_band.find(radio_location);
                             if(it!=radio_band.end()) {
                                 auto the_radio = it->second;
@@ -131,13 +142,18 @@ namespace OpenWifi {
                                 else if (the_radio == 6)
                                     DI_.associations_6g += associations.size();
                             }
+                            std::cout << __LINE__ << std::endl;
                             for(const auto &association:associations) {
                                 UETimePoint TP;
                                 std::string association_bssid,station;
+                                std::cout << __LINE__ << std::endl;
                                 GetJSON("bssid",association,association_bssid, std::string{""} );
+                                std::cout << __LINE__ << std::endl;
                                 GetJSON("station",association,station, std::string{} );
+                                std::cout << __LINE__ << std::endl;
                                 TP.association_bssid = Utils::MACToInt(association_bssid);
                                 TP.station = Utils::MACToInt(station);
+                                std::cout << __LINE__ << std::endl;
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
                                 GetJSON("tx_bytes",association,TP.tx_bytes, (uint64_t)0 );
                                 GetJSON("rx_bytes",association,TP.rx_bytes, (uint64_t)0 );
