@@ -19,7 +19,7 @@ namespace OpenWifi {
         DI_.states++;
         DI_.connected =true;
 
-        DeviceTimePoint DTP;
+        AnalyticsObjects::DeviceTimePoint DTP;
 
         // find radios first to get associations.
         try {
@@ -48,7 +48,7 @@ namespace OpenWifi {
                 uint radio_index = 0;
                 for (const auto &radio: radios) {
                     if (radio.contains("channel")) {
-                        RadioTimePoint  RTP;
+                        AnalyticsObjects::RadioTimePoint  RTP;
                         RTP.band = radio["channel"] <= 16 ? 2 : 5;
                         radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
@@ -86,7 +86,7 @@ namespace OpenWifi {
                 if(interface.contains("ssids")) {
                     auto ssids = interface["ssids"];
                     for (const auto &ssid: ssids) {
-                        SSIDTimePoint   SSIDTP;
+                        AnalyticsObjects::SSIDTimePoint   SSIDTP;
                         uint radio_location = 2;
                         if(ssid.contains("radio")) {
                             auto radio = ssid["radio"];
@@ -101,7 +101,7 @@ namespace OpenWifi {
                         GetJSON("bssid",ssid,bssid, std::string{""});
                         SSIDTP.bssid = Utils::MACToInt(bssid);
                         GetJSON("mode",ssid,mode, std::string{""} );
-                        SSIDTP.mode = SSID_Mode(mode);
+                        SSIDTP.mode = AnalyticsObjects::SSID_Mode(mode);
                         GetJSON("ssid",ssid,ssid_name, std::string{""} );
                         SSIDTP.ssid = SSID_DICT()->Add(ssid_name);
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
@@ -117,7 +117,7 @@ namespace OpenWifi {
                                     DI_.associations_6g += associations.size();
                             }
                             for(const auto &association:associations) {
-                                UETimePoint TP;
+                                AnalyticsObjects::UETimePoint TP;
                                 std::string association_bssid,station;
                                 GetJSON("bssid",association,association_bssid, std::string{""} );
                                 GetJSON("station",association,station, std::string{} );
@@ -137,7 +137,7 @@ namespace OpenWifi {
                                 if(association.contains("msdu") && association["msdu"].is_array()) {
                                     auto msdus = association["msdu"];
                                     for(const auto &msdu:msdus) {
-                                        msdu_entry  E;
+                                        AnalyticsObjects::msdu_entry  E;
                                         GetJSON("rx_msdu",msdu,E.rx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu",msdu,E.tx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu_failed",msdu,E.tx_msdu_failed, (uint64_t)0 );
@@ -230,5 +230,4 @@ namespace OpenWifi {
             std::cout << Utils::IntToSerialNumber(mac_) << ": health failed parsing." << std::endl;
         }
     }
-
 }
