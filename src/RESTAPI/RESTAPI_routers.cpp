@@ -16,9 +16,9 @@ namespace OpenWifi {
         return  RESTAPI_Router<
                     RESTAPI_system_command,
                     RESTAPI_board_devices_handler,
+                    RESTAPI_board_timepoint_handler,
                     RESTAPI_board_handler,
-                    RESTAPI_board_list_handler,
-                    RESTAPI_board_timepoint_handler
+                    RESTAPI_board_list_handler
                 >(Path,Bindings,L, S, TransactionId);
     }
 
@@ -28,9 +28,9 @@ namespace OpenWifi {
         return RESTAPI_Router_I<
                 RESTAPI_system_command,
                 RESTAPI_board_devices_handler,
+                RESTAPI_board_timepoint_handler,
                 RESTAPI_board_handler,
-                RESTAPI_board_list_handler,
-                RESTAPI_board_timepoint_handler
+                RESTAPI_board_list_handler
             >(Path, Bindings, L, S, TransactionId);
     }
 

@@ -250,6 +250,20 @@ boarddevices() {
     jq < ${result_file}
 }
 
+points() {
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/timepoints" \
+    -H "accept: application/json" \
+    -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
+pointstats() {
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/timepoints?stats=true" \
+    -H "accept: application/json" \
+    -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
 shopt -s nocasematch
 case "$1" in
     "login") login; echo "You are logged in..."  ; logout ;;
@@ -265,6 +279,8 @@ case "$1" in
     "boarddevices") login; boarddevices $2 ; logout ;;
     "deleteboard") login; deleteboard $2; logout ;;
     "boardsforvenue") login; boardsforvenue $2; logout;;
+    "points") login; points $2; logout;;
+    "pointstats") login; pointstats $2; logout;;
     *) help ;;
 esac
 
