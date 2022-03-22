@@ -28,7 +28,6 @@ namespace OpenWifi {
             bool monitorSubVenues = false;
 
             void to_json(Poco::JSON::Object &Obj) const;
-
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
@@ -37,7 +36,6 @@ namespace OpenWifi {
             std::vector<VenueInfo> venueList;
 
             void to_json(Poco::JSON::Object &Obj) const;
-
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
 
             inline bool operator<(const BoardInfo &bb) const {
@@ -75,7 +73,6 @@ namespace OpenWifi {
             double memory;
 
             void to_json(Poco::JSON::Object &Obj) const;
-
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
@@ -83,7 +80,6 @@ namespace OpenWifi {
             std::vector<DeviceInfo> devices;
 
             void to_json(Poco::JSON::Object &Obj) const;
-
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
@@ -91,18 +87,30 @@ namespace OpenWifi {
             band_2g = 0, band_5g = 1, band_6g = 2
         };
 
-        struct msdu_entry {
+        struct MSDU_entry {
             uint64_t rx_msdu = 0,
                     tx_msdu = 0,
                     tx_msdu_failed = 0,
                     tx_msdu_retries = 0;
 
             void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+        };
+
+        struct UE_rate {
+            uint64_t    bitrate=0;
+            uint64_t    mcs=0;
+            uint64_t    nss=0;
+            bool        ht=false;
+            bool        sgi=false;
+            uint64_t    chwidth=0;
+
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
         struct UETimePoint {
-            uint64_t association_bssid = 0,
-                    station = 0;
+            std::string station;
             int64_t rssi = 0;
             uint64_t tx_bytes = 0,
                     rx_bytes = 0,
@@ -113,9 +121,12 @@ namespace OpenWifi {
                     tx_failed = 0,
                     connected = 0,
                     inactive = 0;
-            std::vector<msdu_entry> msdus;
+            UE_rate tx_rate,
+                    rx_rate;
+            std::vector<MSDU_entry> msdus;
 
             void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
         enum SSID_MODES {
@@ -145,12 +156,13 @@ namespace OpenWifi {
         }
 
         struct SSIDTimePoint {
-            uint64_t bssid = 0,
-                    mode = 0,
-                    ssid = 0;
+            std::string bssid,
+                        mode,
+                        ssid;
             std::vector<UETimePoint> associations;
 
             void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
 
@@ -167,11 +179,12 @@ namespace OpenWifi {
                     tx_packets = 0;
 
             void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
         struct RadioTimePoint {
-            uint    band = 0,
-                    radio_channel = 0;
+            uint64_t    band = 0,
+                        radio_channel = 0;
             uint64_t active_ms = 0,
                     busy_ms = 0,
                     receive_ms = 0,
@@ -182,17 +195,63 @@ namespace OpenWifi {
                     noise = 0;
 
             void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
 
         struct DeviceTimePoint {
-            uint64_t timestamp = 0;
-            APTimePoint ap_data;
-            std::vector<SSIDTimePoint> ssid_data;
+            std::string                 id;
+            std::string                 boardId;
+            uint64_t                    timestamp = 0;
+            APTimePoint                 ap_data;
+            std::vector<SSIDTimePoint>  ssid_data;
             std::vector<RadioTimePoint> radio_data;
             AnalyticsObjects::DeviceInfo device_info;
 
             void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+        };
+
+        struct DeviceTimePointList {
+            std::vector<DeviceTimePoint>    points;
+
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+        };
+
+        struct BandwidthAnalysisEntry {
+            uint64_t    timestamp;
+
+        };
+
+        struct BandwidthAnalysis {
+
+        };
+
+        struct AverageValueSigned {
+            int64_t     peak=0, avg=0, low=0;
+        };
+
+        struct AverageValueUnsigned {
+            uint64_t     peak=0, avg=0, low=0;
+        };
+
+        struct RadioAnalysis {
+            uint64_t                timestamp=0;
+            AverageValueSigned      noise, temperature;
+            AverageValueUnsigned    active_ms,
+                                    busy_ms,
+                                    transmit_ms,
+                                    receive_ms;
+        };
+
+        struct DeviceTimePointStats {
+            uint64_t                firstPoint=0;
+            uint64_t                lastPoint=0;
+            uint64_t                count=0;
+
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
     }
 }

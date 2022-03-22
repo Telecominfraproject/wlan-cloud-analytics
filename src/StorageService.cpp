@@ -18,6 +18,8 @@ namespace OpenWifi {
 
         BoardsDB_ = std::make_unique<OpenWifi::BoardsDB>(dbType_,*Pool_, Logger());
         BoardsDB_->Create();
+        TimePointsDB_ = std::make_unique<OpenWifi::TimePointDB>(dbType_,*Pool_, Logger());
+        TimePointsDB_->Create();
 
         Updater_.start(*this);
 

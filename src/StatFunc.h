@@ -68,6 +68,7 @@ namespace OpenWifi {
         bool inited = false;
         uint64_t LastValue=0;
     };
+
     std::ostream & operator<<(std::ostream &os, const RelativeCounter &rc) {
         os << rc.get() ;
         return os;

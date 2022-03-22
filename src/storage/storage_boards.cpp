@@ -61,8 +61,3 @@ template<> void ORM::DB<    OpenWifi::BoardDBRecordType, OpenWifi::AnalyticsObje
     Out.set<5>(In.info.modified);
     Out.set<6>(OpenWifi::RESTAPI_utils::to_string(In.venueList));
 }
-//
-// Created by stephane bourque on 2022-03-11.
-//
-
-#include "storage_boards.h"

@@ -11,6 +11,7 @@
 #include "framework/MicroService.h"
 #include "framework/StorageClass.h"
 #include "storage/storage_boards.h"
+#include "storage/storage_timepoints.h"
 
 namespace OpenWifi {
     class Storage : public StorageClass, Poco::Runnable {
@@ -25,10 +26,12 @@ namespace OpenWifi {
 
             void run() final;
             OpenWifi::BoardsDB & BoardsDB() { return *BoardsDB_; };
+            OpenWifi::TimePointDB & TimePointsDB() { return *TimePointsDB_; };
             void onTimer(Poco::Timer & timer);
 
           private:
             std::unique_ptr<OpenWifi::BoardsDB>                 BoardsDB_;
+            std::unique_ptr<OpenWifi::TimePointDB>              TimePointsDB_;
             Poco::Thread                                        Updater_;
             std::atomic_bool                                    Running_=false;
             Poco::Timer                                         Timer_;

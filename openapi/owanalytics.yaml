@@ -230,6 +230,213 @@ components:
           items:
             $ref: '#/components/schemas/DeviceInfo'
 
+    MSDU_entry:
+      type: object
+      properties:
+        rx_msdu:
+          type: integer
+          format: int64
+        tx_msdu:
+          type: integer
+          format: int64
+        tx_msdu_failed:
+          type: integer
+          format: int64
+        tx_msdu_retries:
+          type: integer
+          format: int64
+
+    UE_rate:
+      type: object
+      properties:
+        bitrate:
+          type: integer
+          format: int64
+        mcs:
+          type: integer
+          format: int64
+        nss:
+          type: integer
+          format: int64
+        chwidth:
+          type: integer
+          format: int64
+        ht:
+          type: boolean
+        sgi:
+          type:
+            boolean
+
+    UETimePoint:
+      type: object
+      properties:
+        association_bssid:
+          type: integer
+          format: int64
+        station:
+          type: integer
+          format: int64
+        rssi:
+          type: integer
+          format: int64
+        tx_bytes:
+          type: integer
+          format: int64
+        rx_bytes:
+          type: integer
+          format: int64
+        tx_duration:
+          type: integer
+          format: int64
+        rx_packets:
+          type: integer
+          format: int64
+        tx_packets:
+          type: integer
+          format: int64
+        tx_retries:
+          type: integer
+          format: int64
+        tx_failed:
+          type: integer
+          format: int64
+        connected:
+          type: integer
+          format: int64
+        inactive:
+          type: integer
+          format: int64
+        tx_rate:
+          $ref: '#/components/schemas/UE_rate'
+        rx_rate:
+          $ref: '#/components/schemas/UE_rate'
+        msdus:
+          type: array
+          items:
+            $ref: '#/components/schemas/MSDU_entry'
+
+    SSIDTimePoint:
+      type: object
+      properties:
+        bssid:
+          type: string
+        mode:
+          type: string
+        ssid:
+          type: string
+        associations:
+          type: array
+          items:
+            $ref: '#/components/schemas/UETimePoint'
+
+    APTimePoint:
+      type: object
+      properties:
+        collisions:
+          type: integer
+          format: int64
+        multicast:
+          type: integer
+          format: int64
+        rx_bytes:
+          type: integer
+          format: int64
+        rx_dropped:
+          type: integer
+          format: int64
+        rx_errors:
+          type: integer
+          format: int64
+        rx_packets:
+          type: integer
+          format: int64
+        tx_bytes:
+          type: integer
+          format: int64
+        tx_dropped:
+          type: integer
+          format: int64
+        tx_errors:
+          type: integer
+          format: int64
+        tx_packets:
+          type: integer
+          format: int64
+
+    RadioTimePoint:
+      type: object
+      properties:
+        band:
+          type: integer
+          format: int64
+        radio_channel:
+          type: integer
+          format: int64
+        active_ms:
+          type: integer
+          format: int64
+        busy_ms:
+          type: integer
+          format: int64
+        receive_ms:
+          type: integer
+          format: int64
+        transmit_ms:
+          type: integer
+          format: int64
+        tx_power:
+          type: integer
+          format: int64
+        channel:
+          type: integer
+          format: int64
+        temperature:
+          type: integer
+          format: int64
+        noise:
+          type: integer
+          format: int64
+
+    DeviceTimePoint:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+        ap_data:
+          $ref: '#/components/schemas/APTimePoint'
+        ssid_data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSIDTimePoint'
+        radio_data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadioTimePoint'
+        device_info:
+          $ref: '#/components/schemas/DeviceInfo'
+
+    DeviceTimePointList:
+      type: object
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceTimePoint'
+
+    DeviceTimePointStats:
+      type: object
+      properties:
+        firstPoint:
+          type: integer
+          format: int64
+        lastPoint:
+          type: integer
+          format: int64
+        count:
+          type: integer
+          format: int64
+
     #########################################################################################
     ##
     ## These are endpoints that all services in the OPenWiFI stack must provide
@@ -602,6 +809,59 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
+
+  /board/{id}/timepoint:
+    get:
+      tags:
+        - Board data
+      summary: retrieve board data for a given time period.
+      operationId: getBoardTimepoint
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: fromDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: endDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: maxRecords
+          schema:
+            type: integer
+            default: 100
+          required: false
+
+        - in: query
+          name: stats
+          schema:
+            type: boolean
+          required: false
+
+      responses:
+        200:
+          description: Successfull retrieval of timepoints
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/DeviceTimePointList'
+                  - $ref: '#/components/schemas/DeviceTimePointStats'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
 
   /iptocountry:
     get:

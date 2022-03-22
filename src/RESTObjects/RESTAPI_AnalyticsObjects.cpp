@@ -129,8 +129,31 @@ namespace OpenWifi::AnalyticsObjects {
         return false;
     }
 
+    void UE_rate::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"bitrate",bitrate);
+        field_to_json(Obj,"mcs",mcs);
+        field_to_json(Obj,"nss",nss);
+        field_to_json(Obj,"ht",ht);
+        field_to_json(Obj,"sgi",sgi);
+        field_to_json(Obj,"chwidth",chwidth);
+    }
+
+    bool UE_rate::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"bitrate",bitrate);
+            field_from_json(Obj,"mcs",mcs);
+            field_from_json(Obj,"nss",nss);
+            field_from_json(Obj,"ht",ht);
+            field_from_json(Obj,"sgi",sgi);
+            field_from_json(Obj,"chwidth",chwidth);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
     void UETimePoint::to_json(Poco::JSON::Object &Obj) const {
-        field_to_json(Obj,"association_bssid",association_bssid);
         field_to_json(Obj,"station",station);
         field_to_json(Obj,"rssi",rssi);
         field_to_json(Obj,"tx_bytes",tx_bytes);
@@ -142,6 +165,30 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"tx_failed",tx_failed);
         field_to_json(Obj,"connected",connected);
         field_to_json(Obj,"inactive",inactive);
+        field_to_json(Obj,"tx_rate",tx_rate);
+        field_to_json(Obj,"rx_rate",rx_rate);
+    }
+
+    bool UETimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"station",station);
+            field_from_json(Obj,"rssi",rssi);
+            field_from_json(Obj,"tx_bytes",tx_bytes);
+            field_from_json(Obj,"rx_bytes",rx_bytes);
+            field_from_json(Obj,"tx_duration",tx_duration);
+            field_from_json(Obj,"rx_packets",rx_packets);
+            field_from_json(Obj,"tx_packets",tx_packets);
+            field_from_json(Obj,"tx_retries",tx_retries);
+            field_from_json(Obj,"tx_failed",tx_failed);
+            field_from_json(Obj,"connected",connected);
+            field_from_json(Obj,"inactive",inactive);
+            field_from_json(Obj,"tx_rate",tx_rate);
+            field_from_json(Obj,"rx_rate",rx_rate);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
     }
 
     void APTimePoint::to_json(Poco::JSON::Object &Obj) const {
@@ -158,11 +205,44 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"tx_packets",tx_packets);
     }
 
-    void msdu_entry::to_json(Poco::JSON::Object &Obj) const {
+    bool APTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"collisions",collisions);
+            field_from_json(Obj,"multicast",multicast);
+            field_from_json(Obj,"rx_bytes",rx_bytes);
+            field_from_json(Obj,"rx_dropped",rx_dropped);
+            field_from_json(Obj,"rx_errors",rx_errors);
+            field_from_json(Obj,"rx_packets",rx_packets);
+            field_from_json(Obj,"tx_bytes",tx_bytes);
+            field_from_json(Obj,"tx_packets",tx_packets);
+            field_from_json(Obj,"tx_dropped",tx_dropped);
+            field_from_json(Obj,"tx_errors",tx_errors);
+            field_from_json(Obj,"tx_packets",tx_packets);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
+    void MSDU_entry::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"rx_msdu",rx_msdu);
         field_to_json(Obj,"tx_msdu",tx_msdu);
         field_to_json(Obj,"tx_msdu_failed",tx_msdu_failed);
         field_to_json(Obj,"tx_msdu_retries",tx_msdu_retries);
+    }
+
+    bool MSDU_entry::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"rx_msdu",rx_msdu);
+            field_from_json(Obj,"tx_msdu",tx_msdu);
+            field_from_json(Obj,"tx_msdu_failed",tx_msdu_failed);
+            field_from_json(Obj,"tx_msdu_retries",tx_msdu_retries);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
     }
 
     void RadioTimePoint::to_json(Poco::JSON::Object &Obj) const {
@@ -178,6 +258,25 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"noise",noise);
     }
 
+    bool RadioTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"band",band);
+            field_from_json(Obj,"radio_channel",radio_channel);
+            field_from_json(Obj,"active_ms",active_ms);
+            field_from_json(Obj,"busy_ms",busy_ms);
+            field_from_json(Obj,"receive_ms",receive_ms);
+            field_from_json(Obj,"transmit_ms",transmit_ms);
+            field_from_json(Obj,"tx_power",tx_power);
+            field_from_json(Obj,"channel",channel);
+            field_from_json(Obj,"temperature",temperature);
+            field_from_json(Obj,"noise",noise);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
     void SSIDTimePoint::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"bssid",bssid);
         field_to_json(Obj,"mode",mode);
@@ -185,11 +284,75 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"associations",associations);
     }
 
+    bool SSIDTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"bssid",bssid);
+            field_from_json(Obj,"mode",mode);
+            field_from_json(Obj,"ssid",ssid);
+            field_from_json(Obj,"associations",associations);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
     void DeviceTimePoint::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"id",id);
+        field_to_json(Obj,"boardId",boardId);
         field_to_json(Obj,"timestamp",timestamp);
         field_to_json(Obj,"ap_data",ap_data);
         field_to_json(Obj,"ssid_data",ssid_data);
         field_to_json(Obj,"radio_data",radio_data);
         field_to_json(Obj,"device_info",device_info);
     }
+
+    bool DeviceTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"id",id);
+            field_from_json(Obj,"boardId",boardId);
+            field_from_json(Obj,"timestamp",timestamp);
+            field_from_json(Obj,"ap_data",ap_data);
+            field_from_json(Obj,"ssid_data",ssid_data);
+            field_from_json(Obj,"radio_data",radio_data);
+            field_from_json(Obj,"device_info",device_info);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
+    void DeviceTimePointList::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"points",points);
+    }
+
+    bool DeviceTimePointList::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"points",points);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
+    void DeviceTimePointStats::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"firstPoint",firstPoint);
+        field_to_json(Obj,"lastPoint",lastPoint);
+        field_to_json(Obj,"count",count);
+    }
+
+    bool DeviceTimePointStats::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"firstPoint",firstPoint);
+            field_from_json(Obj,"lastPoint",lastPoint);
+            field_from_json(Obj,"count",count);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
 }

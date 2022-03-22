@@ -18,7 +18,10 @@ namespace OpenWifi {
 
     class AP {
     public:
-        explicit AP(uint64_t mac) : mac_(mac) {
+        explicit AP(uint64_t mac, const std::string &BoardId) :
+            mac_(mac),
+            boardId_(BoardId)
+        {
             DI_.serialNumber = Utils::IntToSerialNumber(mac);
         }
 
@@ -28,8 +31,9 @@ namespace OpenWifi {
 
         const AnalyticsObjects::DeviceInfo & Info() const { return DI_; }
     private:
-        uint64_t                        mac_=0;
-        AnalyticsObjects::DeviceInfo    DI_;
-        std::vector<AnalyticsObjects::DeviceTimePoint>    DTP_;
+        uint64_t                                        mac_=0;
+        std::string                                     boardId_;
+        AnalyticsObjects::DeviceInfo                    DI_;
+        std::vector<AnalyticsObjects::DeviceTimePoint>  DTP_;
     };
 }

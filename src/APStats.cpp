@@ -4,6 +4,7 @@
 
 #include "APStats.h"
 #include "dict_ssid.h"
+#include "StorageService.h"
 
 namespace OpenWifi {
 
@@ -94,16 +95,12 @@ namespace OpenWifi {
                                 auto ref = radio["$ref"];
                                 auto radio_parts = Poco::StringTokenizer(ref, "/");
                                 if(radio_parts.count()==3)
-                                    radio_location = std::atoi(radio_parts[2].c_str());
+                                    radio_location = std::strtol(radio_parts[2].c_str(), nullptr,10);
                             }
                         }
-                        std::string bssid, mode, ssid_name;
-                        GetJSON("bssid",ssid,bssid, std::string{""});
-                        SSIDTP.bssid = Utils::MACToInt(bssid);
-                        GetJSON("mode",ssid,mode, std::string{""} );
-                        SSIDTP.mode = AnalyticsObjects::SSID_Mode(mode);
-                        GetJSON("ssid",ssid,ssid_name, std::string{""} );
-                        SSIDTP.ssid = SSID_DICT()->Add(ssid_name);
+                        GetJSON("bssid",ssid,SSIDTP.bssid, std::string{""});
+                        GetJSON("mode",ssid,SSIDTP.mode, std::string{""} );
+                        GetJSON("ssid",ssid,SSIDTP.ssid, std::string{""} );
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
                             auto associations = ssid["associations"];
                             auto it = radio_band.find(radio_location);
@@ -118,11 +115,7 @@ namespace OpenWifi {
                             }
                             for(const auto &association:associations) {
                                 AnalyticsObjects::UETimePoint TP;
-                                std::string association_bssid,station;
-                                GetJSON("bssid",association,association_bssid, std::string{""} );
-                                GetJSON("station",association,station, std::string{} );
-                                TP.association_bssid = Utils::MACToInt(association_bssid);
-                                TP.station = Utils::MACToInt(station);
+                                GetJSON("station",association,TP.station, std::string{} );
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
                                 GetJSON("tx_bytes",association,TP.tx_bytes, (uint64_t)0 );
                                 GetJSON("rx_bytes",association,TP.rx_bytes, (uint64_t)0 );
@@ -137,13 +130,33 @@ namespace OpenWifi {
                                 if(association.contains("msdu") && association["msdu"].is_array()) {
                                     auto msdus = association["msdu"];
                                     for(const auto &msdu:msdus) {
-                                        AnalyticsObjects::msdu_entry  E;
+                                        AnalyticsObjects::MSDU_entry  E;
                                         GetJSON("rx_msdu",msdu,E.rx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu",msdu,E.tx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu_failed",msdu,E.tx_msdu_failed, (uint64_t)0 );
                                         GetJSON("tx_msdu_retries",msdu,E.tx_msdu_retries, (uint64_t)0 );
                                         TP.msdus.push_back(E);
                                     }
+                                }
+
+                                if(association.contains("tx_rate")) {
+                                    auto tx_rate = association["tx_rate"];
+                                    GetJSON("bitrate",tx_rate,TP.tx_rate.bitrate, (uint64_t)0 );
+                                    GetJSON("mcs",tx_rate,TP.tx_rate.mcs, (uint64_t)0 );
+                                    GetJSON("nss",tx_rate,TP.tx_rate.nss, (uint64_t)0 );
+                                    GetJSON("chwidth",tx_rate,TP.tx_rate.chwidth, (uint64_t)0 );
+                                    GetJSON("ht",tx_rate,TP.tx_rate.ht, false );
+                                    GetJSON("sgi",tx_rate,TP.tx_rate.sgi, false );
+                                }
+
+                                if(association.contains("rx_rate")) {
+                                    auto rx_rate = association["rx_rate"];
+                                    GetJSON("bitrate",rx_rate,TP.rx_rate.bitrate, (uint64_t)0 );
+                                    GetJSON("mcs",rx_rate,TP.rx_rate.mcs, (uint64_t)0 );
+                                    GetJSON("nss",rx_rate,TP.rx_rate.nss, (uint64_t)0 );
+                                    GetJSON("chwidth",rx_rate,TP.rx_rate.chwidth, (uint64_t)0 );
+                                    GetJSON("ht",rx_rate,TP.rx_rate.ht, false );
+                                    GetJSON("sgi",rx_rate,TP.rx_rate.sgi, false );
                                 }
 
                                 SSIDTP.associations.push_back(TP);
@@ -161,11 +174,17 @@ namespace OpenWifi {
             std::cout << Utils::IntToSerialNumber(mac_) << ": stats failed parsing." ;
             std::cout << *State << std::endl;
         }
+
+        DTP.id = MicroService::instance().CreateUUID();
+        DTP.boardId = boardId_;
+        StorageService()->TimePointsDB().CreateRecord(DTP);
+
         DTP_.push_back(DTP);
 
         if(DTP_.size()>1000) {
             DTP_.erase(DTP_.begin());
         }
+
         std::cout << "Serial: " << Utils::IntToSerialNumber(mac_) << "  points: " << DTP_.size() << std::endl;
     }
 

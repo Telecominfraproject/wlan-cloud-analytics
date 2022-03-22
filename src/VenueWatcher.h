@@ -35,11 +35,10 @@ namespace OpenWifi {
 
     class VenueWatcher : public Poco::Runnable {
     public:
-        explicit VenueWatcher(const std::string &id, Poco::Logger &L, const std::vector<uint64_t> & SerialNumbers) :
-            Id_(id),
-            Logger_(L),
-            SerialNumbers_(SerialNumbers) {
-
+        explicit VenueWatcher(const std::string &boardId, Poco::Logger &L, const std::vector<uint64_t> & SerialNumbers) :
+                boardId_(boardId),
+                Logger_(L),
+                SerialNumbers_(SerialNumbers) {
             std::sort(SerialNumbers_.begin(),SerialNumbers_.end());
             auto last = std::unique(SerialNumbers_.begin(),SerialNumbers_.end());
             SerialNumbers_.erase(last,SerialNumbers_.end());
@@ -68,15 +67,17 @@ namespace OpenWifi {
         void ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers);
         void GetDevices(std::vector<AnalyticsObjects::DeviceInfo> & DI);
 
+        void GetBandwidth(uint64_t start, uint64_t end, uint64_t interval , AnalyticsObjects::BandwidthAnalysis & BW);
+
     private:
-        std::recursive_mutex        Mutex_;
-        std::string                 Id_;
-        Poco::NotificationQueue     Queue_;
-        Poco::Logger                &Logger_;
-        Poco::Thread                Worker_;
-        std::atomic_bool            Running_=false;
-        std::vector<uint64_t>       SerialNumbers_;
-        std::map<uint64_t, std::shared_ptr<AP>>    APs_;
+        std::recursive_mutex                        Mutex_;
+        std::string                                 boardId_;
+        Poco::NotificationQueue                     Queue_;
+        Poco::Logger                                &Logger_;
+        Poco::Thread                                Worker_;
+        std::atomic_bool                            Running_=false;
+        std::vector<uint64_t>                       SerialNumbers_;
+        std::map<uint64_t, std::shared_ptr<AP>>     APs_;
     };
 
 }
