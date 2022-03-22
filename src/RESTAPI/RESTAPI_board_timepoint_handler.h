@@ -20,7 +20,7 @@ namespace OpenWifi {
                                  TransactionId,
                                  Internal){}
 
-        static const std::list<const char *> PathName() { return std::list<const char *>{"/api/v1/board/{id}/timepoint"}; };
+        static const std::list<const char *> PathName() { return std::list<const char *>{"/api/v1/board/{id}/timepoints"}; };
 
     private:
         TimePointDB   & DB_=StorageService()->TimePointsDB();

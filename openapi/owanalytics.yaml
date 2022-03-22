@@ -810,7 +810,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
 
-  /board/{id}/timepoint:
+  /board/{id}/timepoints:
     get:
       tags:
         - Board data
