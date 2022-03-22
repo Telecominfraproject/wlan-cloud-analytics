@@ -61,7 +61,7 @@ namespace OpenWifi {
         } else if (LastDate) {
             WhereClause = " ( timestamp <= " + std::to_string(LastDate) + " ) ";
         }
-        GetRecords(0,MaxRecords,Recs,WhereClause," timestamp ASC ");
+        GetRecords(0,MaxRecords,Recs,WhereClause," order by timestamp ASC ");
         return true;
     }
 }
