@@ -3202,9 +3202,10 @@ namespace OpenWifi {
 	    try {
 	        Poco::JSON::Parser P;
 	        auto Object = P.parse(Payload).extract<Poco::JSON::Object::Ptr>();
-            std::ostringstream OOO;
+/*          std::ostringstream OOO;
             Object->stringify(OOO) ;
             std::cout << "BUS MESSAGE:" << OOO.str() << std::endl;
+*/
 	        if (Object->has(KafkaTopics::ServiceEvents::Fields::ID) &&
 	        Object->has(KafkaTopics::ServiceEvents::Fields::EVENT)) {
 	            uint64_t 	ID = Object->get(KafkaTopics::ServiceEvents::Fields::ID);
@@ -3218,19 +3219,13 @@ namespace OpenWifi {
 	                    Object->has(KafkaTopics::ServiceEvents::Fields::PRIVATE) &&
 	                    Object->has(KafkaTopics::ServiceEvents::Fields::VRSN) &&
 	                    Object->has(KafkaTopics::ServiceEvents::Fields::KEY)) {
-std::cout << __LINE__ << std::endl;
 	                        if (Event == KafkaTopics::ServiceEvents::EVENT_KEEP_ALIVE && Services_.find(ID) != Services_.end()) {
-                                std::cout << __LINE__ << std::endl;
 	                            Services_[ID].LastUpdate = std::time(nullptr);
 	                        } else if (Event == KafkaTopics::ServiceEvents::EVENT_LEAVE) {
-                                std::cout << __LINE__ << std::endl;
 	                            Services_.erase(ID);
 	                            logger().information(fmt::format("Service {} ID={} leaving system.",Object->get(KafkaTopics::ServiceEvents::Fields::PRIVATE).toString(),ID));
-                                std::cout << __LINE__ << std::endl;
 	                        } else if (Event == KafkaTopics::ServiceEvents::EVENT_JOIN || Event == KafkaTopics::ServiceEvents::EVENT_KEEP_ALIVE) {
-                                std::cout << __LINE__ << std::endl;
 	                            logger().information(fmt::format("Service {} ID={} joining system.",Object->get(KafkaTopics::ServiceEvents::Fields::PRIVATE).toString(),ID));
-                                std::cout << __LINE__ << std::endl;
 	                            Services_[ID] = MicroServiceMeta{
 	                                .Id = ID,
 	                                .Type = Poco::toLower(Object->get(KafkaTopics::ServiceEvents::Fields::TYPE).toString()),
@@ -3239,11 +3234,8 @@ std::cout << __LINE__ << std::endl;
 	                                .AccessKey = Object->get(KafkaTopics::ServiceEvents::Fields::KEY).toString(),
 	                                .Version = Object->get(KafkaTopics::ServiceEvents::Fields::VRSN).toString(),
 	                                .LastUpdate = (uint64_t)std::time(nullptr)};
-                                std::cout << __LINE__ << std::endl;
 	                            for (const auto &[Id, Svc] : Services_) {
-                                    std::cout << __LINE__ << std::endl;
 	                                logger().information(fmt::format("ID: {} Type: {} EndPoint: {}",Id,Svc.Type,Svc.PrivateEndPoint));
-                                    std::cout << __LINE__ << std::endl;
 	                            }
 	                        }
 	                    } else {
