@@ -3202,6 +3202,9 @@ namespace OpenWifi {
 	    try {
 	        Poco::JSON::Parser P;
 	        auto Object = P.parse(Payload).extract<Poco::JSON::Object::Ptr>();
+            std::ostringstream OOO;
+            Object->stringify(OOO) ;
+            std::cout << "BUS MESSAGE:" << OOO.str() << std::endl;
 	        if (Object->has(KafkaTopics::ServiceEvents::Fields::ID) &&
 	        Object->has(KafkaTopics::ServiceEvents::Fields::EVENT)) {
 	            uint64_t 	ID = Object->get(KafkaTopics::ServiceEvents::Fields::ID);
