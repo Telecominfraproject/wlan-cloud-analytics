@@ -6,6 +6,7 @@
 #include "VenueWatcher.h"
 #include "StorageService.h"
 #include "sdks/SDK_prov.h"
+#include "fmt/core.h"
 
 namespace OpenWifi {
 
@@ -13,7 +14,7 @@ namespace OpenWifi {
 
         auto F = [&](const AnalyticsObjects::BoardInfo &B) ->bool {
             BoardsToWatch_.insert(B);
-            Logger().information(Poco::format("Starting watch for %s.", B.info.name));
+            Logger().information(fmt::format("Starting watch for {}.", B.info.name));
             return true;
         };
         StorageService()->BoardsDB().Iterate(F);
@@ -74,10 +75,10 @@ namespace OpenWifi {
             ExistingBoards_[B.info.id] = Devices;
             Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id,Logger(),Devices);
             Watchers_[B.info.id]->Start();
-            Logger().information(Poco::format("Started board %s",B.info.name));
+            Logger().information(fmt::format("Started board {}",B.info.name));
             return true;
         }
-        Logger().information(Poco::format("Could not start board %s",B.info.name));
+        Logger().information(fmt::format("Could not start board {}",B.info.name));
         return false;
     }
 
@@ -104,15 +105,15 @@ namespace OpenWifi {
                         if(it2!=Watchers_.end())
                             it2->second->ModifySerialNumbers(Devices);
                         ExistingBoards_[id] = Devices;
-                        Logger().information(Poco::format("Modified board %s",B.info.name));
+                        Logger().information(fmt::format("Modified board {}",B.info.name));
                     } else {
-                        Logger().information(Poco::format("No device changes in board %s",B.info.name));
+                        Logger().information(fmt::format("No device changes in board {}",B.info.name));
                     }
                 }
-                Logger().information(Poco::format("Modified board %s",B.info.name));
+                Logger().information(fmt::format("Modified board {}",B.info.name));
                 return;
             }
-            Logger().information(Poco::format("Could not start board %s",B.info.name));
+            Logger().information(fmt::format("Could not start board {}",B.info.name));
         }
     }
 
@@ -123,7 +124,7 @@ namespace OpenWifi {
         if(StorageService()->BoardsDB().GetRecord("id",id,B))
             BoardsToWatch_.insert(B);
         else
-            Logger().information(Poco::format("Board %d does not seem to exist",id));
+            Logger().information(fmt::format("Board {} does not seem to exist",id));
     }
 
     void VenueCoordinator::GetDevices(std::string &id, AnalyticsObjects::DeviceInfoList &DIL) {

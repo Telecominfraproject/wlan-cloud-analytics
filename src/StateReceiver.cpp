@@ -4,6 +4,7 @@
 
 #include "StateReceiver.h"
 #include "VenueWatcher.h"
+#include "fmt/core.h"
 
 namespace OpenWifi {
 
@@ -57,7 +58,7 @@ namespace OpenWifi {
 
     void StateReceiver::StateReceived( const std::string & Key, const std::string & Payload) {
         std::lock_guard G(Mutex_);
-        Logger().information(Poco::format("Device(%s): State message.", Key));
+        Logger().information(fmt::format("Device({}): State message.", Key));
         Queue_.enqueueNotification( new StateMessage(Key,Payload));
     }
 

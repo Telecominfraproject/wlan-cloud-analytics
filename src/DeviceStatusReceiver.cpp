@@ -4,6 +4,7 @@
 
 #include "DeviceStatusReceiver.h"
 #include "VenueWatcher.h"
+#include "fmt/core.h"
 
 namespace OpenWifi {
     int DeviceStatusReceiver::Start() {
@@ -79,7 +80,7 @@ namespace OpenWifi {
 
     void DeviceStatusReceiver::DeviceStatusReceived(const std::string &Key, const std::string &Payload) {
         std::lock_guard G(Mutex_);
-        Logger().information(Poco::format("Device(%s): Connection/Ping message.", Key));
+        Logger().information(fmt::format("Device({}): Connection/Ping message.", Key));
         Queue_.enqueueNotification( new DeviceStatusMessage(Key,Payload));
     }
 }

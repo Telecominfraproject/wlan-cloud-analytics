@@ -4,6 +4,7 @@
 
 #include "HealthReceiver.h"
 #include "VenueWatcher.h"
+#include "fmt/core.h"
 
 namespace OpenWifi {
     int HealthReceiver::Start() {
@@ -79,7 +80,7 @@ namespace OpenWifi {
 
     void HealthReceiver::HealthReceived(const std::string &Key, const std::string &Payload) {
         std::lock_guard G(Mutex_);
-        Logger().information(Poco::format("Device(%s): Health message.", Key));
+        Logger().information(fmt::format("Device({}): Health message.", Key));
         Queue_.enqueueNotification( new HealthMessage(Key,Payload));
     }
 }
