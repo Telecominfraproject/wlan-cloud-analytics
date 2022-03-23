@@ -1802,7 +1802,7 @@ namespace OpenWifi {
 	    [[nodiscard]] inline bool NeedAdditionalInfo() const { return QB_.AdditionalInfo; }
 	    [[nodiscard]] inline const std::vector<std::string> & SelectedRecords() const { return QB_.Select; }
 
-	    [[nodiscard]] inline const Poco::JSON::Object::Ptr & ParseStream() {
+	    [[nodiscard]] inline const Poco::JSON::Object::Ptr ParseStream() {
 	        return IncomingParser_.parse(Request->stream()).extract<Poco::JSON::Object::Ptr>();
 	    }
 
@@ -1855,28 +1855,28 @@ namespace OpenWifi {
 	    }
 
 		[[nodiscard]] inline uint64_t GetParameter(const std::string &Name, const uint64_t Default) {
-	        auto Hint = std::find_if(Parameters_.begin(),Parameters_.end(),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
+	        auto Hint = std::find_if(Parameters_.begin(),Parameters_.end(),[&](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==Parameters_.end() || !is_number(Hint->second))
 	            return Default;
 	        return std::stoull(Hint->second);
 	    }
 
 		[[nodiscard]] inline bool GetBoolParameter(const std::string &Name, bool Default=false) {
-	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
+            auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[&](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==end(Parameters_) || !is_bool(Hint->second))
 	            return Default;
 	        return Hint->second=="true";
 	    }
 
 	    [[nodiscard]] inline std::string GetParameter(const std::string &Name, const std::string &Default="") {
-	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
+	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[&](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==end(Parameters_))
 	            return Default;
 	        return Hint->second;
 	    }
 
 	    [[nodiscard]] inline bool HasParameter(const std::string &Name, std::string &Value) {
-	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
+	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[&](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==end(Parameters_))
 	            return false;
 	        Value = Hint->second;
@@ -1884,7 +1884,7 @@ namespace OpenWifi {
 	    }
 
 	    [[nodiscard]] inline bool HasParameter(const std::string &Name, uint64_t & Value) {
-	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[Name](const std::pair<std::string,std::string> &S){ return S.first==Name; });
+	        auto Hint = std::find_if(begin(Parameters_),end(Parameters_),[&](const std::pair<std::string,std::string> &S){ return S.first==Name; });
 	        if(Hint==end(Parameters_))
 	            return false;
 	        Value = std::stoull(Hint->second);
@@ -2852,7 +2852,7 @@ namespace OpenWifi {
 
         RESTAPI_ExtServer() noexcept:
 	    SubSystemServer("RESTAPI_ExtServer", "RESTAPIServer", "openwifi.restapi"),
-		Pool_("RESTAPI_ExternalPool")
+        Pool_("RESTAPI_ExtServer",4,50,120)
             {
             }
 	};
@@ -2993,9 +2993,9 @@ namespace OpenWifi {
 
         RESTAPI_IntServer() noexcept:
 		   SubSystemServer("RESTAPI_IntServer", "REST-ISRV", "openwifi.internal.restapi"),
-		   Pool_("RESTAPI_IntServerPool")
-	    {
-	    }
+            Pool_("RESTAPI_IntServer",4,50,120)
+        {
+        }
 	};
 
 	inline auto RESTAPI_IntServer() { return RESTAPI_IntServer::instance(); };
@@ -3711,14 +3711,12 @@ namespace OpenWifi {
         Server_.InitLogging();
 
         for(const auto & Svr: ConfigServersList_) {
-            Logger().information(Poco::format("Starting: %s:%s Keyfile:%s CertFile: %s", Svr.Address(), std::to_string(Svr.Port()),
-                                              Svr.KeyFile(),Svr.CertFile()));
-
-            auto Sock{ MicroService::instance().NoAPISecurity() ? Svr.CreateSocket(Logger()) : Svr.CreateSecureSocket(Logger())};
 
             if(MicroService::instance().NoAPISecurity()) {
-                Logger().information("Security has been disabled for APIs.");
+                Logger().information(Poco::format("Starting:  %s:%s. Security has been disabled for APIs.", Svr.Address(), std::to_string(Svr.Port())));
             } else {
+                Logger().information(Poco::format("Starting: %s:%s Keyfile:%s CertFile: %s", Svr.Address(), std::to_string(Svr.Port()),
+                                                  Svr.KeyFile(),Svr.CertFile()));
                 Svr.LogCert(Logger());
                 if (!Svr.RootCA().empty())
                     Svr.LogCas(Logger());
@@ -3729,7 +3727,14 @@ namespace OpenWifi {
             Params->setMaxQueued(200);
             Params->setKeepAlive(true);
 
-            auto NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+            std::unique_ptr<Poco::Net::HTTPServer>  NewServer;
+            if(MicroService::instance().NoAPISecurity()) {
+                auto Sock{Svr.CreateSocket(Logger())};
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+            } else {
+                auto Sock{Svr.CreateSecureSocket(Logger())};
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+            };
             NewServer->start();
             RESTServers_.push_back(std::move(NewServer));
         }
@@ -3742,14 +3747,12 @@ namespace OpenWifi {
         Server_.InitLogging();
 
         for(const auto & Svr: ConfigServersList_) {
-            Logger().information(Poco::format("Starting: %s:%s Keyfile:%s CertFile: %s", Svr.Address(), std::to_string(Svr.Port()),
-                                              Svr.KeyFile(),Svr.CertFile()));
-
-            auto Sock{ MicroService::instance().NoAPISecurity() ? Svr.CreateSocket(Logger()) : Svr.CreateSecureSocket(Logger())};
 
             if(MicroService::instance().NoAPISecurity()) {
-                Logger().information("Security has been disabled for APIs.");
+                Logger().information(Poco::format("Starting:  %s:%s. Security has been disabled for APIs.", Svr.Address(), std::to_string(Svr.Port())));
             } else {
+                Logger().information(Poco::format("Starting: %s:%s Keyfile:%s CertFile: %s", Svr.Address(), std::to_string(Svr.Port()),
+                                                  Svr.KeyFile(),Svr.CertFile()));
                 Svr.LogCert(Logger());
                 if (!Svr.RootCA().empty())
                     Svr.LogCas(Logger());
@@ -3760,7 +3763,14 @@ namespace OpenWifi {
             Params->setMaxQueued(200);
             Params->setKeepAlive(true);
 
-            auto NewServer = std::make_unique<Poco::Net::HTTPServer>(new IntRequestHandlerFactory(Server_), Pool_, Sock, Params);
+            std::unique_ptr<Poco::Net::HTTPServer>  NewServer;
+            if(MicroService::instance().NoAPISecurity()) {
+                auto Sock{Svr.CreateSocket(Logger())};
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+            } else {
+                auto Sock{Svr.CreateSecureSocket(Logger())};
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+            };
             NewServer->start();
             RESTServers_.push_back(std::move(NewServer));
         }

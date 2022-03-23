@@ -34,6 +34,15 @@ namespace OpenWifi {
 
         AnalyticsObjects::DeviceTimePointList   Points;
         StorageService()->TimePointsDB().SelectRecords(fromDate, endDate, maxRecords, Points.points);
+
+        // sort by timestamp & serial number.
+        std::sort( Points.points.begin(), Points.points.end());
+
+        //  your first point's serial number is your separator. So you need to slice the points array
+        //  into timestamp slots
+
+
+
         Poco::JSON::Object  Answer;
         Points.to_json(Answer);
         return ReturnObject(Answer);

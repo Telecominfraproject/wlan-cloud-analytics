@@ -210,6 +210,31 @@ namespace OpenWifi {
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
+
+            inline bool operator<(const DeviceTimePoint &rhs) const {
+                if(timestamp < rhs.timestamp)
+                    return true;
+                if(timestamp > rhs.timestamp)
+                    return false;
+                if(device_info.serialNumber < rhs.device_info.serialNumber)
+                    return true;
+                return false;
+            }
+
+            inline bool operator==(const DeviceTimePoint &rhs) const {
+                return timestamp==rhs.timestamp && device_info.serialNumber==rhs.device_info.serialNumber;
+            }
+
+            inline bool operator>(const DeviceTimePoint &rhs) const {
+                if(timestamp > rhs.timestamp)
+                    return true;
+                if(timestamp < rhs.timestamp)
+                    return false;
+                if(device_info.serialNumber > rhs.device_info.serialNumber)
+                    return true;
+                return false;
+            }
+
         };
 
         struct DeviceTimePointList {
