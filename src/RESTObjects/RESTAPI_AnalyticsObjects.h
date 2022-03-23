@@ -52,25 +52,25 @@ namespace OpenWifi {
             std::string type;
             std::string serialNumber;
             std::string deviceType;
-            uint64_t lastContact;
-            uint64_t lastPing;
-            uint64_t lastState;
+            uint64_t lastContact = 0 ;
+            uint64_t lastPing = 0;
+            uint64_t lastState = 0;
             std::string lastFirmware;
-            uint64_t lastFirmwareUpdate;
-            uint64_t lastConnection;
-            uint64_t lastDisconnection;
-            uint64_t pings;
-            uint64_t states;
-            bool connected;
+            uint64_t lastFirmwareUpdate = 0;
+            uint64_t lastConnection = 0;
+            uint64_t lastDisconnection = 0;
+            uint64_t pings = 0;
+            uint64_t states = 0;
+            bool connected = false;
             std::string connectionIp;
-            uint64_t associations_2g;
-            uint64_t associations_5g;
-            uint64_t associations_6g;
-            uint64_t health;
-            uint64_t lastHealth;
+            uint64_t associations_2g = 0;
+            uint64_t associations_5g = 0;
+            uint64_t associations_6g = 0;
+            uint64_t health = 0;
+            uint64_t lastHealth = 0;
             std::string locale;
-            uint64_t uptime;
-            double memory;
+            uint64_t uptime = 0;
+            double memory = 0.0;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
@@ -245,7 +245,7 @@ namespace OpenWifi {
         };
 
         struct BandwidthAnalysisEntry {
-            uint64_t    timestamp;
+            uint64_t    timestamp = 0;
 
         };
 
