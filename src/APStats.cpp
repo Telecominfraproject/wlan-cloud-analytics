@@ -120,10 +120,8 @@ namespace OpenWifi {
                             }
                             for(const auto &association:associations) {
                                 AnalyticsObjects::UETimePoint TP;
-                                // std::cout << "ASSOCIATIONDATA: " << association << std::endl;
                                 GetJSON("station",association,TP.station, std::string{} );
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
-                                std::cout << "RSSI:" << TP.rssi << std::endl;
                                 GetJSON("tx_bytes",association,TP.tx_bytes, (uint64_t)0 );
                                 GetJSON("rx_bytes",association,TP.rx_bytes, (uint64_t)0 );
                                 GetJSON("tx_duration",association,TP.tx_duration, (uint64_t)0 );
@@ -137,12 +135,12 @@ namespace OpenWifi {
                                 if(association.contains("tid_stats") && association["tid_stats"].is_array()) {
                                     auto tid_stats = association["tid_stats"];
                                     for(const auto &tid_stat:tid_stats) {
-                                        AnalyticsObjects::MSDU_entry  E;
+                                        AnalyticsObjects::TIDstat_entry  E;
                                         GetJSON("rx_msdu",tid_stat,E.rx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu",tid_stat,E.tx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu_failed",tid_stat,E.tx_msdu_failed, (uint64_t)0 );
                                         GetJSON("tx_msdu_retries",tid_stat,E.tx_msdu_retries, (uint64_t)0 );
-                                        TP.msdus.push_back(E);
+                                        TP.tidstat.push_back(E);
                                     }
                                 }
 
@@ -165,7 +163,6 @@ namespace OpenWifi {
                                     GetJSON("ht",rx_rate,TP.rx_rate.ht, false );
                                     GetJSON("sgi",rx_rate,TP.rx_rate.sgi, false );
                                 }
-
                                 SSIDTP.associations.push_back(TP);
                             }
                         }

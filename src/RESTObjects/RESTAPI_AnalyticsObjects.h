@@ -87,7 +87,7 @@ namespace OpenWifi {
             band_2g = 0, band_5g = 1, band_6g = 2
         };
 
-        struct MSDU_entry {
+        struct TIDstat_entry {
             uint64_t rx_msdu = 0,
                     tx_msdu = 0,
                     tx_msdu_failed = 0,
@@ -123,7 +123,7 @@ namespace OpenWifi {
                     inactive = 0;
             UE_rate tx_rate,
                     rx_rate;
-            std::vector<MSDU_entry> msdus;
+            std::vector<TIDstat_entry> tidstat;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);

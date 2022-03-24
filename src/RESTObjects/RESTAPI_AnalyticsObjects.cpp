@@ -225,14 +225,14 @@ namespace OpenWifi::AnalyticsObjects {
         return false;
     }
 
-    void MSDU_entry::to_json(Poco::JSON::Object &Obj) const {
+    void TIDstat_entry::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"rx_msdu",rx_msdu);
         field_to_json(Obj,"tx_msdu",tx_msdu);
         field_to_json(Obj,"tx_msdu_failed",tx_msdu_failed);
         field_to_json(Obj,"tx_msdu_retries",tx_msdu_retries);
     }
 
-    bool MSDU_entry::from_json(const Poco::JSON::Object::Ptr &Obj) {
+    bool TIDstat_entry::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
             field_from_json(Obj,"rx_msdu",rx_msdu);
             field_from_json(Obj,"tx_msdu",tx_msdu);
