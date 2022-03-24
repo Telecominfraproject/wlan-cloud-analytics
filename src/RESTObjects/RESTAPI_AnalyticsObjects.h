@@ -159,6 +159,7 @@ namespace OpenWifi {
             std::string bssid,
                         mode,
                         ssid;
+            uint64_t    band=0;
             std::vector<UETimePoint> associations;
 
             void to_json(Poco::JSON::Object &Obj) const;

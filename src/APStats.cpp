@@ -51,7 +51,7 @@ namespace OpenWifi {
                     if (radio.contains("channel")) {
                         AnalyticsObjects::RadioTimePoint  RTP;
                         RTP.band = radio["channel"] <= 16 ? 2 : 5;
-                        radio_band[radio_index++] = radio["channel"] <= 16 ? 2 : 5;
+                        radio_band[radio_index++] = RTP.band;
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
                         GetJSON("transmit_ms", radio, RTP.transmit_ms, (uint64_t) 0);
@@ -88,14 +88,19 @@ namespace OpenWifi {
                     auto ssids = interface["ssids"];
                     for (const auto &ssid: ssids) {
                         AnalyticsObjects::SSIDTimePoint   SSIDTP;
-                        uint radio_location = 2;
+                        uint radio_location=0;
+                        SSIDTP.band = 2;
                         if(ssid.contains("radio")) {
                             auto radio = ssid["radio"];
                             if(radio.contains("$ref")) {
                                 auto ref = radio["$ref"];
                                 auto radio_parts = Poco::StringTokenizer(ref, "/");
-                                if(radio_parts.count()==3)
-                                    radio_location = std::strtol(radio_parts[2].c_str(), nullptr,10);
+                                if(radio_parts.count()==3) {
+                                    radio_location = std::strtol(radio_parts[2].c_str(), nullptr, 10);
+                                    if(radio_band.find(radio_location)!=radio_band.end()) {
+                                        SSIDTP.band = radio_band[radio_location];
+                                    }
+                                }
                             }
                         }
                         GetJSON("bssid",ssid,SSIDTP.bssid, std::string{""});

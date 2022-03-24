@@ -281,6 +281,7 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"bssid",bssid);
         field_to_json(Obj,"mode",mode);
         field_to_json(Obj,"ssid",ssid);
+        field_to_json(Obj,"band",band);
         field_to_json(Obj,"associations",associations);
     }
 
@@ -289,6 +290,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"bssid",bssid);
             field_from_json(Obj,"mode",mode);
             field_from_json(Obj,"ssid",ssid);
+            field_from_json(Obj,"band",band);
             field_from_json(Obj,"associations",associations);
             return true;
         } catch(...) {
