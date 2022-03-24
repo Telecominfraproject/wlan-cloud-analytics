@@ -1,2 +1,2 @@
 # wlan-cloud-analytics
-OpenWiFi Analytics
+OpenWiFi Analytics V0.01
