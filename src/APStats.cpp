@@ -120,6 +120,7 @@ namespace OpenWifi {
                             }
                             for(const auto &association:associations) {
                                 AnalyticsObjects::UETimePoint TP;
+                                std::cout << "ASSOCIATIONDATA: " << association << std::endl;
                                 GetJSON("station",association,TP.station, std::string{} );
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
                                 GetJSON("tx_bytes",association,TP.tx_bytes, (uint64_t)0 );

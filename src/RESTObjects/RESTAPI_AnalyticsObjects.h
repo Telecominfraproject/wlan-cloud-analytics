@@ -168,16 +168,23 @@ namespace OpenWifi {
 
 
         struct APTimePoint {
-            uint64_t collisions = 0,
-                    multicast = 0,
-                    rx_bytes = 0,
-                    rx_dropped = 0,
-                    rx_errors = 0,
-                    rx_packets = 0,
-                    tx_bytes = 0,
-                    tx_dropped = 0,
-                    tx_errors = 0,
-                    tx_packets = 0;
+            uint64_t    collisions = 0,
+                        multicast = 0,
+                        rx_bytes = 0,
+                        rx_dropped = 0,
+                        rx_errors = 0,
+                        rx_packets = 0,
+                        tx_bytes = 0,
+                        tx_dropped = 0,
+                        tx_errors = 0,
+                        tx_packets = 0;
+
+            double      tx_bytes_bw = 0.0 ,
+                        rx_bytes_bw = 0.0 ,
+                        rx_dropped_pct = 0.0,
+                        tx_dropped_pct = 0.0,
+                        rx_packets_bw = 0.0,
+                        tx_packets_bw = 0.0;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
