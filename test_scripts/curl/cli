@@ -109,7 +109,7 @@ fi
 }
 
 setanalytics() {
-    if [ -z ${OWPROV_OVERRIDE+x} ]; then
+    if [ -z ${OWANALYTICS_OVERRIDE+x} ]; then
     curl  ${FLAGS} -X GET "https://${OWSEC}/api/v1/systemEndpoints" \
         -H "accept: application/json" \
         -H "Authorization: Bearer ${token}"  > ${result_file}
