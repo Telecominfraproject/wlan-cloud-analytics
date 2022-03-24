@@ -1,0 +1,150 @@
+{
+    "interfaces": [
+        {
+            "clients": [
+                {
+                    "ipv4_addresses": [
+                        "10.2.140.145"
+                    ],
+                    "mac": "00:23:a4:05:05:95",
+                    "ports": [
+                        "eth1"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.2.0.1"
+                    ],
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:a8a2:caff:fe45:bc6b"
+                    ],
+                    "mac": "e2:63:da:86:64:8e",
+                    "ports": [
+                        "eth1"
+                    ]
+                }
+            ],
+            "counters": {
+                "collisions": 0,
+                "multicast": 662754,
+                "rx_bytes": 151712263,
+                "rx_dropped": 0,
+                "rx_errors": 0,
+                "rx_packets": 939389,
+                "tx_bytes": 17826254,
+                "tx_dropped": 0,
+                "tx_errors": 0,
+                "tx_packets": 91600
+            },
+            "dns_servers": [
+                "10.2.0.1"
+            ],
+            "ipv4": {
+                "addresses": [
+                    "10.2.172.66/16"
+                ],
+                "dhcp_server": "10.2.0.1",
+                "leasetime": 86400
+            },
+            "location": "/interfaces/0",
+            "name": "up0v0",
+            "uptime": 116194
+        },
+        {
+            "counters": {
+                "collisions": 0,
+                "multicast": 819,
+                "rx_bytes": 12894844,
+                "rx_dropped": 0,
+                "rx_errors": 0,
+                "rx_packets": 79306,
+                "tx_bytes": 31429410,
+                "tx_dropped": 0,
+                "tx_errors": 0,
+                "tx_packets": 92656
+            },
+            "ipv4": {
+                "addresses": [
+                    "192.168.1.1/24"
+                ]
+            },
+            "location": "/interfaces/1",
+            "name": "down1v0",
+            "ssids": [
+                {
+                    "bssid": "04:f8:f8:fc:37:74",
+                    "iface": "wlan0",
+                    "mode": "ap",
+                    "phy": "soc/1b700000.pci/pci0001:00/0001:00:00.0/0001:01:00.0",
+                    "radio": {
+                        "$ref": "#/radios/0"
+                    },
+                    "ssid": "OpenWifi-fc3771"
+                },
+                {
+                    "bssid": "04:f8:f8:fc:37:73",
+                    "iface": "wlan1",
+                    "mode": "ap",
+                    "phy": "soc/1b900000.pci/pci0002:00/0002:00:00.0/0002:01:00.0",
+                    "radio": {
+                        "$ref": "#/radios/1"
+                    },
+                    "ssid": "OpenWifi-fc3771"
+                }
+            ],
+            "uptime": 116195
+        }
+    ],
+    "link-state": {
+        "lan": {
+            "eth1": {
+                "carrier": 0
+            }
+        },
+        "wan": {
+            "eth0": {
+                "carrier": 0
+            }
+        }
+    },
+    "radios": [
+        {
+            "active_ms": 116149120,
+            "busy_ms": 1061014,
+            "channel": 157,
+            "channel_width": "40",
+            "noise": -102,
+            "phy": "soc/1b700000.pci/pci0001:00/0001:00:00.0/0001:01:00.0",
+            "receive_ms": 749022,
+            "transmit_ms": 130980,
+            "tx_power": 24
+        },
+        {
+            "active_ms": 116142427,
+            "busy_ms": 4820047,
+            "channel": 1,
+            "channel_width": "20",
+            "noise": -94,
+            "phy": "soc/1b900000.pci/pci0002:00/0002:00:00.0/0002:01:00.0",
+            "receive_ms": 1345110,
+            "transmit_ms": 121020,
+            "tx_power": 24
+        }
+    ],
+    "unit": {
+        "load": [
+            0,
+            0,
+            0
+        ],
+        "localtime": 1646897100,
+        "memory": {
+            "buffered": 6762496,
+            "cached": 17715200,
+            "free": 100237312,
+            "total": 217239552
+        },
+        "uptime": 116225
+    },
+    "version": 1
+}
