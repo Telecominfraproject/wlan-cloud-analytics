@@ -1,0 +1,154 @@
+{
+    "globals": {
+        "wireless-multimedia": {
+            "profile": "rfc8325"
+        }
+    },
+    "interfaces": [
+        {
+            "ethernet": [
+                {
+                    "select-ports": [
+                        "WAN*",
+                        "LAN*"
+                    ]
+                }
+            ],
+            "ipv4": {
+                "addressing": "dynamic"
+            },
+            "ipv6": {
+                "addressing": "dynamic"
+            },
+            "name": "BowenNetwork",
+            "role": "upstream",
+            "services": [
+                "ssh",
+                "lldp",
+                "mdns"
+            ],
+            "ssids": [
+                {
+                    "bss-mode": "mesh",
+                    "encryption": {
+                        "ieee80211w": "optional",
+                        "key": "snoopy_mesh",
+                        "proto": "psk2"
+                    },
+                    "name": "BowenMesh",
+                    "services": [
+                        "statistics"
+                    ],
+                    "wifi-bands": [
+                        "5G"
+                    ]
+                },
+                {
+                    "bss-mode": "ap",
+                    "encryption": {
+                        "ieee80211w": "optional",
+                        "key": "snoopy99",
+                        "proto": "psk2"
+                    },
+                    "name": "petunia",
+                    "roaming": {
+                        "generate-psk": true,
+                        "message-exchange": "ds"
+                    },
+                    "services": [
+                        "wifi-steering"
+                    ],
+                    "wifi-bands": [
+                        "2G",
+                        "5G"
+                    ]
+                }
+            ],
+            "tunnel": {
+                "proto": "mesh"
+            },
+            "vlan": {
+                "id": 100
+            }
+        }
+    ],
+    "metrics": {
+        "dhcp-snooping": {
+            "filters": [
+                "ack",
+                "discover",
+                "offer",
+                "request",
+                "solicit",
+                "reply",
+                "renew"
+            ]
+        },
+        "health": {
+            "interval": 60
+        },
+        "statistics": {
+            "interval": 60,
+            "types": [
+                "ssids",
+                "lldp",
+                "clients"
+            ]
+        },
+        "wifi-frames": {
+            "filters": [
+                "probe",
+                "auth",
+                "assoc",
+                "disassoc",
+                "deauth",
+                "local-deauth",
+                "inactive-deauth",
+                "key-mismatch",
+                "beacon-report",
+                "radar-detected"
+            ]
+        }
+    },
+    "radios": [
+        {
+            "band": "5G",
+            "bandwidth": 20,
+            "channel": 36,
+            "channel-mode": "VHT",
+            "channel-width": 80,
+            "country": "CA",
+            "tx-power": 10
+        },
+        {
+            "band": "2G",
+            "bandwidth": 20,
+            "channel-mode": "VHT",
+            "channel-width": 40,
+            "country": "CA",
+            "tx-power": 23
+        }
+    ],
+    "services": {
+        "lldp": {
+            "describe": "uCentral",
+            "location": "universe"
+        },
+        "mdns": {
+            "enable": true
+        },
+        "ssh": {
+            "port": 22
+        },
+        "wifi-steering": {
+            "assoc-steering": true,
+            "load-kick-threshold": 90,
+            "mode": "local",
+            "network": "upstream",
+            "required-probe-snr": -80,
+            "required-roam-snr": -80,
+            "required-snr": -85
+        }
+    },
+    "uuid": 1645464648
+}

@@ -1,0 +1,1554 @@
+{
+    "interfaces": [
+        {
+            "clients": [
+                {
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:1ab4:30ff:feb7:11a2"
+                    ],
+                    "mac": "18:b4:30:b7:11:a2",
+                    "ports": [
+                        "wlan1"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.100.14.61"
+                    ],
+                    "mac": "34:d2:70:67:b9:de",
+                    "ports": [
+                        "wlan0-1"
+                    ]
+                },
+                {
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:4e8:b4a4:9976:b85e"
+                    ],
+                    "mac": "36:3b:d9:f3:bd:bb",
+                    "ports": [
+                        "wlan0-1"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.100.34.123"
+                    ],
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:4600:49ff:fe3d:667b"
+                    ],
+                    "mac": "44:00:49:3d:66:7b",
+                    "ports": [
+                        "wlan0-1"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.100.164.73"
+                    ],
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:e2:5d0e:1f50:fc90"
+                    ],
+                    "mac": "58:d3:49:0d:d2:56",
+                    "ports": [
+                        "wlan0-1"
+                    ]
+                },
+                {
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:6072:4bff:fe45:5eb6"
+                    ],
+                    "mac": "62:72:4b:45:5e:b6",
+                    "ports": [
+                        "wlan0-1"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.100.71.149"
+                    ],
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:6a21:5fff:fe04:2c32"
+                    ],
+                    "mac": "68:21:5f:04:2c:32",
+                    "ports": [
+                        "eth0"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.100.173.115"
+                    ],
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:18ff:6919:f36:6faa"
+                    ],
+                    "mac": "7a:c5:5b:a1:2b:89",
+                    "ports": [
+                        "wlan0-1"
+                    ]
+                },
+                {
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:923c:b3ff:febb:1ef4"
+                    ],
+                    "mac": "90:3c:b3:bb:1e:f4",
+                    "ports": [
+                        "eth0"
+                    ]
+                },
+                {
+                    "ipv4_addresses": [
+                        "10.100.0.1"
+                    ],
+                    "ipv6_addresses": [
+                        "fe80:0:0:0:dc41:8bff:fe8f:a5e7",
+                        "2604:3d08:9680:bd01:0:0:0:1"
+                    ],
+                    "mac": "e0:63:da:86:64:97",
+                    "ports": [
+                        "eth0"
+                    ]
+                }
+            ],
+            "counters": {
+                "collisions": 0,
+                "multicast": 8834831,
+                "rx_bytes": 1027147259,
+                "rx_dropped": 0,
+                "rx_errors": 0,
+                "rx_packets": 10013707,
+                "tx_bytes": 386397108,
+                "tx_dropped": 0,
+                "tx_errors": 0,
+                "tx_packets": 4033748
+            },
+            "location": "/interfaces/0",
+            "name": "up0v100",
+            "ssids": [
+                {
+                    "associations": [
+                        {
+                            "bssid": "36:3b:d9:f3:bd:bb",
+                            "connected": 16843,
+                            "deltas": {
+                                "rx_bytes": 3796,
+                                "rx_packets": 30,
+                                "tx_bytes": 1458,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 16,
+                                "tx_retries": 0
+                            },
+                            "inactive": 23,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 51595,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -64,
+                            "rx_bytes": 10109437,
+                            "rx_packets": 51607,
+                            "rx_rate": {
+                                "bitrate": 286700,
+                                "chwidth": 20
+                            },
+                            "station": "36:3b:d9:f3:bd:bb",
+                            "tx_bytes": 31546941,
+                            "tx_duration": 10624,
+                            "tx_failed": 0,
+                            "tx_offset": 0,
+                            "tx_packets": 57293,
+                            "tx_rate": {
+                                "bitrate": 6000,
+                                "chwidth": 20
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "7a:c5:5b:a1:2b:89",
+                            "connected": 20200,
+                            "deltas": {
+                                "rx_bytes": 4146,
+                                "rx_packets": 39,
+                                "tx_bytes": 11675,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 34,
+                                "tx_retries": 0
+                            },
+                            "inactive": 0,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 37868,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -58,
+                            "rx_bytes": 6038108,
+                            "rx_packets": 37884,
+                            "rx_rate": {
+                                "bitrate": 960700,
+                                "chwidth": 80
+                            },
+                            "station": "7a:c5:5b:a1:2b:89",
+                            "tx_bytes": 19993325,
+                            "tx_duration": 9603,
+                            "tx_failed": 0,
+                            "tx_offset": 0,
+                            "tx_packets": 38810,
+                            "tx_rate": {
+                                "bitrate": 1200900,
+                                "chwidth": 80
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "58:d3:49:0d:d2:56",
+                            "connected": 23990,
+                            "deltas": {
+                                "rx_bytes": 9460,
+                                "rx_packets": 40,
+                                "tx_bytes": 7072,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 26,
+                                "tx_retries": 0
+                            },
+                            "inactive": 2,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 28255,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 2,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -52,
+                            "rx_bytes": 4500613,
+                            "rx_packets": 28265,
+                            "rx_rate": {
+                                "bitrate": 72200,
+                                "chwidth": 20,
+                                "ht": true,
+                                "mcs": 7,
+                                "sgi": true
+                            },
+                            "station": "58:d3:49:0d:d2:56",
+                            "tx_bytes": 6133006,
+                            "tx_duration": 6582,
+                            "tx_failed": 0,
+                            "tx_offset": 0,
+                            "tx_packets": 25314,
+                            "tx_rate": {
+                                "bitrate": 72200,
+                                "chwidth": 20,
+                                "ht": true,
+                                "mcs": 7,
+                                "sgi": true
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "44:00:49:3d:66:7b",
+                            "connected": 251763,
+                            "deltas": {
+                                "rx_bytes": 47048,
+                                "rx_packets": 453,
+                                "tx_bytes": 48516,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 432,
+                                "tx_retries": 0
+                            },
+                            "inactive": 2,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 1534244,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -41,
+                            "rx_bytes": 113926061,
+                            "rx_packets": 1537596,
+                            "rx_rate": {
+                                "bitrate": 135000,
+                                "chwidth": 40,
+                                "ht": true,
+                                "mcs": 7,
+                                "sgi": true
+                            },
+                            "station": "44:00:49:3d:66:7b",
+                            "tx_bytes": 109067775,
+                            "tx_duration": 8173557,
+                            "tx_failed": 553,
+                            "tx_offset": 0,
+                            "tx_packets": 1518351,
+                            "tx_rate": {
+                                "bitrate": 6000,
+                                "chwidth": 20,
+                                "ht": true,
+                                "mcs": 5,
+                                "sgi": true
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "cc:f7:35:8d:70:2b",
+                            "connected": 269879,
+                            "deltas": {
+                                "rx_bytes": 44344,
+                                "rx_packets": 277,
+                                "tx_bytes": 28186,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 207,
+                                "tx_retries": 0
+                            },
+                            "inactive": 2,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 1152146,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -68,
+                            "rx_bytes": 217448410,
+                            "rx_packets": 1152149,
+                            "rx_rate": {
+                                "bitrate": 433300,
+                                "chwidth": 80,
+                                "mcs": 9,
+                                "nss": 1,
+                                "sgi": true,
+                                "vht": true
+                            },
+                            "station": "cc:f7:35:8d:70:2b",
+                            "tx_bytes": 159221293,
+                            "tx_duration": 3335601,
+                            "tx_failed": 0,
+                            "tx_offset": 0,
+                            "tx_packets": 839779,
+                            "tx_rate": {
+                                "bitrate": 650000,
+                                "chwidth": 80,
+                                "mcs": 7,
+                                "nss": 2,
+                                "sgi": true,
+                                "vht": true
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "1c:12:b0:97:f2:57",
+                            "connected": 278640,
+                            "deltas": {
+                                "rx_bytes": 27695,
+                                "rx_packets": 248,
+                                "tx_bytes": 29801,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 210,
+                                "tx_retries": 0
+                            },
+                            "inactive": 2,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 7693187,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 5,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -76,
+                            "rx_bytes": 604578068,
+                            "rx_packets": 7693200,
+                            "rx_rate": {
+                                "bitrate": 234000,
+                                "chwidth": 80,
+                                "mcs": 3,
+                                "nss": 2,
+                                "sgi": true,
+                                "vht": true
+                            },
+                            "station": "1c:12:b0:97:f2:57",
+                            "tx_bytes": -854970439,
+                            "tx_duration": 62704209,
+                            "tx_failed": 579,
+                            "tx_offset": 0,
+                            "tx_packets": 20172259,
+                            "tx_rate": {
+                                "bitrate": 585100,
+                                "chwidth": 80,
+                                "mcs": 6,
+                                "nss": 2,
+                                "sgi": true,
+                                "vht": true
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "62:72:4b:45:5e:b6",
+                            "connected": 635029,
+                            "deltas": {
+                                "rx_bytes": 0,
+                                "rx_packets": 0,
+                                "tx_bytes": 0,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 0,
+                                "tx_retries": 0
+                            },
+                            "inactive": 183,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 936248,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 10,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -46,
+                            "rx_bytes": 841656999,
+                            "rx_packets": 936326,
+                            "rx_rate": {
+                                "bitrate": 864800,
+                                "chwidth": 80
+                            },
+                            "station": "62:72:4b:45:5e:b6",
+                            "tx_bytes": 512402837,
+                            "tx_duration": 7042856,
+                            "tx_failed": 1156,
+                            "tx_offset": 0,
+                            "tx_packets": 3651797,
+                            "tx_rate": {
+                                "bitrate": 1080600,
+                                "chwidth": 80
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "34:d2:70:67:b9:de",
+                            "connected": 1048051,
+                            "deltas": {
+                                "rx_bytes": 17672,
+                                "rx_packets": 168,
+                                "tx_bytes": 24179,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 176,
+                                "tx_retries": 0
+                            },
+                            "inactive": 3,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 2580453,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 14,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -73,
+                            "rx_bytes": 219183284,
+                            "rx_packets": 2580595,
+                            "rx_rate": {
+                                "bitrate": 54000,
+                                "chwidth": 40,
+                                "ht": true,
+                                "mcs": 3,
+                                "sgi": true
+                            },
+                            "station": "34:d2:70:67:b9:de",
+                            "tx_bytes": 268980509,
+                            "tx_duration": 26594148,
+                            "tx_failed": 3,
+                            "tx_offset": 0,
+                            "tx_packets": 2475047,
+                            "tx_rate": {
+                                "bitrate": 300000,
+                                "chwidth": 40,
+                                "ht": true,
+                                "mcs": 15,
+                                "sgi": true
+                            },
+                            "tx_retries": 0
+                        }
+                    ],
+                    "bssid": "92:3c:b3:bb:1e:f8",
+                    "iface": "wlan0-1",
+                    "mode": "ap",
+                    "phy": "platform/soc/c000000.wifi",
+                    "radio": {
+                        "$ref": "#/radios/0"
+                    },
+                    "ssid": "petunia"
+                },
+                {
+                    "associations": [
+                        {
+                            "bssid": "18:b4:30:b7:11:a2",
+                            "connected": 440815,
+                            "deltas": {
+                                "rx_bytes": 110,
+                                "rx_packets": 2,
+                                "tx_bytes": 112,
+                                "tx_failed": 0,
+                                "tx_offset": 0,
+                                "tx_packets": 2,
+                                "tx_retries": 0
+                            },
+                            "inactive": 0,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 35753,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -50,
+                            "rx_bytes": 6483053,
+                            "rx_packets": 35759,
+                            "rx_rate": {
+                                "bitrate": 65000,
+                                "chwidth": 20,
+                                "ht": true,
+                                "mcs": 7
+                            },
+                            "station": "18:b4:30:b7:11:a2",
+                            "tx_bytes": 3428522,
+                            "tx_duration": 187024,
+                            "tx_failed": 13,
+                            "tx_offset": 0,
+                            "tx_packets": 34026,
+                            "tx_rate": {
+                                "bitrate": 65000,
+                                "chwidth": 20,
+                                "ht": true,
+                                "mcs": 7,
+                                "sgi": true
+                            },
+                            "tx_retries": 0
+                        },
+                        {
+                            "bssid": "48:e1:e9:3d:a2:06",
+                            "connected": 1256955,
+                            "deltas": {
+                                "rx_bytes": 546,
+                                "rx_packets": 8,
+                                "tx_bytes": 526,
+                                "tx_failed": 1,
+                                "tx_offset": 0,
+                                "tx_packets": 7,
+                                "tx_retries": 0
+                            },
+                            "inactive": 17,
+                            "msdu": [
+                                {
+                                    "rx_msdu": 162991,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                },
+                                {
+                                    "rx_msdu": 0,
+                                    "tx_msdu": 0,
+                                    "tx_msdu_failed": 0,
+                                    "tx_msdu_retries": 0
+                                }
+                            ],
+                            "rssi": -65,
+                            "rx_bytes": 11418291,
+                            "rx_packets": 163010,
+                            "rx_rate": {
+                                "bitrate": 11000,
+                                "chwidth": 20,
+                                "ht": true,
+                                "mcs": 5,
+                                "sgi": true
+                            },
+                            "station": "48:e1:e9:3d:a2:06",
+                            "tx_bytes": 9950518,
+                            "tx_duration": 2603010,
+                            "tx_failed": 2027,
+                            "tx_offset": 0,
+                            "tx_packets": 123572,
+                            "tx_rate": {
+                                "bitrate": 48000,
+                                "chwidth": 20
+                            },
+                            "tx_retries": 0
+                        }
+                    ],
+                    "bssid": "90:3c:b3:bb:1e:f7",
+                    "iface": "wlan1",
+                    "mode": "ap",
+                    "phy": "platform/soc/c000000.wifi+1",
+                    "radio": {
+                        "$ref": "#/radios/1"
+                    },
+                    "ssid": "petunia"
+                }
+            ],
+            "uptime": 1319998
+        }
+    ],
+    "link-state": {
+        "lan": {
+            "eth1": {
+                "carrier": 0
+            },
+            "eth2": {
+                "carrier": 0
+            }
+        },
+        "wan": {
+            "eth0": {
+                "carrier": 0
+            }
+        }
+    },
+    "radios": [
+        {
+            "active_ms": 1319570519,
+            "busy_ms": 57586707,
+            "channel": 36,
+            "channel_width": "80",
+            "noise": -104,
+            "phy": "platform/soc/c000000.wifi",
+            "receive_ms": 6548669,
+            "temperature": 47,
+            "transmit_ms": 19698623,
+            "tx_power": 23
+        },
+        {
+            "active_ms": 1319560001,
+            "busy_ms": 130190566,
+            "channel": 11,
+            "channel_width": "20",
+            "noise": -99,
+            "phy": "platform/soc/c000000.wifi+1",
+            "receive_ms": 325756,
+            "temperature": 46,
+            "transmit_ms": 13548246,
+            "tx_power": 10
+        }
+    ],
+    "unit": {
+        "load": [
+            0.005859,
+            0.022461,
+            0
+        ],
+        "localtime": 1646893048,
+        "memory": {
+            "buffered": 8839168,
+            "cached": 25149440,
+            "free": 792580096,
+            "total": 973135872
+        },
+        "uptime": 1320021
+    },
+    "version": 1
+}
