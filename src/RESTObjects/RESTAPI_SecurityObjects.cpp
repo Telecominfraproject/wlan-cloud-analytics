@@ -95,6 +95,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj, "PortalLogin", PortalLogin_);
 			return true;
 		} catch(...) {
+            std::cout << "Cannot parse: AclTemplate" << std::endl;
 		}
 		return false;
 	}
@@ -130,7 +131,7 @@ namespace OpenWifi::SecurityObjects {
             field_from_json(Obj, "userMustChangePassword",userMustChangePassword);
 			return true;
 		} catch (...) {
-
+            std::cout << "Cannot parse: WebToken" << std::endl;
 		}
 		return false;
 	}
@@ -148,7 +149,7 @@ namespace OpenWifi::SecurityObjects {
 	        field_from_json(Obj,"primary",primary);
 	        return true;
 	    } catch (...) {
-
+            std::cout << "Cannot parse: MobilePhoneNumber" << std::endl;
 	    }
 	    return false;
 	};
@@ -164,7 +165,7 @@ namespace OpenWifi::SecurityObjects {
 	        field_from_json(Obj,"method",method);
 	        return true;
 	    } catch (...) {
-
+            std::cout << "Cannot parse: MfaAuthInfo" << std::endl;
 	    }
 	    return false;
 	}
@@ -182,7 +183,7 @@ namespace OpenWifi::SecurityObjects {
             field_from_json(Obj, "authenticatorSecret", authenticatorSecret);
 	        return true;
 	    } catch (...) {
-
+            std::cout << "Cannot parse: UserLoginLoginExtensions" << std::endl;
 	    }
 	    return false;
 	}
@@ -202,7 +203,7 @@ namespace OpenWifi::SecurityObjects {
 	        field_from_json(Obj,"method",method);
 	        return true;
 	    } catch (...) {
-
+            std::cout << "Cannot parse: MFAChallengeRequest" << std::endl;
 	    }
 	    return false;
 	};
@@ -210,7 +211,6 @@ namespace OpenWifi::SecurityObjects {
     void MFAChallengeResponse::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj, "uuid", uuid);
         field_to_json(Obj, "answer", answer);
-
     }
 
     bool MFAChallengeResponse::from_json(Poco::JSON::Object::Ptr &Obj) {
@@ -219,7 +219,7 @@ namespace OpenWifi::SecurityObjects {
             field_from_json(Obj,"answer",answer);
             return true;
         } catch (...) {
-
+            std::cout << "Cannot parse: MFAChallengeResponse" << std::endl;
         }
         return false;
 
@@ -296,7 +296,7 @@ namespace OpenWifi::SecurityObjects {
             field_from_json(Obj,"signingUp",signingUp);
             return true;
         } catch (const Poco::Exception &E) {
-
+            std::cout << "Cannot parse: UserInfo" << std::endl;
         }
         return false;
     };
@@ -314,7 +314,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj,"token",token);
 			return true;
 		} catch (...) {
-
+            std::cout << "Cannot parse: InternalServiceInfo" << std::endl;
 		}
 		return false;
 	};
@@ -332,7 +332,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj, "services", services);
 			return true;
 		} catch(...) {
-
+            std::cout << "Cannot parse: InternalSystemServices" << std::endl;
 		}
 		return false;
 	};
@@ -354,7 +354,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj, "authenticationType", authenticationType);
 			return true;
 		} catch (...) {
-
+            std::cout << "Cannot parse: SystemEndpoint" << std::endl;
 		}
 		return false;
 	};
@@ -368,7 +368,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj, "endpoints", endpoints);
 			return true;
 		} catch (...) {
-
+            std::cout << "Cannot parse: SystemEndpointList" << std::endl;
 		}
 		return false;
 	}
@@ -387,7 +387,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj, "userInfo", userinfo);
 			return true;
 		} catch(...) {
-
+            std::cout << "Cannot parse: UserInfoAndPolicy" << std::endl;
 		}
 		return false;
 	}
@@ -405,7 +405,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj,"note",note);
 			return true;
 		} catch(...) {
-
+            std::cout << "Cannot parse: NoteInfo" << std::endl;
 		}
 		return false;
 	}
@@ -422,7 +422,7 @@ namespace OpenWifi::SecurityObjects {
 	        }
 	        return true;
 	    } catch(...) {
-
+            std::cout << "Cannot parse: MergeNotes" << std::endl;
 	    }
 	    return false;
 	}
@@ -446,7 +446,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json<ResourceAccessType>(Obj,"access",access,ResourceAccessTypeFromString );
 			return true;
 		} catch(...) {
-
+            std::cout << "Cannot parse: ProfileAction" << std::endl;
 		}
 		return false;
 	}
@@ -470,7 +470,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj,"notes",notes);
 			return true;
 		} catch(...) {
-
+            std::cout << "Cannot parse: SecurityProfile" << std::endl;
 		}
 		return false;
 	}
@@ -484,7 +484,7 @@ namespace OpenWifi::SecurityObjects {
 			field_from_json(Obj,"profiles",profiles);
 			return true;
 		} catch(...) {
-
+            std::cout << "Cannot parse: SecurityProfileList" << std::endl;
 		}
 		return false;
 	}
@@ -522,7 +522,7 @@ namespace OpenWifi::SecurityObjects {
             field_from_json(Obj,"userAction",userAction);
 	        return true;
 	    } catch(...) {
-
+            std::cout << "Cannot parse: ActionLink" << std::endl;
 	    }
 	    return false;
 	}
@@ -540,7 +540,7 @@ namespace OpenWifi::SecurityObjects {
 	        field_from_json(Obj,"data",data);
 	        return true;
 	    } catch(...) {
-
+            std::cout << "Cannot parse: Preferences" << std::endl;
 	    }
 	    return false;
 	}
@@ -560,7 +560,7 @@ namespace OpenWifi::SecurityObjects {
 	        field_from_json(Obj,"email",email);
 	        return true;
 	    } catch(...) {
-
+            std::cout << "Cannot parse: SubMfaConfig" << std::endl;
 	    }
 	    return false;
 	}
@@ -588,7 +588,7 @@ namespace OpenWifi::SecurityObjects {
             field_from_json(Obj,"revocationDate",revocationDate);
             return true;
         } catch(...) {
-
+            std::cout << "Cannot parse: Token" << std::endl;
         }
         return false;
     }
