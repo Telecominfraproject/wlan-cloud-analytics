@@ -55,11 +55,11 @@ namespace OpenWifi {
         std::string WhereClause;
 
         if(FromDate && LastDate) {
-            WhereClause = fmt::format(" where boardId='{}' and (timestamp >= {} ) and ( timestamp <= {} ) ", boardId, FromDate, LastDate);
+            WhereClause = fmt::format(" boardId='{}' and (timestamp >= {} ) and ( timestamp <= {} ) ", boardId, FromDate, LastDate);
         } else if (FromDate) {
-            WhereClause = fmt::format(" where boardId='{}' and (timestamp >= {}) ", boardId, FromDate);
+            WhereClause = fmt::format(" boardId='{}' and (timestamp >= {}) ", boardId, FromDate);
         } else if (LastDate) {
-            WhereClause = fmt::format(" where boardId='{}' and (timestamp <= {}) ", boardId, LastDate);
+            WhereClause = fmt::format(" boardId='{}' and (timestamp <= {}) ", boardId, LastDate);
         }
         GetRecords(0,MaxRecords,Recs,WhereClause," order by timestamp ASC ");
         return true;
