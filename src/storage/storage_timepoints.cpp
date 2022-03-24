@@ -51,15 +51,15 @@ namespace OpenWifi {
         return true;
     }
 
-    bool TimePointDB::SelectRecords(uint64_t FromDate, uint64_t LastDate, uint64_t MaxRecords, std::vector<AnalyticsObjects::DeviceTimePoint> & Recs ) {
+    bool TimePointDB::SelectRecords(const std::string &boardId, uint64_t FromDate, uint64_t LastDate, uint64_t MaxRecords, std::vector<AnalyticsObjects::DeviceTimePoint> & Recs ) {
         std::string WhereClause;
 
         if(FromDate && LastDate) {
-            WhereClause = " (timestamp >= " + std::to_string(FromDate) + ") and ( timestamp <= " + std::to_string(LastDate) + " ) ";
+            WhereClause = fmt::format(" where boardId='{}' and (timestamp >= {} ) and ( timestamp <= {} ) ", boardId, FromDate, LastDate);
         } else if (FromDate) {
-            WhereClause = " (timestamp >= " + std::to_string(FromDate) + ") ";
+            WhereClause = fmt::format(" where boardId='{}' and (timestamp >= {}) ", boardId, FromDate);
         } else if (LastDate) {
-            WhereClause = " ( timestamp <= " + std::to_string(LastDate) + " ) ";
+            WhereClause = fmt::format(" where boardId='{}' and (timestamp <= {}) ", boardId, LastDate);
         }
         GetRecords(0,MaxRecords,Recs,WhereClause," order by timestamp ASC ");
         return true;

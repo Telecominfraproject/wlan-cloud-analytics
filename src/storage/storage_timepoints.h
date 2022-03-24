@@ -22,7 +22,7 @@ namespace OpenWifi {
     public:
         TimePointDB( OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L);
         bool GetStats(const std::string &id, AnalyticsObjects::DeviceTimePointStats &S);
-        bool SelectRecords(uint64_t FromDate, uint64_t LastDate, uint64_t MaxRecords, DB::RecordVec & Recs);
+        bool SelectRecords(const std::string &boardId, uint64_t FromDate, uint64_t LastDate, uint64_t MaxRecords, DB::RecordVec & Recs);
     private:
         bool Upgrade(uint32_t from, uint32_t &to) override;
     };

@@ -81,7 +81,7 @@ namespace OpenWifi {
         }
 
         AnalyticsObjects::DeviceTimePointList   Points;
-        StorageService()->TimePointsDB().SelectRecords(fromDate, endDate, maxRecords, Points.points);
+        StorageService()->TimePointsDB().SelectRecords(id,fromDate, endDate, maxRecords, Points.points);
 
         // sort by timestamp & serial number.
         struct {
@@ -90,13 +90,39 @@ namespace OpenWifi {
                 if(lhs.device_info.serialNumber > rhs.device_info.serialNumber) return false;
                 return lhs.timestamp < rhs.timestamp;
             }
-        } custom_sort;
+        } DeviceTimePoint_sort;
 
-        std::sort( Points.points.begin(), Points.points.end(), custom_sort);
+        struct {
+            bool operator()(const AnalyticsObjects::SSIDTimePoint &lhs, const AnalyticsObjects::SSIDTimePoint &rhs) const {
+                if(lhs.ssid < rhs.ssid) return true;
+                if(lhs.ssid > rhs.ssid) return false;
+                return lhs.bssid < rhs.bssid;
+            }
+        } SSID_sort;
+
+        struct {
+            bool operator()(const AnalyticsObjects::UETimePoint &lhs, const AnalyticsObjects::UETimePoint &rhs) const {
+                if(lhs.station < rhs.station) return true;
+                return false;
+            }
+        } Association_sort;
+
+        std::sort( Points.points.begin(), Points.points.end(), DeviceTimePoint_sort);
         auto BucketsNeeded = find_number_of_buckets(Points.points);
 
         split_points sp;
         split_in_buckets(BucketsNeeded,Points.points,sp);
+        // must sort each bucket according to serial number.
+        for(auto &i:sp) {
+            std::sort(i.begin(),i.end(),DeviceTimePoint_sort);
+            // now sort according to UEs within a block
+            for(auto &j:i) {
+                std::sort(j.ssid_data.begin(),j.ssid_data.end(),SSID_sort);
+                for(auto &k:j.ssid_data) {
+                    std::sort(k.associations.begin(),k.associations.end(),Association_sort);
+                }
+            }
+        }
 
         Poco::JSON::Object  Answer;
         Poco::JSON::Array   Outer;
