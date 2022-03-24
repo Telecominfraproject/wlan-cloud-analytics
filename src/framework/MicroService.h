@@ -285,12 +285,12 @@ namespace OpenWifi::RESTAPI_utils {
 
     inline void field_from_json(Poco::JSON::Object::Ptr Obj, const char *Field, double & V) {
         if(Obj->has(Field))
-            V = Obj->get(Field);
+            V = Obj->get(Field).extract<double>();
     }
 
-    inline void field_from_json(Poco::JSON::Object::Ptr Obj, const char *Field, uint64_t &V) {
+    inline void field_from_json(Poco::JSON::Object::Ptr Obj, const char *Field, float & V) {
         if(Obj->has(Field))
-            V = Obj->get(Field);
+            V = Obj->get(Field).extract<float>();
     }
 
     inline void field_from_json(Poco::JSON::Object::Ptr Obj, const char *Field, bool &V) {
@@ -375,28 +375,34 @@ namespace OpenWifi::RESTAPI_utils {
         }
     }
 
-    inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, int &Value) {
-        std::cout << "Field: " << Field << std::endl ;
-        if(Obj->has(Field)) {
-            Value = Obj->get(Field).extract<int>();
-            if(std::strcmp(Field,"rssi")==0)
-                std::cout << "rssi:" << Value << std::endl;
-            std::cout << "Value: " << Value << std::endl;
-        } else {
-            std::cout << "Field: " << Field << std::endl;
-        }
+    inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, int16_t &Value) {
+        if(Obj->has(Field))
+            Value = Obj->get(Field).extract<int16_t>();
+    }
+
+    inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, int32_t &Value) {
+        if(Obj->has(Field))
+            Value = Obj->get(Field).extract<int32_t>();
     }
 
     inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, int64_t &Value) {
-        std::cout << "Field: " << Field << std::endl ;
-        if(Obj->has(Field)) {
+        if(Obj->has(Field))
             Value = Obj->get(Field).extract<int64_t>();
-            if(std::strcmp(Field,"rssi")==0)
-                std::cout << "rssi:" << Value << std::endl;
-            std::cout << "Value: " << Value << std::endl;
-        } else {
-            std::cout << "Field: " << Field << std::endl;
-        }
+    }
+
+    inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, uint16_t &Value) {
+        if(Obj->has(Field))
+            Value = Obj->get(Field).extract<uint16_t>();
+    }
+
+    inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, uint32_t &Value) {
+        if(Obj->has(Field))
+            Value = Obj->get(Field).extract<uint32_t>();
+    }
+
+    inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, uint64_t &Value) {
+        if(Obj->has(Field))
+            Value = Obj->get(Field).extract<uint64_t>();
     }
 
     template<class T> void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, T &Value) {
