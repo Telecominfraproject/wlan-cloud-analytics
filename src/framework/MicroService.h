@@ -376,6 +376,7 @@ namespace OpenWifi::RESTAPI_utils {
     }
 
     inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, int &Value) {
+        std::cout << "Field: " << Field << std::endl ;
         if(Obj->isObject(Field)) {
             Value = Obj->get(Field).extract<int>();
             if(std::strcmp(Field,"rssi")==0)
@@ -386,6 +387,7 @@ namespace OpenWifi::RESTAPI_utils {
     }
 
     inline void field_from_json(const Poco::JSON::Object::Ptr &Obj, const char *Field, int64_t &Value) {
+        std::cout << "Field: " << Field << std::endl ;
         if(Obj->isObject(Field)) {
             Value = Obj->get(Field).extract<int64_t>();
             if(std::strcmp(Field,"rssi")==0)
