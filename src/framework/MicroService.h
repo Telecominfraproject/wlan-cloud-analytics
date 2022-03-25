@@ -80,9 +80,7 @@ using namespace std::chrono_literals;
 #include "framework/ow_constants.h"
 #include "RESTObjects/RESTAPI_SecurityObjects.h"
 #include "nlohmann/json.hpp"
-
 #include "ow_version.h"
-
 #include "fmt/core.h"
 
 #define _OWDEBUG_ std::cout<< __FILE__ <<":" << __LINE__ << std::endl;
@@ -3417,6 +3415,8 @@ namespace OpenWifi {
         }
     }
 
+    void DaemonPostInitialization(Poco::Util::Application &self);
+
 	inline void MicroService::initialize(Poco::Util::Application &self) {
 	    // add the default services
         std::cout << "Initialize MicroService" << std::endl;
@@ -3450,7 +3450,8 @@ namespace OpenWifi {
 	    LoadMyConfig();
 
 	    InitializeSubSystemServers();
-	    // ServerApplication::initialize(self);
+	    ServerApplication::initialize(self);
+        DaemonPostInitialization(self);
 
 	    Types::TopicNotifyFunction F = [this](const std::string &Key,const std::string &Payload) { this->BusMessageReceived(Key, Payload); };
 	    KafkaManager()->RegisterTopicWatcher(KafkaTopics::SERVICE_EVENTS, F);
