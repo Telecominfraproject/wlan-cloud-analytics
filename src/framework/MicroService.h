@@ -1942,13 +1942,13 @@ namespace OpenWifi {
 
 		[[nodiscard]] inline static std::string MakeList(const std::vector<std::string> &L) {
 	        std::string Return;
-	        for (const auto &i : L)
-	            if (Return.empty())
-	                Return = i;
-	            else
-	                Return += ", " + i;
-
-	            return Return;
+	        for (const auto &i : L) {
+                if (Return.empty())
+                    Return = i;
+                else
+                    Return += ", " + i;
+            }
+            return Return;
 	    }
 
         static inline bool AssignIfPresent(const Poco::JSON::Object::Ptr &O, const std::string &Field, Types::UUIDvec_t & Value) {
@@ -2247,8 +2247,9 @@ namespace OpenWifi {
                 auto RawSelect = GetParameter(RESTAPI::Protocol::SELECT, "");
 
                 auto Entries = Poco::StringTokenizer(RawSelect,",");
-                for(const auto &i:Entries)
+                for(const auto &i:Entries) {
                     QB_.Select.emplace_back(i);
+                }
 	            if(QB_.Offset<1)
 	                QB_.Offset=0;
 	            return true;
