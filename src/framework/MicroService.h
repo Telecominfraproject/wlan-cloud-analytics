@@ -4469,7 +4469,7 @@ namespace OpenWifi {
 #ifdef    TIP_SECURITY_SERVICE
     [[nodiscard]] bool AuthServiceIsAuthorized(Poco::Net::HTTPServerRequest & Request,std::string &SessionToken, SecurityObjects::UserInfoAndPolicy & UInfo, bool & Expired , bool Sub );
 #endif
-    inline bool RESTAPIHandler::IsAuthorized( bool & Expired , bool & Contacted , bool Sub ) {
+    inline bool RESTAPIHandler::IsAuthorized( bool & Expired , [[maybe_unused]] bool & Contacted , bool Sub ) {
         if(Internal_ && Request->has("X-INTERNAL-NAME")) {
             auto Allowed = MicroService::instance().IsValidAPIKEY(*Request);
             if(!Allowed) {
