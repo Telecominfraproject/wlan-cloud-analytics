@@ -108,10 +108,11 @@ namespace ORM {
                     return "LONGBLOB";
                 else if(Type==OpenWifi::DBType::pgsql)
                     return "BYTEA";
-                else if(Type==OpenWifi::DBType::sqlite)
+                else
                     return "BLOB";
-                default:
-                    return "BLOB";
+            default:
+                assert(false);
+
         }
         assert(false);
         return "";
