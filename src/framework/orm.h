@@ -111,8 +111,7 @@ namespace ORM {
                 else if(Type==OpenWifi::DBType::sqlite)
                     return "BLOB";
                 default:
-                    assert(false);
-                    return "";
+                    return "BLOB";
         }
         assert(false);
         return "";
