@@ -3450,7 +3450,7 @@ namespace OpenWifi {
 	    LoadMyConfig();
 
 	    InitializeSubSystemServers();
-	    ServerApplication::initialize(self);
+	    // ServerApplication::initialize(self);
 
 	    Types::TopicNotifyFunction F = [this](const std::string &Key,const std::string &Payload) { this->BusMessageReceived(Key, Payload); };
 	    KafkaManager()->RegisterTopicWatcher(KafkaTopics::SERVICE_EVENTS, F);

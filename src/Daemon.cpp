@@ -43,9 +43,6 @@ namespace OpenWifi {
         std::cout << "Daemon initializing" << std::endl;
         MicroService::instance().initialize(self);
     }
-
-    void MicroServicePostInitialization() {
-	}
 }
 
 int main(int argc, char **argv) {
