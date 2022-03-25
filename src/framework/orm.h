@@ -121,12 +121,13 @@ namespace ORM {
     inline std::string Escape(const std::string &S) {
         std::string R;
 
-        for(const auto &i:S)
-            if(i=='\'')
+        for(const auto &i:S) {
+            if (i == '\'')
                 R += "''";
             else
                 R += i;
-            return R;
+        }
+        return R;
     }
 
     enum SqlComparison { EQ = 0, NEQ, LT, LTE, GT, GTE };
