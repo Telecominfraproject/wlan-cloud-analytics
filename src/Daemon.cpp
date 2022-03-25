@@ -41,6 +41,7 @@ namespace OpenWifi {
 
     void Daemon::initialize([[maybe_unused]] Poco::Util::Application &self) {
         std::cout << "Daemon initializing" << std::endl;
+        MicroService::instance().initialize(self);
     }
 
     void MicroServicePostInitialization() {
