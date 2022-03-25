@@ -846,7 +846,7 @@ namespace OpenWifi::Utils {
     inline bool ParseTime(const std::string &Time, int & Hours, int & Minutes, int & Seconds) {
         Poco::StringTokenizer	TimeTokens(Time,":",Poco::StringTokenizer::TOK_TRIM);
 
-        Hours =  Minutes = Hours = 0 ;
+        Hours =  Minutes = Seconds = 0 ;
         if(TimeTokens.count()==1) {
             Hours 	= std::atoi(TimeTokens[0].c_str());
         } else if(TimeTokens.count()==2) {
@@ -3681,14 +3681,16 @@ namespace OpenWifi {
 	}
 
 	inline std::string MicroService::Encrypt(const std::string &S) {
-        if(NoBuiltInCrypto_)
+        if(NoBuiltInCrypto_) {
             return S;
+        }
 	    return Cipher_->encryptString(S, Poco::Crypto::Cipher::Cipher::ENC_BASE64);;
 	}
 
 	inline std::string MicroService::Decrypt(const std::string &S) {
-        if(NoBuiltInCrypto_)
+        if(NoBuiltInCrypto_) {
             return S;
+        }
 	    return Cipher_->decryptString(S, Poco::Crypto::Cipher::Cipher::ENC_BASE64);;
 	}
 
