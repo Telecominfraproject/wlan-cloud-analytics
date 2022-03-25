@@ -3420,7 +3420,6 @@ namespace OpenWifi {
 
 	inline void MicroService::initialize(Poco::Util::Application &self) {
 	    // add the default services
-        std::cout << "Initialize MicroService" << std::endl;
         LoadConfigurationFile();
         InitializeLoggingSystem();
 

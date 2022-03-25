@@ -185,7 +185,7 @@ namespace OpenWifi {
 
         DTP_.push_back(DTP);
 
-        if(DTP_.size()>1000) {
+        if(DTP_.size()>100) {
             DTP_.erase(DTP_.begin());
         }
 

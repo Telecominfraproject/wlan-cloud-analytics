@@ -58,7 +58,6 @@ namespace OpenWifi::AnalyticsObjects {
     }
 
     void DeviceInfo::to_json(Poco::JSON::Object &Obj) const {
-        std::cout << "OUT DeviceInfo" << std::endl;;
         field_to_json(Obj,"boardId",boardId);
         field_to_json(Obj,"type",type);
         field_to_json(Obj,"serialNumber",serialNumber);
@@ -82,7 +81,6 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"locale",locale);
         field_to_json(Obj,"uptime",uptime);
         field_to_json(Obj,"memory",memory);
-        std::cout << "OUT DeviceInfo done" << std::endl;;
     }
 
     bool DeviceInfo::from_json(const Poco::JSON::Object::Ptr &Obj) {

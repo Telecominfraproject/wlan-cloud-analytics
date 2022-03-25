@@ -131,11 +131,6 @@ namespace OpenWifi {
             for(const auto &j:i) {
                 Poco::JSON::Object  O;
                 j.to_json(O);
-
-                std::ostringstream OO;
-                O.stringify(OO);
-                std::cout << OO.str() << std::endl;
-
                 InnerArray.add(O);
             }
             Outer.add(InnerArray);
