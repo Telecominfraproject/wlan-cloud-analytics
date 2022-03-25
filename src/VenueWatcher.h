@@ -24,13 +24,13 @@ namespace OpenWifi {
                 SerialNumber_(SerialNumber) {
         }
         inline std::shared_ptr<nlohmann::json> & Payload() { return Payload_; }
-        inline const auto SerialNumber() { return SerialNumber_; }
+        inline auto SerialNumber() { return SerialNumber_; }
         inline uint64_t Type() { return Type_; }
 
     private:
         std::shared_ptr<nlohmann::json> Payload_;
-        uint64_t                        SerialNumber_=0;
         MsgType                         Type_;
+        uint64_t                        SerialNumber_=0;
     };
 
     class VenueWatcher : public Poco::Runnable {

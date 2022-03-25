@@ -22,12 +22,6 @@ namespace OpenWifi {
         Worker_.join();
     }
 
-    static void AssignIfPresent(const Poco::JSON::Object::Ptr & Obj, const std::string &Key, std::string &Value) {
-        if(Obj->has(Key)) {
-            Value = Obj->get(Key).toString();
-        }
-    }
-
     void DeviceStatusReceiver::run() {
         Poco::AutoPtr<Poco::Notification>	Note(Queue_.waitDequeueNotification());
         while(Note && Running_) {

@@ -31,7 +31,7 @@ namespace OpenWifi {
     TimePointDB::TimePointDB( OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L) :
             DB(T, "timepoints", TimePoint_Fields, TimePointDB_Indexes, P, L, "tpo") {}
 
-    bool TimePointDB::Upgrade(uint32_t from, uint32_t &to) {
+    bool TimePointDB::Upgrade([[maybe_unused]] uint32_t from, uint32_t &to) {
         std::vector<std::string> Statements{
         };
         RunScript(Statements);

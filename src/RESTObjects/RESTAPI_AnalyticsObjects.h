@@ -123,7 +123,7 @@ namespace OpenWifi {
                     inactive = 0;
             UE_rate tx_rate,
                     rx_rate;
-            std::vector<TIDstat_entry> tidstat;
+            std::vector<TIDstat_entry> tidstats;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);

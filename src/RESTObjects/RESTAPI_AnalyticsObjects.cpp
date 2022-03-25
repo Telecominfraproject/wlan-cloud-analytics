@@ -14,7 +14,7 @@ namespace OpenWifi::AnalyticsObjects {
     void Report::reset() {
     }
 
-    void Report::to_json(Poco::JSON::Object &Obj) const {
+    void Report::to_json([[maybe_unused]] Poco::JSON::Object &Obj) const {
     }
 
     void VenueInfo::to_json(Poco::JSON::Object &Obj) const {
@@ -167,6 +167,7 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"inactive",inactive);
         field_to_json(Obj,"tx_rate",tx_rate);
         field_to_json(Obj,"rx_rate",rx_rate);
+        field_to_json(Obj,"tidstats",tidstats);
     }
 
     bool UETimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -184,6 +185,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"inactive",inactive);
             field_from_json(Obj,"tx_rate",tx_rate);
             field_from_json(Obj,"rx_rate",rx_rate);
+            field_from_json(Obj,"tidstats",tidstats);
             return true;
         } catch(...) {
 

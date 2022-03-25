@@ -31,7 +31,7 @@ namespace OpenWifi {
         return 0;
     }
 
-    void Storage::onTimer(Poco::Timer &timer) {
+    void Storage::onTimer([[maybe_unused]] Poco::Timer &timer) {
     }
 
     void Storage::run() {

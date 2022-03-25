@@ -575,7 +575,7 @@ namespace OpenWifi::RESTAPI_utils {
         try {
             Poco::JSON::Parser P;
             auto Object = P.parse(ObjectString).template extract<Poco::JSON::Array::Ptr>();
-            for (auto const i : *Object) {
+            for (auto const &i : *Object) {
                 auto InnerObject = i.template extract<Poco::JSON::Object::Ptr>();
                 T Obj;
                 Obj.from_json(InnerObject);
@@ -751,15 +751,12 @@ namespace OpenWifi::Utils {
 
     using byte = std::uint8_t;
 
-    [[nodiscard]] inline std::string base64encode(const byte *input, unsigned long size) {
+    [[nodiscard]] inline std::string base64encode(const byte *input, uint32_t size) {
         std::string encoded;
         encoded.reserve(((size / 3) + (size % 3 > 0)) * 4);
 
-        std::uint32_t temp;
-
-        std::size_t i;
-
-        int ee = (int)(size/3);
+        std::uint32_t temp,i,ee;
+        ee = (size/3);
 
         for (i = 0; i < 3*ee; ++i) {
             temp = input[i++] << 16;
@@ -1257,7 +1254,7 @@ namespace OpenWifi {
 
 		inline void exception(const std::exception & E) {
 		    Poco::Thread * CurrentThread = Poco::Thread::current();
-		    App_.logger().warning(fmt::format("std::exception in ",CurrentThread->getName()));
+		    App_.logger().warning(fmt::format("std::exception in {}: {}",CurrentThread->getName(),E.what()));
 		}
 
 		inline void exception() {
@@ -1282,9 +1279,10 @@ namespace OpenWifi {
 	public:
 	    explicit MyPrivateKeyPassphraseHandler(const std::string &Password, Poco::Logger & Logger):
 	    PrivateKeyPassphraseHandler(true),
-	    Logger_(Logger),
-	    Password_(Password) {}
-	    void onPrivateKeyRequested(const void * pSender,std::string & privateKey) {
+	    Password_(Password),
+        Logger_(Logger)
+        {}
+	    void onPrivateKeyRequested([[maybe_unused]] const void * pSender,std::string & privateKey) {
 	        Logger_.information("Returning key passphrase.");
 	        privateKey = Password_;
 	    };
@@ -1302,11 +1300,19 @@ namespace OpenWifi {
                                   Poco::Net::Context::VerificationMode M =
                                           Poco::Net::Context::VerificationMode::VERIFY_RELAXED,
                                           int backlog = 64)
-                                          : address_(std::move(Address)), port_(port), key_file_(std::move(Key_file)),
-                                          cert_file_(std::move(Cert_file)), root_ca_(std::move(RootCa)),
-                                          issuer_cert_file_(std::move(Issuer)), client_cas_(std::move(ClientCas)),
-                                          cas_(std::move(Cas)), key_file_password_(std::move(Key_file_password)),
-                                          name_(std::move(Name)), level_(M), backlog_(backlog){};
+                                          : address_(std::move(Address)),
+                                          port_(port),
+                                          cert_file_(std::move(Cert_file)),
+                                          key_file_(std::move(Key_file)),
+                                          root_ca_(std::move(RootCa)),
+                                          key_file_password_(std::move(Key_file_password)),
+                                          issuer_cert_file_(std::move(Issuer)),
+                                          client_cas_(std::move(ClientCas)),
+                                          cas_(std::move(Cas)),
+                                          name_(std::move(Name)),
+                                          backlog_(backlog),
+                                          level_(M)
+                                          {};
 
 	    [[nodiscard]] inline const std::string &Address() const { return address_; };
 	    [[nodiscard]] inline uint32_t Port() const { return port_; };
@@ -1394,7 +1400,7 @@ namespace OpenWifi {
 	        }
 	    }
 
-        [[nodiscard]] inline Poco::Net::ServerSocket CreateSocket(Poco::Logger &L) const {
+        [[nodiscard]] inline Poco::Net::ServerSocket CreateSocket([[maybe_unused]] Poco::Logger &L) const {
             Poco::Net::Context::Params P;
 
             if (address_ == "*") {
@@ -1532,6 +1538,7 @@ namespace OpenWifi {
 
 	private:
 	    std::string address_;
+        uint32_t port_;
 	    std::string cert_file_;
 	    std::string key_file_;
 	    std::string root_ca_;
@@ -1539,7 +1546,6 @@ namespace OpenWifi {
 	    std::string issuer_cert_file_;
 	    std::string client_cas_;
 	    std::string cas_;
-	    uint32_t port_;
 	    std::string name_;
 	    int backlog_;
 	    Poco::Net::Context::VerificationMode level_;
@@ -1553,10 +1559,10 @@ namespace OpenWifi {
 	    inline void initialize(Poco::Util::Application &self) override;
 	    inline void uninitialize() override {
 	    }
-	    inline void reinitialize(Poco::Util::Application &self) override {
+	    inline void reinitialize([[maybe_unused]] Poco::Util::Application &self) override {
 	        Logger().information("Reloading of this subsystem is not supported.");
 	    }
-	    inline void defineOptions(Poco::Util::OptionSet &options) override {
+	    inline void defineOptions([[maybe_unused]] Poco::Util::OptionSet &options) override {
 	    }
 	    inline const std::string & Name() const { return Name_; };
 	    inline const char * name() const override { return Name_.c_str(); }
@@ -1575,7 +1581,7 @@ namespace OpenWifi {
 
         struct LoggerWrapper {
             Poco::Logger &L;
-            inline LoggerWrapper(Poco::Logger &Logger) : L(Logger) {}
+            explicit inline LoggerWrapper(Poco::Logger &Logger) : L(Logger) {}
         };
 
 	protected:
@@ -1776,17 +1782,17 @@ namespace OpenWifi {
 	    :   Bindings_(std::move(map)),
 	        Logger_(l),
 	        Methods_(std::move(Methods)),
-	        Server_(Server),
-            TransactionId_(TransactionId),
 	        Internal_(Internal),
-	        AlwaysAuthorize_(AlwaysAuthorize),
 	        RateLimited_(RateLimited),
-	        MyRates_(Profile),
-	        SubOnlyService_(SubscriberOnly)
-            {
+	        SubOnlyService_(SubscriberOnly),
+            AlwaysAuthorize_(AlwaysAuthorize),
+            Server_(Server),
+            MyRates_(Profile),
+            TransactionId_(TransactionId)
+        {
 	    }
 
-	    inline bool RoleIsAuthorized(const std::string & Path, const std::string & Method, std::string & Reason) {
+	    inline bool RoleIsAuthorized([[maybe_unused]] const std::string & Path, [[maybe_unused]] const std::string & Method, [[maybe_unused]] std::string & Reason) {
 	        return true;
 	    }
 
@@ -1854,7 +1860,7 @@ namespace OpenWifi {
 	                continue;
 
 	            bool Matched = true;
-	            for (auto i = 0; i != PathItems.size() && Matched; i++) {
+	            for (size_t i = 0; i != PathItems.size() && Matched; i++) {
 	                if (PathItems[i] != ParamItems[i]) {
 	                    if (ParamItems[i][0] == '{') {
 	                        auto ParamName = ParamItems[i].substr(1, ParamItems[i].size() - 2);
@@ -2138,7 +2144,7 @@ namespace OpenWifi {
 	        Response->sendFile(File.path(),MT.ContentType);
 	    }
 
-	    inline void SendFile(Poco::TemporaryFile &TempAvatar, const std::string &Type, const std::string & Name) {
+	    inline void SendFile(Poco::TemporaryFile &TempAvatar, [[maybe_unused]] const std::string &Type, const std::string & Name) {
 			Response->setStatus(Poco::Net::HTTPResponse::HTTPStatus::HTTP_OK);
 			AddCORS();
 	        auto MT = Utils::FindMediaType(Name);
@@ -2640,7 +2646,7 @@ namespace OpenWifi {
 		}
 
 	    [[nodiscard]] inline std::string WrapSystemId(const std::string & PayLoad) {
-	        return std::move( SystemInfoWrapper_ + PayLoad + "}");
+	        return SystemInfoWrapper_ + PayLoad + "}";
 	    }
 
 	    [[nodiscard]] inline bool Enabled() const { return KafkaEnabled_; }
@@ -2712,7 +2718,7 @@ namespace OpenWifi {
 	    }
 
 	    inline static bool IsTokenExpired(const SecurityObjects::WebToken &T) {
-	        return ((T.expires_in_+T.created_)<std::time(nullptr));
+	        return ((T.expires_in_+T.created_) < OpenWifi::Now());
 	    }
 
 	    inline bool RetrieveTokenInformation(const std::string & SessionToken,
@@ -2898,13 +2904,7 @@ namespace OpenWifi {
 
 	class ExtRequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory {
 	public:
-        explicit ExtRequestHandlerFactory(RESTAPI_GenericServer & Server) :
-	    Logger_(RESTAPI_ExtServer::instance()->Logger()),
-	    Server_(Server)
-	    {
-
-	    }
-
+        ExtRequestHandlerFactory() = default;
 	    inline Poco::Net::HTTPRequestHandler *createRequestHandler(const Poco::Net::HTTPServerRequest &Request) override {
 			try {
 				Poco::URI uri(Request.getURI());
@@ -2916,17 +2916,14 @@ namespace OpenWifi {
 			}
 			return nullptr;
 	    }
-
 	private:
         static inline std::atomic_uint64_t  TransactionId_ = 1;
-	    Poco::Logger                        &Logger_;
-	    RESTAPI_GenericServer               &Server_;
 	};
 
 	class LogMuxer : public Poco::Channel {
 	  public:
 
-		inline std::string getProperty( const std::string &p ) const final {
+		inline std::string getProperty( [[maybe_unused]] const std::string &p ) const final {
 			return "";
 		}
 
@@ -2977,7 +2974,7 @@ namespace OpenWifi {
 			}
 		}
 
-		inline void setProperty(const std::string &name, const std::string &value) final {
+		inline void setProperty([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value) final {
 
 		}
 
@@ -3039,10 +3036,7 @@ namespace OpenWifi {
 
 	class IntRequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory {
 	public:
-        explicit IntRequestHandlerFactory(RESTAPI_GenericServer & Server) :
-	    Logger_(RESTAPI_IntServer()->Logger()),
-	    Server_(Server){}
-
+        inline IntRequestHandlerFactory() = default;
 	    inline Poco::Net::HTTPRequestHandler *createRequestHandler(const Poco::Net::HTTPServerRequest &Request) override {
 	        Poco::URI uri(Request.getURI());
 	        auto *Path = uri.getPath().c_str();
@@ -3050,8 +3044,6 @@ namespace OpenWifi {
 	    }
 	private:
         static inline std::atomic_uint64_t  TransactionId_ = 1;
-	    Poco::Logger                        &Logger_;
-	    RESTAPI_GenericServer               &Server_;
 	};
 
 	struct MicroServiceMeta {
@@ -3198,7 +3190,6 @@ namespace OpenWifi {
 		bool                        DebugMode_ = false;
 		std::string 				DataDir_;
 		std::string                 WWWAssetsDir_;
-		SubSystemVec			    SubSystems_;
 		Poco::Crypto::CipherFactory & CipherFactory_ = Poco::Crypto::CipherFactory::defaultFactory();
 		Poco::Crypto::Cipher        * Cipher_ = nullptr;
 		Poco::SHA2Engine			SHA2_;
@@ -3217,6 +3208,7 @@ namespace OpenWifi {
 		std::string                 DAEMON_CONFIG_ENV_VAR;
 		std::string                 DAEMON_APP_NAME;
 		uint64_t 	                DAEMON_BUS_TIMER;
+        SubSystemVec			    SubSystems_;
         bool                        NoAPISecurity_=false;
         bool                        NoBuiltInCrypto_=false;
         Poco::JWT::Signer	        Signer_;
@@ -3226,7 +3218,7 @@ namespace OpenWifi {
 	    std::exit(Reason);
 	}
 
-	inline void MicroService::BusMessageReceived(const std::string &Key, const std::string & Payload) {
+	inline void MicroService::BusMessageReceived([[maybe_unused]] const std::string &Key, const std::string & Payload) {
 	    std::lock_guard G(InfraMutex_);
 	    try {
 	        Poco::JSON::Parser P;
@@ -3512,28 +3504,28 @@ namespace OpenWifi {
 
 	}
 
-	inline void MicroService::handleHelp(const std::string &name, const std::string &value) {
+	inline void MicroService::handleHelp([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value) {
 	    HelpRequested_ = true;
 	    displayHelp();
 	    stopOptionsProcessing();
 	}
 
-	inline void MicroService::handleVersion(const std::string &name, const std::string &value) {
+	inline void MicroService::handleVersion([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value) {
 	    HelpRequested_ = true;
 	    std::cout << Version() << std::endl;
 	    stopOptionsProcessing();
 	}
 
-	inline void MicroService::handleDebug(const std::string &name, const std::string &value) {
+	inline void MicroService::handleDebug([[maybe_unused]] const std::string &name, const std::string &value) {
 	    if(value == "true")
 	        DebugMode_ = true ;
 	}
 
-	inline void MicroService::handleLogs(const std::string &name, const std::string &value) {
+	inline void MicroService::handleLogs([[maybe_unused]] const std::string &name, const std::string &value) {
 	    LogDir_ = value;
 	}
 
-	inline void MicroService::handleConfig(const std::string &name, const std::string &value) {
+	inline void MicroService::handleConfig([[maybe_unused]] const std::string &name, const std::string &value) {
 	    ConfigFileName_ = value;
 	}
 
@@ -3770,10 +3762,10 @@ namespace OpenWifi {
             std::unique_ptr<Poco::Net::HTTPServer>  NewServer;
             if(MicroService::instance().NoAPISecurity()) {
                 auto Sock{Svr.CreateSocket(Logger())};
-                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory, Pool_, Sock, Params);
             } else {
                 auto Sock{Svr.CreateSecureSocket(Logger())};
-                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory(Server_), Pool_, Sock, Params);
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new ExtRequestHandlerFactory, Pool_, Sock, Params);
             };
             NewServer->start();
             RESTServers_.push_back(std::move(NewServer));
@@ -3806,10 +3798,10 @@ namespace OpenWifi {
             std::unique_ptr<Poco::Net::HTTPServer>  NewServer;
             if(MicroService::instance().NoAPISecurity()) {
                 auto Sock{Svr.CreateSocket(Logger())};
-                NewServer = std::make_unique<Poco::Net::HTTPServer>(new IntRequestHandlerFactory(Server_), Pool_, Sock, Params);
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new IntRequestHandlerFactory, Pool_, Sock, Params);
             } else {
                 auto Sock{Svr.CreateSecureSocket(Logger())};
-                NewServer = std::make_unique<Poco::Net::HTTPServer>(new IntRequestHandlerFactory(Server_), Pool_, Sock, Params);
+                NewServer = std::make_unique<Poco::Net::HTTPServer>(new IntRequestHandlerFactory, Pool_, Sock, Params);
             };
             NewServer->start();
             RESTServers_.push_back(std::move(NewServer));
@@ -3818,7 +3810,7 @@ namespace OpenWifi {
         return 0;
     }
 
-    inline int MicroService::main(const ArgVec &args) {
+    inline int MicroService::main([[maybe_unused]] const ArgVec &args) {
 
 	    MyErrorHandler	ErrorHandler(*this);
 	    Poco::ErrorHandler::set(&ErrorHandler);
@@ -3864,7 +3856,7 @@ namespace OpenWifi {
 		}
 	}
 
-	inline void SubSystemServer::initialize(Poco::Util::Application &self) {
+	inline void SubSystemServer::initialize([[maybe_unused]] Poco::Util::Application &self) {
 	    auto i = 0;
 	    bool good = true;
 
@@ -3967,39 +3959,39 @@ namespace OpenWifi {
 	    KafkaEnabled_ = MicroService::instance().ConfigGetBool("openwifi.kafka.enable",false);
 	}
 
-	inline void KafkaLoggerFun(cppkafka::KafkaHandleBase & handle, int level, const std::string & facility, const std::string &messqge) {
+	inline void KafkaLoggerFun([[maybe_unused]] cppkafka::KafkaHandleBase & handle, int level, const std::string & facility, const std::string &message) {
 		switch ((cppkafka::LogLevel) level) {
 			case cppkafka::LogLevel::LogNotice: {
-					KafkaManager()->Logger().notice(fmt::format("kafka-log: facility: {} message: {}",facility, messqge));
+					KafkaManager()->Logger().notice(fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogDebug: {
-					KafkaManager()->Logger().debug(fmt::format("kafka-log: facility: {} message: {}",facility, messqge));
+					KafkaManager()->Logger().debug(fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogInfo: {
-					KafkaManager()->Logger().information(fmt::format("kafka-log: facility: {} message: {}",facility, messqge));
+					KafkaManager()->Logger().information(fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 				case cppkafka::LogLevel::LogWarning: {
-					KafkaManager()->Logger().warning(fmt::format("kafka-log: facility: {} message: {}",facility, messqge));
+					KafkaManager()->Logger().warning(fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogAlert:
 			case cppkafka::LogLevel::LogCrit: {
-					KafkaManager()->Logger().critical(fmt::format("kafka-log: facility: {} message: {}",facility, messqge));
+					KafkaManager()->Logger().critical(fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogErr:
 			case cppkafka::LogLevel::LogEmerg:
 			default: {
-				KafkaManager()->Logger().error(fmt::format("kafka-log: facility: {} message: {}",facility, messqge));
+				KafkaManager()->Logger().error(fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 		}
 	}
 
-	inline void KafkaErrorFun(cppkafka::KafkaHandleBase & handle, int error, const std::string &reason) {
+	inline void KafkaErrorFun([[maybe_unused]] cppkafka::KafkaHandleBase & handle, int error, const std::string &reason) {
 		KafkaManager()->Logger().error(fmt::format("kafka-error: {}, reason: {}", error, reason));
 	}
 
@@ -4072,13 +4064,13 @@ namespace OpenWifi {
 	    Config.set_default_topic_configuration(topic_config);
 
 	    cppkafka::Consumer Consumer(Config);
-	    Consumer.set_assignment_callback([this](cppkafka::TopicPartitionList& partitions) {
+	    Consumer.set_assignment_callback([](cppkafka::TopicPartitionList& partitions) {
 	        if(!partitions.empty()) {
 	            KafkaManager()->Logger().information(fmt::format("Partition assigned: {}...",
                                                  partitions.front().get_partition()));
 	        }
 	    });
-	    Consumer.set_revocation_callback([this](const cppkafka::TopicPartitionList& partitions) {
+	    Consumer.set_revocation_callback([](const cppkafka::TopicPartitionList& partitions) {
 	        if(!partitions.empty()) {
 	            KafkaManager()->Logger().information(fmt::format("Partition revocation: {}...",
                                                  partitions.front().get_partition()));
@@ -4119,14 +4111,14 @@ namespace OpenWifi {
 	    Consumer.unsubscribe();
 	}
 
-	inline void RESTAPI_ExtServer::reinitialize(Poco::Util::Application &self) {
+	inline void RESTAPI_ExtServer::reinitialize([[maybe_unused]] Poco::Util::Application &self) {
 	    MicroService::instance().LoadConfigurationFile();
 	    Logger().information("Reinitializing.");
 	    Stop();
 	    Start();
 	}
 
-	void RESTAPI_IntServer::reinitialize(Poco::Util::Application &self) {
+	void RESTAPI_IntServer::reinitialize([[maybe_unused]] Poco::Util::Application &self) {
 	    MicroService::instance().LoadConfigurationFile();
 	    Logger().information("Reinitializing.");
 	    Stop();

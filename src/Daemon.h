@@ -37,7 +37,7 @@ namespace OpenWifi {
 							const SubSystemVec & SubSystems) :
 				MicroService( PropFile, RootEnv, ConfigEnv, AppName, BusTimer, SubSystems) {};
 
-			void initialize();
+			void initialize(Poco::Util::Application &self);
 			static Daemon *instance();
 			inline OpenWifi::AnalyticsDashboard & GetDashboard() { return DB_; }
 			Poco::Logger & Log() { return Poco::Logger::get(AppName()); }

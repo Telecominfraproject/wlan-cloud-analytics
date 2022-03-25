@@ -103,7 +103,7 @@ namespace OpenWifi::SDK::Prov {
             return true;
         }
 
-        bool Update( RESTAPIHandler *client, const std::string &ConfigUUID, ProvObjects::DeviceConfiguration & Config) {
+        bool Update( [[maybe_unused]] RESTAPIHandler *client, [[maybe_unused]] const std::string &ConfigUUID,[[maybe_unused]]  ProvObjects::DeviceConfiguration & Config) {
 
             return false;
         }

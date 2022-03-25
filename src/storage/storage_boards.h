@@ -21,6 +21,7 @@ namespace OpenWifi {
     class BoardsDB : public ORM::DB<BoardDBRecordType, AnalyticsObjects::BoardInfo> {
     public:
         BoardsDB( OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L);
+        virtual ~BoardsDB() {};
     private:
         bool Upgrade(uint32_t from, uint32_t &to) override;
     };

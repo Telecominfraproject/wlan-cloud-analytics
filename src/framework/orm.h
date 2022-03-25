@@ -157,7 +157,9 @@ namespace ORM {
 
     template <typename RecordType> class DBCache {
     public:
-        DBCache(unsigned Size, unsigned Timeout)
+        DBCache(unsigned Size, unsigned Timeout) :
+            Size_(Size),
+            Timeout_(Timeout)
         {
 
         }
@@ -166,7 +168,8 @@ namespace ORM {
         virtual void UpdateCache(const RecordType &R)=0;
         virtual void Delete(const std::string &FieldName, const std::string &Value)=0;
     private:
-
+        size_t          Size_=0;
+        uint64_t        Timeout_=0;
     };
 
     template <typename RecordTuple, typename RecordType> class DB {
@@ -182,8 +185,8 @@ namespace ORM {
             Poco::Logger &L,
             const char *Prefix,
             DBCache<RecordType> * Cache=nullptr):
-                Type_(dbtype),
                 TableName_(TableName),
+                Type_(dbtype),
                 Pool_(Pool),
                 Logger_(L),
                 Prefix_(Prefix),
@@ -290,7 +293,7 @@ namespace ORM {
             return std::string("(")+P1 + BOPS[BOP] + P2 +")";
         }
 
-        std::string OP( bool Paran, const std::string &P1, SqlBinaryOp BOP , const std::string &P2) {
+        std::string OP( [[maybe_unused]] bool  Paran, const std::string &P1, SqlBinaryOp BOP , const std::string &P2) {
             return P1 + BOPS[BOP] + P2 +")";
         }
 
@@ -865,19 +868,19 @@ namespace ORM {
         }
 
     protected:
+        std::string                 TableName_;
+        OpenWifi::DBType            Type_;
         Poco::Data::SessionPool     &Pool_;
         Poco::Logger                &Logger_;
-        std::string                 TableName_;
+        std::string                 Prefix_;
         DBCache<RecordType>         *Cache_= nullptr;
     private:
-        OpenWifi::DBType            Type_;
         std::string                 CreateFields_;
         std::string                 SelectFields_;
         std::string                 SelectList_;
         std::string                 UpdateFields_;
         std::vector<std::string>    IndexCreation_;
         std::map<std::string,int>   FieldNames_;
-        std::string                 Prefix_;
     };
 }
 

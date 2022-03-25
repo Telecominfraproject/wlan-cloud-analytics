@@ -837,7 +837,7 @@ namespace OpenWifi::ProvObjects {
         return true;
     }
 
-    bool CreateObjectInfo(const SecurityObjects::UserInfo &U, ObjectInfo &I) {
+    bool CreateObjectInfo([[maybe_unused]] const SecurityObjects::UserInfo &U, ObjectInfo &I) {
         I.modified = I.created = OpenWifi::Now();
         I.id = MicroService::CreateUUID();
         return true;

@@ -44,7 +44,6 @@ namespace OpenWifi {
     void ListHandler(const char *BlockName, DB &DBInstance, RESTAPIHandler &R) {
 
         typedef typename DB::RecordVec RecVec;
-        typedef typename DB::RecordName RecType;
 
         if (!R.QB_.Select.empty()) {
             return ReturnRecordList(BlockName, DBInstance, R);

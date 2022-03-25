@@ -140,7 +140,7 @@ namespace OpenWifi {
                                         GetJSON("tx_msdu",tid_stat,E.tx_msdu, (uint64_t)0 );
                                         GetJSON("tx_msdu_failed",tid_stat,E.tx_msdu_failed, (uint64_t)0 );
                                         GetJSON("tx_msdu_retries",tid_stat,E.tx_msdu_retries, (uint64_t)0 );
-                                        TP.tidstat.push_back(E);
+                                        TP.tidstats.push_back(E);
                                     }
                                 }
 
