@@ -7,11 +7,15 @@
 #include <string>
 #include "Poco/String.h"
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 
 namespace OpenWifi::RESTAPI::Errors {
 	static const std::string MissingUUID{"Missing UUID."};
@@ -359,7 +363,12 @@ namespace OpenWifi::Provisioning::DeviceClass {
 
 }
 
+#if defined(__GNUC__ )
 #pragma GCC diagnostic pop
+#endif
+
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 
 
