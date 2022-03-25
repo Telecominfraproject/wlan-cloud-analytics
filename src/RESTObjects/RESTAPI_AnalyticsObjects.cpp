@@ -194,6 +194,7 @@ namespace OpenWifi::AnalyticsObjects {
     }
 
     void APTimePoint::to_json(Poco::JSON::Object &Obj) const {
+        std::cout << "Output APTimepoint" << std::endl;;
         field_to_json(Obj,"collisions",collisions);
         field_to_json(Obj,"multicast",multicast);
         field_to_json(Obj,"rx_bytes",rx_bytes);
@@ -205,10 +206,12 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"tx_dropped",tx_dropped);
         field_to_json(Obj,"tx_errors",tx_errors);
         field_to_json(Obj,"tx_packets",tx_packets);
+        std::cout << "Output APTimepoint done" << std::endl;;
     }
 
     bool APTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
+            std::cout << "input APTimepoint" << std::endl;;
             field_from_json(Obj,"collisions",collisions);
             field_from_json(Obj,"multicast",multicast);
             field_from_json(Obj,"rx_bytes",rx_bytes);
@@ -220,6 +223,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"tx_dropped",tx_dropped);
             field_from_json(Obj,"tx_errors",tx_errors);
             field_from_json(Obj,"tx_packets",tx_packets);
+            std::cout << "input APTimepoint done" << std::endl;;
             return true;
         } catch(...) {
 
