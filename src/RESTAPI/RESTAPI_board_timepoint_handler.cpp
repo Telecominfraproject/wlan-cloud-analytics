@@ -138,12 +138,12 @@ namespace OpenWifi {
         Answer.set("points",Outer);
 
 
-        static int f=0;
+/*        static int f=0;
         std::ostringstream OO;
         Answer.stringify(OO);
         std::ofstream of("msg"+std::to_string(f++)+".json", std::ios_base::trunc );
         of << OO.str();
-
+*/
         return ReturnObject(Answer);
     }
 }
