@@ -109,6 +109,14 @@ namespace OpenWifi {
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };
 
+        struct AveragePoint {
+            double      min = 0.0,
+                        max = 0.0,
+                        avg = 0.0;
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+        };
+
         struct UETimePoint {
             std::string station;
             int64_t rssi = 0;
@@ -171,6 +179,13 @@ namespace OpenWifi {
                         ssid;
             uint64_t    band=0;
             std::vector<UETimePoint> associations;
+            AveragePoint    tx_bytes_bw,
+                            rx_bytes_bw,
+                            tx_packets_bw,
+                            rx_packets_bw,
+                            tx_failed_pct,
+                            tx_retries_pct,
+                            tx_duration_pct;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);

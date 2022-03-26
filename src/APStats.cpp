@@ -40,6 +40,22 @@ namespace OpenWifi {
         return false;
     }
 
+    template <typename X, typename M> double Average( X T, const std::vector<M> &Values ) {
+        double result = 0.0;
+
+        if(!Values.empty()) {
+            double sum = 0.0;
+
+            for(const auto &v:Values) {
+                sum += (v.*T);
+            }
+
+            result = sum / (double) Values.size();
+        }
+
+        return result;
+    }
+
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
@@ -238,10 +254,39 @@ namespace OpenWifi {
                         association.tx_packets_bw = safe_div( association.tx_packets , time_lapse );
                         association.rx_packets_bw = safe_div( association.rx_packets , time_lapse );
                     }
+
                     association.tx_failed_pct = safe_pct( association.tx_failed, association.tx_packets);
                     association.tx_retries_pct = safe_pct( association.tx_retries, association.tx_packets);
                     association.tx_duration_pct = safe_pct( association.tx_duration, time_lapse );
+
+                    ssid.tx_failed_pct.max = std::max(ssid.tx_failed_pct.max, association.tx_failed_pct);
+                    ssid.tx_failed_pct.min = std::max(ssid.tx_failed_pct.min, association.tx_failed_pct);
+
+                    ssid.tx_retries_pct.max = std::max(ssid.tx_retries_pct.max, association.tx_retries_pct);
+                    ssid.tx_retries_pct.min = std::max(ssid.tx_retries_pct.min, association.tx_retries_pct);
+
+                    ssid.tx_duration_pct.max = std::max(ssid.tx_duration_pct.max, association.tx_duration_pct);
+                    ssid.tx_duration_pct.min = std::max(ssid.tx_duration_pct.min, association.tx_duration_pct);
+
+                    ssid.tx_bytes_bw.max = std::max(ssid.tx_bytes_bw.max, association.tx_bytes_bw);
+                    ssid.tx_bytes_bw.min = std::max(ssid.tx_bytes_bw.min, association.tx_bytes_bw);
+
+                    ssid.rx_bytes_bw.max = std::max(ssid.rx_bytes_bw.max, association.rx_bytes_bw);
+                    ssid.rx_bytes_bw.min = std::max(ssid.rx_bytes_bw.min, association.rx_bytes_bw);
+
+                    ssid.tx_packets_bw.max = std::max(ssid.tx_packets_bw.max, association.tx_packets_bw);
+                    ssid.tx_packets_bw.min = std::max(ssid.tx_packets_bw.min, association.tx_packets_bw);
+
+                    ssid.rx_packets_bw.max = std::max(ssid.rx_packets_bw.max, association.rx_packets_bw);
+                    ssid.rx_packets_bw.min = std::max(ssid.rx_packets_bw.min, association.rx_packets_bw);
                 }
+                ssid.tx_bytes_bw.avg = Average(&AnalyticsObjects::UETimePoint::tx_bytes_bw,ssid.associations);
+                ssid.rx_bytes_bw.avg = Average(&AnalyticsObjects::UETimePoint::rx_bytes_bw,ssid.associations);
+                ssid.tx_packets_bw.avg = Average(&AnalyticsObjects::UETimePoint::tx_packets_bw,ssid.associations);
+                ssid.rx_packets_bw.avg = Average(&AnalyticsObjects::UETimePoint::rx_packets_bw,ssid.associations);
+                ssid.tx_failed_pct.avg = Average(&AnalyticsObjects::UETimePoint::tx_failed_pct,ssid.associations);
+                ssid.tx_retries_pct.avg = Average(&AnalyticsObjects::UETimePoint::tx_retries_pct,ssid.associations);
+                ssid.tx_duration_pct.avg = Average(&AnalyticsObjects::UETimePoint::tx_duration_pct,ssid.associations);
             }
 
             if (got_connection && got_health) {

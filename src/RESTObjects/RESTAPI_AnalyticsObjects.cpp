@@ -317,12 +317,37 @@ namespace OpenWifi::AnalyticsObjects {
         return false;
     }
 
+    void AveragePoint::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"min",min);
+        field_to_json(Obj,"max",max);
+        field_to_json(Obj,"avg",avg);
+    }
+
+    bool AveragePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"min",min);
+            field_from_json(Obj,"max",max);
+            field_from_json(Obj,"avg",avg);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
     void SSIDTimePoint::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"bssid",bssid);
         field_to_json(Obj,"mode",mode);
         field_to_json(Obj,"ssid",ssid);
         field_to_json(Obj,"band",band);
         field_to_json(Obj,"associations",associations);
+        field_to_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+        field_to_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+        field_to_json(Obj,"tx_packets_bw",tx_packets_bw);
+        field_to_json(Obj,"rx_packets_bw",rx_packets_bw);
+        field_to_json(Obj,"tx_failed_pct",tx_failed_pct);
+        field_to_json(Obj,"tx_retries_pct",tx_retries_pct);
+        field_to_json(Obj,"tx_duration_pct",tx_duration_pct);
     }
 
     bool SSIDTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -332,6 +357,13 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"ssid",ssid);
             field_from_json(Obj,"band",band);
             field_from_json(Obj,"associations",associations);
+            field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+            field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+            field_from_json(Obj,"tx_packets_bw",tx_packets_bw);
+            field_from_json(Obj,"rx_packets_bw",rx_packets_bw);
+            field_from_json(Obj,"tx_failed_pct",tx_failed_pct);
+            field_from_json(Obj,"tx_retries_pct",tx_retries_pct);
+            field_from_json(Obj,"tx_duration_pct",tx_duration_pct);
             return true;
         } catch(...) {
 
