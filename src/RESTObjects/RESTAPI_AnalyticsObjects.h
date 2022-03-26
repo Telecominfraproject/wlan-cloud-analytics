@@ -121,6 +121,16 @@ namespace OpenWifi {
                     tx_failed = 0,
                     connected = 0,
                     inactive = 0;
+
+            double  tx_bytes_bw = 0.0 ,
+                    rx_bytes_bw = 0.0 ,
+                    tx_packets_bw = 0.0 ,
+                    rx_packets_bw = 0.0 ,
+                    tx_failed_pct = 0.0 ,
+                    tx_retries_pct = 0.0 ,
+                    tx_duration_pct = 0.0;
+
+
             UE_rate tx_rate,
                     rx_rate;
             std::vector<TIDstat_entry> tidstats;
@@ -184,7 +194,9 @@ namespace OpenWifi {
                         rx_dropped_pct = 0.0,
                         tx_dropped_pct = 0.0,
                         rx_packets_bw = 0.0,
-                        tx_packets_bw = 0.0;
+                        tx_packets_bw = 0.0,
+                        rx_errors_pct = 0.0 ,
+                        tx_errors_pct = 0.0;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
@@ -193,14 +205,19 @@ namespace OpenWifi {
         struct RadioTimePoint {
             uint64_t    band = 0,
                         radio_channel = 0;
-            uint64_t active_ms = 0,
-                    busy_ms = 0,
-                    receive_ms = 0,
-                    transmit_ms = 0,
-                    tx_power = 0,
-                    channel = 0;
-            int64_t temperature = 0,
-                    noise = 0;
+            uint64_t    active_ms = 0,
+                        busy_ms = 0,
+                        receive_ms = 0,
+                        transmit_ms = 0,
+                        tx_power = 0,
+                        channel = 0;
+            int64_t     temperature = 0,
+                        noise = 0;
+
+            double      active_pct = 0.0 ,
+                        busy_pct = 0.0,
+                        receive_pct = 0.0,
+                        transmit_pct = 0.0;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);

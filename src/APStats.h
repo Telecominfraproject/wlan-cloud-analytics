@@ -34,6 +34,10 @@ namespace OpenWifi {
         uint64_t                                        mac_=0;
         std::string                                     boardId_;
         AnalyticsObjects::DeviceInfo                    DI_;
-        std::vector<AnalyticsObjects::DeviceTimePoint>  DTP_;
+        AnalyticsObjects::DeviceTimePoint               tp_base_;
+        bool                                            got_health = false,
+                                                        got_stats = false,
+                                                        got_connection = false,
+                                                        got_base = false;
     };
 }

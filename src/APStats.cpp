@@ -16,9 +16,34 @@ namespace OpenWifi {
         }
     }
 
+    inline double safe_div(uint64_t a , uint64_t b) {
+        if(b==0)
+            return 0.0;
+        return (double)a/ (double) b;
+    }
+
+    inline double safe_pct(uint64_t a , uint64_t b) {
+        if(b==0)
+            return 0.0;
+        return (100.0) * (double) a/ (double) b;
+    }
+
+    inline bool find_ue(const std::string &station, const std::vector<AnalyticsObjects::SSIDTimePoint> &tps, AnalyticsObjects::UETimePoint &ue_tp) {
+        for(const auto &ssid:tps) {
+            for(const auto &association:ssid.associations) {
+                if(association.station==station) {
+                    ue_tp = association;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
+        got_stats = true;
 
         AnalyticsObjects::DeviceTimePoint DTP;
 
@@ -172,37 +197,71 @@ namespace OpenWifi {
 
             }
             DTP.device_info = DI_;
-//            std::cout << Utils::IntToSerialNumber(mac_) << ": stats ";
-//            std::cout << "2G: " << DI_.associations_2g << "   5G: " << DI_.associations_5g << "   6G: " << DI_.associations_6g << std::endl;
         } catch (...) {
             std::cout << Utils::IntToSerialNumber(mac_) << ": stats failed parsing." ;
             std::cout << *State << std::endl;
         }
 
-        DTP.id = MicroService::instance().CreateUUID();
-        DTP.boardId = boardId_;
-        StorageService()->TimePointsDB().CreateRecord(DTP);
+        if(got_base) {
+            // calculate new point based on base, save new point, move DTP into base...
+            AnalyticsObjects::DeviceTimePoint db_DTP = DTP;
 
-        DTP_.push_back(DTP);
+            auto time_lapse = DTP.timestamp - tp_base_.timestamp;
+            if(time_lapse==0) time_lapse = 1;
+            db_DTP.ap_data.tx_bytes_bw =  safe_div(db_DTP.ap_data.tx_bytes - tp_base_.ap_data.tx_bytes, time_lapse);
+            db_DTP.ap_data.rx_bytes_bw =  safe_div(db_DTP.ap_data.rx_bytes - tp_base_.ap_data.rx_bytes, time_lapse);
+            db_DTP.ap_data.tx_packets_bw = safe_div(db_DTP.ap_data.tx_packets - tp_base_.ap_data.tx_packets, time_lapse);
+            db_DTP.ap_data.rx_packets_bw = safe_div(db_DTP.ap_data.rx_packets - tp_base_.ap_data.rx_packets, time_lapse);
+            db_DTP.ap_data.tx_dropped_pct = safe_pct(db_DTP.ap_data.tx_dropped, db_DTP.ap_data.tx_packets);
+            db_DTP.ap_data.rx_dropped_pct = safe_pct(db_DTP.ap_data.rx_dropped, db_DTP.ap_data.rx_packets);
+            db_DTP.ap_data.tx_errors_pct = safe_pct(db_DTP.ap_data.tx_errors, db_DTP.ap_data.tx_packets);
+            db_DTP.ap_data.rx_errors_pct = safe_pct(db_DTP.ap_data.rx_errors, db_DTP.ap_data.rx_packets);
 
-        if(DTP_.size()>100) {
-            DTP_.erase(DTP_.begin());
+            for(auto &radio:db_DTP.radio_data) {
+                radio.active_pct = safe_pct(radio.active_ms / 1000 , time_lapse);
+                radio.busy_pct = safe_pct(radio.busy_ms / 1000 , time_lapse);
+                radio.receive_pct = safe_pct(radio.receive_ms / 1000 , time_lapse);
+                radio.transmit_pct = safe_pct(radio.transmit_ms / 1000 ,time_lapse);
+            }
+
+            for(auto &ssid:db_DTP.ssid_data) {
+                for(auto &association:ssid.associations) {
+                    AnalyticsObjects::UETimePoint ue_tp;
+                    if(find_ue(association.station, tp_base_.ssid_data, ue_tp)) {
+                        association.tx_bytes_bw = safe_div( association.tx_bytes - ue_tp.tx_bytes , time_lapse );
+                        association.rx_bytes_bw = safe_div( association.rx_bytes - ue_tp.rx_bytes , time_lapse );
+                        association.tx_packets_bw = safe_div( association.tx_packets - ue_tp.tx_packets , time_lapse );
+                        association.rx_packets_bw = safe_div( association.rx_packets - ue_tp.rx_packets , time_lapse );
+                    } else {
+                        association.tx_bytes_bw = safe_div( association.tx_bytes , time_lapse );
+                        association.rx_bytes_bw = safe_div( association.rx_bytes , time_lapse );
+                        association.tx_packets_bw = safe_div( association.tx_packets , time_lapse );
+                        association.rx_packets_bw = safe_div( association.rx_packets , time_lapse );
+                    }
+                    association.tx_failed_pct = safe_pct( association.tx_failed, association.tx_packets);
+                    association.tx_retries_pct = safe_pct( association.tx_retries, association.tx_packets);
+                    association.tx_duration_pct = safe_pct( association.tx_duration, time_lapse );
+                }
+            }
+
+            if (got_connection && got_health) {
+                db_DTP.id = MicroService::instance().CreateUUID();
+                db_DTP.boardId = boardId_;
+                StorageService()->TimePointsDB().CreateRecord(db_DTP);
+            }
+            tp_base_ = DTP;
+        } else {
+            tp_base_ = DTP;
+            got_base = true;
         }
-
-        std::cout << "Serial: " << Utils::IntToSerialNumber(mac_) << "  points: " << DTP_.size() << std::endl;
     }
-
-    /*
-{"ping":{"compatible":"edgecore_eap101","connectionIp":"903cb3b16e92@24.84.172.236:49620","firmware":"OpenWrt 21.02-SNAPSHOT r16399+116-c67509efd7 / TIP-devel-a0880ed","locale":"CA","serialNumber":"903cb3b16e92","timestamp":1647412525}}
-
-     */
-
 
     void AP::UpdateConnection(const std::shared_ptr<nlohmann::json> &Connection) {
         DI_.pings++;
         DI_.lastContact = OpenWifi::Now();
         try {
             if (Connection->contains("ping")) {
+                got_connection = true;
                 std::cout << Utils::IntToSerialNumber(mac_) << ": ping" << std::endl;
                 DI_.connected = true;
                 DI_.lastPing = OpenWifi::Now();
@@ -222,8 +281,10 @@ namespace OpenWifi {
                 std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
                 auto Disconnection = (*Connection)["disconnection"];
                 GetJSON("timestamp", Disconnection, DI_.lastDisconnection, (uint64_t)0 );
+                got_base = got_health = got_connection = got_stats = false;
                 DI_.connected = false;
             } else if (Connection->contains("capabilities")) {
+                got_connection = true;
                 std::cout << Utils::IntToSerialNumber(mac_) << ": connection" << std::endl;
                 DI_.connected = true;
                 DI_.lastConnection = OpenWifi::Now();
@@ -246,6 +307,7 @@ namespace OpenWifi {
 
     void AP::UpdateHealth(const std::shared_ptr<nlohmann::json> & Health) {
         try {
+            got_health = true;
             GetJSON("timestamp", *Health, DI_.lastHealth, (uint64_t)0 );
             GetJSON("sanity", *Health, DI_.health, (uint64_t)0 );
             std::cout << Utils::IntToSerialNumber(mac_) << ": health " << DI_.health << std::endl;

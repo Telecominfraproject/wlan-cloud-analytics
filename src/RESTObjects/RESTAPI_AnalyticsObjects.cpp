@@ -168,6 +168,13 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"tx_rate",tx_rate);
         field_to_json(Obj,"rx_rate",rx_rate);
         field_to_json(Obj,"tidstats",tidstats);
+        field_to_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+        field_to_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+        field_to_json(Obj,"tx_packets_bw",tx_packets_bw);
+        field_to_json(Obj,"rx_packets_bw",rx_packets_bw);
+        field_to_json(Obj,"tx_failed_pct",tx_failed_pct);
+        field_to_json(Obj,"tx_retries_pct",tx_retries_pct);
+        field_to_json(Obj,"tx_duration_pct",tx_duration_pct);
     }
 
     bool UETimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -186,6 +193,13 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"tx_rate",tx_rate);
             field_from_json(Obj,"rx_rate",rx_rate);
             field_from_json(Obj,"tidstats",tidstats);
+            field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+            field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+            field_from_json(Obj,"tx_packets_bw",tx_packets_bw);
+            field_from_json(Obj,"rx_packets_bw",rx_packets_bw);
+            field_from_json(Obj,"tx_failed_pct",tx_failed_pct);
+            field_from_json(Obj,"tx_retries_pct",tx_retries_pct);
+            field_from_json(Obj,"tx_duration_pct",tx_duration_pct);
             return true;
         } catch(...) {
 
@@ -205,6 +219,14 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"tx_dropped",tx_dropped);
         field_to_json(Obj,"tx_errors",tx_errors);
         field_to_json(Obj,"tx_packets",tx_packets);
+        field_to_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+        field_to_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+        field_to_json(Obj,"rx_dropped_pct",rx_dropped_pct);
+        field_to_json(Obj,"tx_dropped_pct",tx_dropped_pct);
+        field_to_json(Obj,"rx_packets_bw",rx_packets_bw);
+        field_to_json(Obj,"tx_packets_bw",tx_packets_bw);
+        field_to_json(Obj,"rx_errors_pct",rx_errors_pct);
+        field_to_json(Obj,"tx_errors_pct",tx_errors_pct);
     }
 
     bool APTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -220,6 +242,14 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"tx_dropped",tx_dropped);
             field_from_json(Obj,"tx_errors",tx_errors);
             field_from_json(Obj,"tx_packets",tx_packets);
+            field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+            field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+            field_from_json(Obj,"rx_dropped_pct",rx_dropped_pct);
+            field_from_json(Obj,"tx_dropped_pct",tx_dropped_pct);
+            field_from_json(Obj,"rx_packets_bw",rx_packets_bw);
+            field_from_json(Obj,"tx_packets_bw",tx_packets_bw);
+            field_from_json(Obj,"rx_errors_pct",rx_errors_pct);
+            field_from_json(Obj,"tx_errors_pct",tx_errors_pct);
             return true;
         } catch(...) {
 
@@ -258,6 +288,10 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"channel",channel);
         field_to_json(Obj,"temperature",temperature);
         field_to_json(Obj,"noise",noise);
+        field_to_json(Obj,"active_pct",active_pct);
+        field_to_json(Obj,"busy_pct",busy_pct);
+        field_to_json(Obj,"receive_pct",receive_pct);
+        field_to_json(Obj,"transmit_pct",transmit_pct);
     }
 
     bool RadioTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -272,6 +306,10 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"channel",channel);
             field_from_json(Obj,"temperature",temperature);
             field_from_json(Obj,"noise",noise);
+            field_from_json(Obj,"active_pct",active_pct);
+            field_from_json(Obj,"busy_pct",busy_pct);
+            field_from_json(Obj,"receive_pct",receive_pct);
+            field_from_json(Obj,"transmit_pct",transmit_pct);
             return true;
         } catch(...) {
 
