@@ -6,7 +6,6 @@
 //	Arilia Wireless Inc.
 //
 
-#include <boost/algorithm/string.hpp>
 #include "Poco/Util/Application.h"
 #include "Poco/Util/Option.h"
 #include "Poco/Environment.h"
@@ -40,7 +39,6 @@ namespace OpenWifi {
 	}
 
     void Daemon::PostInitialization([[maybe_unused]] Poco::Util::Application &self) {
-        std::cout << "Daemon initializing" << std::endl;
     }
 }
 

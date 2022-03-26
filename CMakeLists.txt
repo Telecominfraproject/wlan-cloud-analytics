@@ -45,7 +45,6 @@ set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost      REQUIRED system)
 find_package(OpenSSL    REQUIRED)
 find_package(AWSSDK     REQUIRED COMPONENTS s3)
 find_package(Poco       REQUIRED COMPONENTS Crypto JWT Net Util NetSSL Data DataSQLite)
@@ -89,12 +88,31 @@ add_executable(owanalytics
         src/RESTAPI/RESTAPI_routers.cpp
         src/Daemon.cpp src/Daemon.h
         src/Dashboard.h src/Dashboard.cpp
-        src/StorageService.cpp src/StorageService.h src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h src/StateReceiver.cpp src/StateReceiver.h src/VenueWatcher.cpp src/VenueWatcher.h src/VenueCoordinator.cpp src/VenueCoordinator.h src/sdks/SDK_prov.cpp src/sdks/SDK_prov.h src/storage/storage_boards.cpp src/storage/storage_boards.h src/RESTAPI/RESTAPI_board_list_handler.cpp src/RESTAPI/RESTAPI_board_list_handler.h src/RESTAPI/RESTAPI_board_handler.cpp src/RESTAPI/RESTAPI_board_handler.h src/RESTAPI/RESTAPI_analytics_db_helpers.h src/APStats.cpp src/APStats.h src/dict_ssid.h src/dict_ue.h src/dict_bssid.h src/DeviceStatusReceiver.cpp src/DeviceStatusReceiver.h src/RESTAPI/RESTAPI_board_devices_handler.cpp src/RESTAPI/RESTAPI_board_devices_handler.h src/HealthReceiver.cpp src/HealthReceiver.h src/StatFunc.h src/RESTAPI/RESTAPI_board_timepoint_handler.cpp src/RESTAPI/RESTAPI_board_timepoint_handler.h src/storage/storage_timepoints.cpp src/storage/storage_timepoints.h)
+        src/StorageService.cpp src/StorageService.h
+        src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h
+        src/StateReceiver.cpp src/StateReceiver.h
+        src/VenueWatcher.cpp src/VenueWatcher.h
+        src/VenueCoordinator.cpp src/VenueCoordinator.h
+        src/sdks/SDK_prov.cpp src/sdks/SDK_prov.h
+        src/storage/storage_boards.cpp src/storage/storage_boards.h
+        src/RESTAPI/RESTAPI_board_list_handler.cpp src/RESTAPI/RESTAPI_board_list_handler.h
+        src/RESTAPI/RESTAPI_board_handler.cpp src/RESTAPI/RESTAPI_board_handler.h
+        src/RESTAPI/RESTAPI_analytics_db_helpers.h
+        src/APStats.cpp src/APStats.h
+        src/dict_ssid.h src/dict_ue.h src/dict_bssid.h
+        src/DeviceStatusReceiver.cpp src/DeviceStatusReceiver.h
+        src/RESTAPI/RESTAPI_board_devices_handler.cpp src/RESTAPI/RESTAPI_board_devices_handler.h
+        src/HealthReceiver.cpp src/HealthReceiver.h
+        src/StatFunc.h
+        src/RESTAPI/RESTAPI_board_timepoint_handler.cpp src/RESTAPI/RESTAPI_board_timepoint_handler.h
+        src/storage/storage_timepoints.cpp src/storage/storage_timepoints.h)
 
 target_link_libraries(owanalytics PUBLIC
-        ${Poco_LIBRARIES} ${MySQL_LIBRARIES}
-        ${Boost_LIBRARIES}
-        ${ZLIB_LIBRARIES} ${AWSSDK_LINK_LIBRARIES}
-        fmt::fmt
-        CppKafka::cppkafka nlohmann_json_schema_validator)
+                        ${Poco_LIBRARIES}
+                        ${MySQL_LIBRARIES}
+                        ${ZLIB_LIBRARIES}
+                        ${AWSSDK_LINK_LIBRARIES}
+                        fmt::fmt
+                        CppKafka::cppkafka
+                        nlohmann_json_schema_validator)
 
