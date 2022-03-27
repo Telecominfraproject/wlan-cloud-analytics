@@ -38,10 +38,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     string(REGEX REPLACE "\n$" "" GIT_HASH "${GIT_HASH}")
 endif()
 
-add_definitions(-DAWS_CUSTOM_MEMORY_MANAGEMENT)
-
 find_package(OpenSSL    REQUIRED)
-find_package(AWSSDK     REQUIRED COMPONENTS s3)
 find_package(Poco       REQUIRED COMPONENTS Crypto JWT Net Util NetSSL Data DataSQLite)
 find_package(nlohmann_json  REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
@@ -108,7 +105,6 @@ target_link_libraries(owanalytics PUBLIC
                         ${Poco_LIBRARIES}
                         ${MySQL_LIBRARIES}
                         ${ZLIB_LIBRARIES}
-                        ${AWSSDK_LINK_LIBRARIES}
                         fmt::fmt
                         CppKafka::cppkafka
                         nlohmann_json_schema_validator)
