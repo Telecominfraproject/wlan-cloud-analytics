@@ -56,9 +56,11 @@ else()
     find_package(Poco REQUIRED COMPONENTS JSON Crypto JWT Net Util NetSSL Data DataSQLite DataPostgreSQL DataMySQL)
 endif()
 
-add_compile_options(-fsanitize=address -Wall -Wextra)
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
+add_compile_options(-Wall -Wextra)
+if(ASAN)
+    add_compile_options(-fsanitize=address)
+    add_link_options(-fsanitize=address)
+endif()
 
 include_directories(/usr/local/include  /usr/local/opt/openssl/include src include/kafka /usr/local/opt/mysql-client/include)
 
