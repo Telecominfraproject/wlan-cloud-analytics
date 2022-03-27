@@ -399,6 +399,7 @@ namespace OpenWifi::AnalyticsObjects {
 
     void DeviceTimePointAnalysis::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"noise",noise);
+        field_to_json(Obj,"temperature",temperature);
         field_to_json(Obj,"active_pct",active_pct);
         field_to_json(Obj,"busy_pct",busy_pct);
         field_to_json(Obj,"receive_pct",receive_pct);
@@ -417,6 +418,7 @@ namespace OpenWifi::AnalyticsObjects {
     bool DeviceTimePointAnalysis::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
             field_from_json(Obj,"noise",noise);
+            field_from_json(Obj,"temperature",temperature);
             field_from_json(Obj,"active_pct",active_pct);
             field_from_json(Obj,"busy_pct",busy_pct);
             field_from_json(Obj,"receive_pct",receive_pct);

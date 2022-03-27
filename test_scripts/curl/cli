@@ -251,7 +251,7 @@ boarddevices() {
 }
 
 points() {
-    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/timepoints" \
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/timepoints?pointsStatsOnly=true" \
     -H "accept: application/json" \
     -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}

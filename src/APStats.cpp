@@ -100,8 +100,8 @@ namespace OpenWifi {
                         GetJSON("tx_power", radio, RTP.tx_power, (uint64_t) 0);
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 0);
-                        GetJSON("temperature", radio, RTP.temperature, (int64_t) 0);
-                        GetJSON("noise", radio, RTP.noise, (int64_t) 0);
+                        GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
+                        GetJSON("noise", radio, RTP.noise, (int64_t) -100);
                         DTP.radio_data.push_back(RTP);
                     }
                 }
@@ -331,7 +331,7 @@ namespace OpenWifi {
                 GetJSON("compatible", ping, DI_.deviceType, std::string{} );
                 GetJSON("connectionIp", ping, DI_.connectionIp, std::string{} );
                 GetJSON("locale", ping, DI_.locale, std::string{} );
-                GetJSON("timestamp", ping, DI_.lastConnection, (uint64_t)0 );
+                GetJSON("timestamp", ping, DI_.lastConnection, (uint64_t) OpenWifi::Now() );
                 if (ping.contains("firmware")) {
                     auto NewFirmware = ping["firmware"];
                     if (NewFirmware != DI_.lastFirmware) {

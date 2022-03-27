@@ -191,6 +191,7 @@ namespace OpenWifi {
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_errors_pct, point_list, DTPA.tx_errors_pct);
 
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::noise, point_list, DTPA.noise);
+                AverageRadioData(&AnalyticsObjects::RadioTimePoint::temperature, point_list, DTPA.temperature);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::tx_power, point_list, DTPA.tx_power);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::active_pct, point_list, DTPA.active_pct);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::busy_pct, point_list, DTPA.busy_pct);

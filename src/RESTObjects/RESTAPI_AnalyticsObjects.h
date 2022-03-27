@@ -281,6 +281,7 @@ namespace OpenWifi {
             uint64_t        timestamp;
 
             AveragePoint    noise;
+            AveragePoint    temperature;
             AveragePoint    active_pct;
             AveragePoint    busy_pct;
             AveragePoint    receive_pct;
