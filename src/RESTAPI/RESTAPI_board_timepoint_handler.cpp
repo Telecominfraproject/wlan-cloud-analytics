@@ -93,7 +93,7 @@ namespace OpenWifi {
 
         auto fromDate = GetParameter("fromDate",0);
         auto endDate = GetParameter("endDate",0);
-        auto maxRecords = GetParameter("maxRecords",100);
+        auto maxRecords = GetParameter("maxRecords",1000);
         auto statsOnly = GetBoolParameter("statsOnly");
         auto pointsOnly = GetBoolParameter("pointsOnly");
         auto pointsStatsOnly = GetBoolParameter("pointsStatsOnly");
