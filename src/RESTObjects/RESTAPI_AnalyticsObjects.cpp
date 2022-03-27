@@ -167,7 +167,7 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"inactive",inactive);
         field_to_json(Obj,"tx_rate",tx_rate);
         field_to_json(Obj,"rx_rate",rx_rate);
-        field_to_json(Obj,"tidstats",tidstats);
+//      field_to_json(Obj, "tidstats", tidstats);
         field_to_json(Obj,"tx_bytes_bw",tx_bytes_bw);
         field_to_json(Obj,"rx_bytes_bw",rx_bytes_bw);
         field_to_json(Obj,"tx_packets_bw",tx_packets_bw);
@@ -192,7 +192,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"inactive",inactive);
             field_from_json(Obj,"tx_rate",tx_rate);
             field_from_json(Obj,"rx_rate",rx_rate);
-            field_from_json(Obj,"tidstats",tidstats);
+//          field_from_json(Obj,"tidstats",tidstats);
             field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
             field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
             field_from_json(Obj,"tx_packets_bw",tx_packets_bw);
