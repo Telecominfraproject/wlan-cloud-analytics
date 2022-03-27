@@ -60,7 +60,9 @@ namespace OpenWifi {
         double sum = 0.0;
         for(const auto &v:Values) {
             sum += (v.ap_data.*T);
-            P.min = std::min(P.min,(v.ap_data.*T));
+            if((v.ap_data.*T)!=0) {
+                P.min = std::min(P.min, (v.ap_data.*T));
+            }
             P.max = std::min(P.max,(v.ap_data.*T));
         }
         P.avg = sum / (double) Values.size();
@@ -75,7 +77,9 @@ namespace OpenWifi {
             for(const auto &radio:value.radio_data) {
                 num_values++;
                 sum += (radio.*T);
-                P.min = std::min((double)P.min, (double)(radio.*T));
+                if((radio.*T)!=0) {
+                    P.min = std::min((double) P.min, (double) (radio.*T));
+                }
                 P.max = std::max((double)P.max, (double)(radio.*T));
             }
         }
