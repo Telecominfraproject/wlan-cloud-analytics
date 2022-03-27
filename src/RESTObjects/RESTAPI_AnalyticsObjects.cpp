@@ -397,13 +397,55 @@ namespace OpenWifi::AnalyticsObjects {
         return false;
     }
 
+    void DeviceTimePointAnalysis::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"noise",noise);
+        field_to_json(Obj,"active_pct",active_pct);
+        field_to_json(Obj,"busy_pct",busy_pct);
+        field_to_json(Obj,"receive_pct",receive_pct);
+        field_to_json(Obj,"transmit_pct",transmit_pct);
+        field_to_json(Obj,"tx_power",tx_power);
+        field_to_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+        field_to_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+        field_to_json(Obj,"rx_dropped_pct",rx_dropped_pct);
+        field_to_json(Obj,"tx_dropped_pct",tx_dropped_pct);
+        field_to_json(Obj,"rx_packets_bw",rx_packets_bw);
+        field_to_json(Obj,"tx_packets_bw",tx_packets_bw);
+        field_to_json(Obj,"rx_errors_pct",rx_errors_pct);
+        field_to_json(Obj,"tx_errors_pct",tx_errors_pct);
+    }
+
+    bool DeviceTimePointAnalysis::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"noise",noise);
+            field_from_json(Obj,"active_pct",active_pct);
+            field_from_json(Obj,"busy_pct",busy_pct);
+            field_from_json(Obj,"receive_pct",receive_pct);
+            field_from_json(Obj,"transmit_pct",transmit_pct);
+            field_from_json(Obj,"tx_power",tx_power);
+            field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
+            field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
+            field_from_json(Obj,"rx_dropped_pct",rx_dropped_pct);
+            field_from_json(Obj,"tx_dropped_pct",tx_dropped_pct);
+            field_from_json(Obj,"rx_packets_bw",rx_packets_bw);
+            field_from_json(Obj,"tx_packets_bw",tx_packets_bw);
+            field_from_json(Obj,"rx_errors_pct",rx_errors_pct);
+            field_from_json(Obj,"tx_errors_pct",tx_errors_pct);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
     void DeviceTimePointList::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"points",points);
+        field_to_json(Obj,"stats",stats);
     }
 
     bool DeviceTimePointList::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
             field_from_json(Obj,"points",points);
+            field_from_json(Obj,"stats",stats);
             return true;
         } catch(...) {
 

@@ -240,13 +240,13 @@ namespace OpenWifi {
 
 
         struct DeviceTimePoint {
-            std::string                 id;
-            std::string                 boardId;
-            uint64_t                    timestamp = 0;
-            APTimePoint                 ap_data;
-            std::vector<SSIDTimePoint>  ssid_data;
-            std::vector<RadioTimePoint> radio_data;
-            AnalyticsObjects::DeviceInfo device_info;
+            std::string                     id;
+            std::string                     boardId;
+            uint64_t                        timestamp = 0;
+            APTimePoint                     ap_data;
+            std::vector<SSIDTimePoint>      ssid_data;
+            std::vector<RadioTimePoint>     radio_data;
+            AnalyticsObjects::DeviceInfo    device_info;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
@@ -277,9 +277,33 @@ namespace OpenWifi {
 
         };
 
-        struct DeviceTimePointList {
-            std::vector<DeviceTimePoint>    points;
+        struct DeviceTimePointAnalysis {
+            uint64_t        timestamp;
 
+            AveragePoint    noise;
+            AveragePoint    active_pct;
+            AveragePoint    busy_pct;
+            AveragePoint    receive_pct;
+            AveragePoint    transmit_pct;
+            AveragePoint    tx_power;
+
+            AveragePoint    tx_bytes_bw;
+            AveragePoint    rx_bytes_bw;
+            AveragePoint    rx_dropped_pct;
+            AveragePoint    tx_dropped_pct;
+            AveragePoint    rx_packets_bw;
+            AveragePoint    tx_packets_bw;
+            AveragePoint    rx_errors_pct;
+            AveragePoint    tx_errors_pct;
+
+            void to_json(Poco::JSON::Object &Obj) const;
+            bool from_json(const Poco::JSON::Object::Ptr &Obj);
+
+        };
+
+        struct DeviceTimePointList {
+            std::vector<DeviceTimePoint>            points;
+            std::vector<DeviceTimePointAnalysis>    stats;
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
         };

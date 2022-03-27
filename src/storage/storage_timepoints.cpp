@@ -64,6 +64,10 @@ namespace OpenWifi {
         GetRecords(0,MaxRecords,Recs,WhereClause," order by timestamp ASC ");
         return true;
     }
+
+    bool TimePointDB::DeleteBoard(const std::string &boardId) {
+        return DeleteRecords(fmt::format(" boardId='{}' ", boardId));
+    }
 }
 
 template<> void ORM::DB<OpenWifi::TimePointDBRecordType, OpenWifi::AnalyticsObjects::DeviceTimePoint>::Convert(const OpenWifi::TimePointDBRecordType &In, OpenWifi::AnalyticsObjects::DeviceTimePoint &Out) {

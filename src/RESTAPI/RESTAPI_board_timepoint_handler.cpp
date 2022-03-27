@@ -54,6 +54,32 @@ namespace OpenWifi {
         }
     }
 
+    template <typename X, typename M> void AverageAPData( X T, const std::vector<M> &Values, AnalyticsObjects::AveragePoint &P) {
+        if(Values.empty())
+            return;
+        double sum = 0.0;
+        for(const auto &v:Values) {
+            sum += (v.ap_data.*T);
+            P.min = std::min(P.min,(v.ap_data.*T));
+            P.max = std::min(P.max,(v.ap_data.*T));
+        }
+        P.avg = sum / (double) Values.size();
+    }
+
+    template <typename X, typename M> void AverageRadioData( X T, const std::vector<M> &Values, AnalyticsObjects::AveragePoint &P) {
+        if(Values.empty())
+            return;
+        double sum = 0.0;
+        for(const auto &value:Values) {
+            for(const auto &radio:value.radio_data) {
+                sum += (radio.*T);
+                P.min = std::min((double)P.min, (double)(radio.*T));
+                P.max = std::max((double)P.max, (double)(radio.*T));
+            }
+        }
+        P.avg = sum / (double) Values.size();
+    }
+
     void RESTAPI_board_timepoint_handler::DoGet() {
 
         auto id = GetBinding("id","");
@@ -125,17 +151,47 @@ namespace OpenWifi {
         }
 
         Poco::JSON::Object  Answer;
-        Poco::JSON::Array   Outer;
-        for(const auto &i:sp) {
-            Poco::JSON::Array   InnerArray;
-            for(const auto &j:i) {
+        Poco::JSON::Array   Points_OuterArray;
+        for(const auto &point_list:sp) {
+            Poco::JSON::Array   Points_InnerArray;
+            for(const auto &point:point_list) {
                 Poco::JSON::Object  O;
-                j.to_json(O);
-                InnerArray.add(O);
+                point.to_json(O);
+                Points_InnerArray.add(O);
             }
-            Outer.add(InnerArray);
+            Points_OuterArray.add(Points_InnerArray);
         }
-        Answer.set("points",Outer);
+
+        //  calculate the stats for each time slot
+        Poco::JSON::Array   Stats_Array;
+        for(const auto &point_list:sp) {
+            AnalyticsObjects::DeviceTimePointAnalysis   DTPA;
+
+            DTPA.timestamp = point_list[0].timestamp;
+            AverageAPData(&AnalyticsObjects::APTimePoint::tx_bytes_bw,point_list,DTPA.tx_bytes_bw);
+            AverageAPData(&AnalyticsObjects::APTimePoint::rx_bytes_bw,point_list,DTPA.rx_bytes_bw);
+            AverageAPData(&AnalyticsObjects::APTimePoint::rx_dropped_pct,point_list,DTPA.rx_dropped_pct);
+            AverageAPData(&AnalyticsObjects::APTimePoint::tx_dropped_pct,point_list,DTPA.tx_dropped_pct);
+            AverageAPData(&AnalyticsObjects::APTimePoint::rx_packets_bw,point_list,DTPA.rx_packets_bw);
+            AverageAPData(&AnalyticsObjects::APTimePoint::tx_packets_bw,point_list,DTPA.tx_packets_bw);
+            AverageAPData(&AnalyticsObjects::APTimePoint::rx_errors_pct,point_list,DTPA.rx_errors_pct);
+            AverageAPData(&AnalyticsObjects::APTimePoint::tx_errors_pct,point_list,DTPA.tx_errors_pct);
+
+            AverageRadioData(&AnalyticsObjects::RadioTimePoint::noise, point_list, DTPA.noise);
+            AverageRadioData(&AnalyticsObjects::RadioTimePoint::tx_power, point_list, DTPA.tx_power);
+            AverageRadioData(&AnalyticsObjects::RadioTimePoint::active_pct, point_list, DTPA.active_pct);
+            AverageRadioData(&AnalyticsObjects::RadioTimePoint::busy_pct, point_list, DTPA.busy_pct);
+            AverageRadioData(&AnalyticsObjects::RadioTimePoint::receive_pct, point_list, DTPA.receive_pct);
+            AverageRadioData(&AnalyticsObjects::RadioTimePoint::transmit_pct, point_list, DTPA.transmit_pct);
+
+            Poco::JSON::Object  Stats_point;
+            DTPA.to_json(Stats_point);
+            Stats_Array.add(Stats_point);
+        }
+
+
+        Answer.set("points",Points_OuterArray);
+        Answer.set("stats",Stats_Array);
 
 
 /*        static int f=0;

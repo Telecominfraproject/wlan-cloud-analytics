@@ -355,26 +355,19 @@ components:
           items:
             $ref: '#/components/schemas/UETimePoint'
         tx_bytes_bw:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
         rx_bytes_bw:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
         tx_packets_bw:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
         rx_packets_bw:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
         tx_failed_pct:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
         tx_retries_pct:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
         tx_duration_pct:
-          type:
-            $ref: '#/components/schemas/AveragePoint'
+          $ref: '#/components/schemas/AveragePoint'
 
     APTimePoint:
       type: object
@@ -487,6 +480,41 @@ components:
         device_info:
           $ref: '#/components/schemas/DeviceInfo'
 
+    DeviceTimePointAnalysis:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+        noise:
+          $ref: '#/components/schemas/AveragePoint'
+        active_pct:
+          $ref: '#/components/schemas/AveragePoint'
+        busy_pct:
+          $ref: '#/components/schemas/AveragePoint'
+        receive_pct:
+          $ref: '#/components/schemas/AveragePoint'
+        transmit_pct:
+          $ref: '#/components/schemas/AveragePoint'
+        tx_power:
+          $ref: '#/components/schemas/AveragePoint'
+        tx_bytes_bw:
+          $ref: '#/components/schemas/AveragePoint'
+        rx_bytes_bw:
+          $ref: '#/components/schemas/AveragePoint'
+        rx_dropped_pct:
+          $ref: '#/components/schemas/AveragePoint'
+        tx_dropped_pct:
+          $ref: '#/components/schemas/AveragePoint'
+        rx_packets_bw:
+          $ref: '#/components/schemas/AveragePoint'
+        tx_packets_bw:
+          $ref: '#/components/schemas/AveragePoint'
+        rx_errors_pct =:
+          $ref: '#/components/schemas/AveragePoint'
+        tx_errors_pct =:
+          $ref: '#/components/schemas/AveragePoint'
+
     DeviceTimePointList:
       type: object
       properties:
@@ -494,6 +522,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceTimePoint'
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceTimePointAnalysis'
 
     DeviceTimePointStats:
       type: object

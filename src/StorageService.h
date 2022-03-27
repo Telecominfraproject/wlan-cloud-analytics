@@ -36,6 +36,7 @@ namespace OpenWifi {
             std::atomic_bool                                    Running_=false;
             Poco::Timer                                         Timer_;
             std::unique_ptr<Poco::TimerCallback<Storage>>       TimerCallback_;
+            uint64_t                                            PeriodicCleanup_=6*60*60;
    };
    inline auto StorageService() { return Storage::instance(); }
 }  // namespace
