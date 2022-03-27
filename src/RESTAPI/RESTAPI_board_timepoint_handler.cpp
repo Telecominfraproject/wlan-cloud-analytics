@@ -70,14 +70,19 @@ namespace OpenWifi {
         if(Values.empty())
             return;
         double sum = 0.0;
+        uint32_t num_values = 0;
         for(const auto &value:Values) {
             for(const auto &radio:value.radio_data) {
+                num_values++;
                 sum += (radio.*T);
                 P.min = std::min((double)P.min, (double)(radio.*T));
                 P.max = std::max((double)P.max, (double)(radio.*T));
             }
         }
-        P.avg = sum / (double) Values.size();
+        if(num_values)
+            P.avg = sum / (double) num_values;
+        else
+            P.avg = 0.0;
     }
 
     void RESTAPI_board_timepoint_handler::DoGet() {
