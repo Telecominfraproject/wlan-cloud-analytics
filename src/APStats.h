@@ -10,17 +10,12 @@
 #include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 
 namespace OpenWifi {
-    const uint32_t interval = 20;                    //  how big per sample
-    const uint32_t ap_length = 2 * 24 * 60 * 60;        //  buffer length in seconds
-    const uint32_t ue_length = 2 * 60 * 60;        //  buffer length in seconds
-    const uint32_t ap_buffer_size = ap_length / interval;
-    const uint32_t ue_buffer_size = ue_length / interval;
 
     class AP {
     public:
-        explicit AP(uint64_t mac, const std::string &BoardId) :
-            mac_(mac),
-            boardId_(BoardId)
+        explicit AP(uint64_t mac, const std::string &BoardId, Poco::Logger &L) :
+            boardId_(BoardId),
+            Logger_(L)
         {
             DI_.serialNumber = Utils::IntToSerialNumber(mac);
         }
@@ -29,15 +24,15 @@ namespace OpenWifi {
         void UpdateConnection(const std::shared_ptr<nlohmann::json> & Connection);
         void UpdateHealth(const std::shared_ptr<nlohmann::json> & Health);
 
-        const AnalyticsObjects::DeviceInfo & Info() const { return DI_; }
+        [[nodiscard]] const AnalyticsObjects::DeviceInfo & Info() const { return DI_; }
     private:
-        uint64_t                                        mac_=0;
         std::string                                     boardId_;
         AnalyticsObjects::DeviceInfo                    DI_;
         AnalyticsObjects::DeviceTimePoint               tp_base_;
         bool                                            got_health = false,
-                                                        got_stats = false,
                                                         got_connection = false,
                                                         got_base = false;
+        Poco::Logger                                    &Logger_;
+        inline Poco::Logger & Logger() { return Logger_; }
     };
 }

@@ -59,9 +59,9 @@ namespace OpenWifi {
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
-        got_stats = true;
 
         AnalyticsObjects::DeviceTimePoint DTP;
+        Logger().information(fmt::format("{}: stats message.", DI_.serialNumber));
 
         // find radios first to get associations.
         try {
@@ -218,8 +218,7 @@ namespace OpenWifi {
             }
             DTP.device_info = DI_;
         } catch (...) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": stats failed parsing." ;
-            std::cout << *State << std::endl;
+            Logger().information(fmt::format("{}: stats failed parsing.", DI_.serialNumber));
         }
 
         if(got_base) {
@@ -328,7 +327,7 @@ namespace OpenWifi {
         try {
             if (Connection->contains("ping")) {
                 got_connection = true;
-                std::cout << Utils::IntToSerialNumber(mac_) << ": ping" << std::endl;
+                Logger().information(fmt::format("{}: ping message.", DI_.serialNumber));
                 DI_.connected = true;
                 DI_.lastPing = OpenWifi::Now();
                 auto ping = (*Connection)["ping"];
@@ -344,14 +343,14 @@ namespace OpenWifi {
                     }
                 }
             } else if (Connection->contains("disconnection")) {
-                std::cout << Utils::IntToSerialNumber(mac_) << ": disconnection" << std::endl;
+                Logger().information(fmt::format("{}: disconnection message.", DI_.serialNumber));
                 auto Disconnection = (*Connection)["disconnection"];
                 GetJSON("timestamp", Disconnection, DI_.lastDisconnection, (uint64_t)0 );
-                got_base = got_health = got_connection = got_stats = false;
+                got_base = got_health = got_connection = false;
                 DI_.connected = false;
             } else if (Connection->contains("capabilities")) {
+                Logger().information(fmt::format("{}: connection message.", DI_.serialNumber));
                 got_connection = true;
-                std::cout << Utils::IntToSerialNumber(mac_) << ": connection" << std::endl;
                 DI_.connected = true;
                 DI_.lastConnection = OpenWifi::Now();
                 auto ConnectionData = (*Connection)["capabilities"];
@@ -366,8 +365,7 @@ namespace OpenWifi {
                 GetJSON("locale", ConnectionData, DI_.locale, std::string{} );
             }
         } catch (...) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": connection failed parsing." ;
-            std::cout << *Connection << std::endl;
+            Logger().information(fmt::format("{}: error parsing connection message.", DI_.serialNumber));
         }
     }
 
@@ -376,9 +374,9 @@ namespace OpenWifi {
             got_health = true;
             GetJSON("timestamp", *Health, DI_.lastHealth, (uint64_t)0 );
             GetJSON("sanity", *Health, DI_.health, (uint64_t)0 );
-            std::cout << Utils::IntToSerialNumber(mac_) << ": health " << DI_.health << std::endl;
+            Logger().information(fmt::format("{}: health message.", DI_.serialNumber));
         } catch(...) {
-            std::cout << Utils::IntToSerialNumber(mac_) << ": health failed parsing." << std::endl;
+            Logger().information(fmt::format("{}: error parsing health message.", DI_.serialNumber));
         }
     }
 }

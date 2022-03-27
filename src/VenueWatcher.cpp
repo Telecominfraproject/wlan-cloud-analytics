@@ -11,7 +11,7 @@ namespace OpenWifi {
 
     void VenueWatcher::Start() {
         for(const auto &mac:SerialNumbers_) {
-            auto ap = std::make_shared<AP>(mac, boardId_);
+            auto ap = std::make_shared<AP>(mac, boardId_, Logger());
             APs_[mac ] = ap;
         }
 
