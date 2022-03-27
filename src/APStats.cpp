@@ -101,7 +101,11 @@ namespace OpenWifi {
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 0);
                         GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
-                        GetJSON("noise", radio, RTP.noise, (int64_t) -100);
+                        if(RTP.temperature==0)
+                            RTP.temperature = 20;
+                        GetJSON("noise", radio, RTP.noise, (int64_t) -90);
+                        if(RTP.noise==0)
+                            RTP.noise=-90;
                         DTP.radio_data.push_back(RTP);
                     }
                 }
@@ -276,25 +280,25 @@ namespace OpenWifi {
                     }
 
                     ssid.tx_failed_pct.max = std::max(ssid.tx_failed_pct.max, association.tx_failed_pct);
-                    ssid.tx_failed_pct.min = std::max(ssid.tx_failed_pct.min, association.tx_failed_pct);
+                    ssid.tx_failed_pct.min = std::min(ssid.tx_failed_pct.min, association.tx_failed_pct);
 
                     ssid.tx_retries_pct.max = std::max(ssid.tx_retries_pct.max, association.tx_retries_pct);
-                    ssid.tx_retries_pct.min = std::max(ssid.tx_retries_pct.min, association.tx_retries_pct);
+                    ssid.tx_retries_pct.min = std::min(ssid.tx_retries_pct.min, association.tx_retries_pct);
 
                     ssid.tx_duration_pct.max = std::max(ssid.tx_duration_pct.max, association.tx_duration_pct);
-                    ssid.tx_duration_pct.min = std::max(ssid.tx_duration_pct.min, association.tx_duration_pct);
+                    ssid.tx_duration_pct.min = std::min(ssid.tx_duration_pct.min, association.tx_duration_pct);
 
                     ssid.tx_bytes_bw.max = std::max(ssid.tx_bytes_bw.max, association.tx_bytes_bw);
-                    ssid.tx_bytes_bw.min = std::max(ssid.tx_bytes_bw.min, association.tx_bytes_bw);
+                    ssid.tx_bytes_bw.min = std::min(ssid.tx_bytes_bw.min, association.tx_bytes_bw);
 
                     ssid.rx_bytes_bw.max = std::max(ssid.rx_bytes_bw.max, association.rx_bytes_bw);
-                    ssid.rx_bytes_bw.min = std::max(ssid.rx_bytes_bw.min, association.rx_bytes_bw);
+                    ssid.rx_bytes_bw.min = std::min(ssid.rx_bytes_bw.min, association.rx_bytes_bw);
 
                     ssid.tx_packets_bw.max = std::max(ssid.tx_packets_bw.max, association.tx_packets_bw);
-                    ssid.tx_packets_bw.min = std::max(ssid.tx_packets_bw.min, association.tx_packets_bw);
+                    ssid.tx_packets_bw.min = std::min(ssid.tx_packets_bw.min, association.tx_packets_bw);
 
                     ssid.rx_packets_bw.max = std::max(ssid.rx_packets_bw.max, association.rx_packets_bw);
-                    ssid.rx_packets_bw.min = std::max(ssid.rx_packets_bw.min, association.rx_packets_bw);
+                    ssid.rx_packets_bw.min = std::min(ssid.rx_packets_bw.min, association.rx_packets_bw);
                 }
 
                 ssid.tx_bytes_bw.avg = Average(&AnalyticsObjects::UETimePoint::tx_bytes_bw,ssid.associations);
