@@ -228,16 +228,30 @@ namespace OpenWifi {
             db_DTP.ap_data.rx_bytes_bw =  safe_div(db_DTP.ap_data.rx_bytes - tp_base_.ap_data.rx_bytes, time_lapse);
             db_DTP.ap_data.tx_packets_bw = safe_div(db_DTP.ap_data.tx_packets - tp_base_.ap_data.tx_packets, time_lapse);
             db_DTP.ap_data.rx_packets_bw = safe_div(db_DTP.ap_data.rx_packets - tp_base_.ap_data.rx_packets, time_lapse);
-            db_DTP.ap_data.tx_dropped_pct = safe_pct(db_DTP.ap_data.tx_dropped, db_DTP.ap_data.tx_packets);
-            db_DTP.ap_data.rx_dropped_pct = safe_pct(db_DTP.ap_data.rx_dropped, db_DTP.ap_data.rx_packets);
-            db_DTP.ap_data.tx_errors_pct = safe_pct(db_DTP.ap_data.tx_errors, db_DTP.ap_data.tx_packets);
-            db_DTP.ap_data.rx_errors_pct = safe_pct(db_DTP.ap_data.rx_errors, db_DTP.ap_data.rx_packets);
+            db_DTP.ap_data.tx_dropped_pct = safe_pct(db_DTP.ap_data.tx_dropped - tp_base_.ap_data.tx_dropped, db_DTP.ap_data.tx_packets);
+            db_DTP.ap_data.rx_dropped_pct = safe_pct(db_DTP.ap_data.rx_dropped - tp_base_.ap_data.rx_dropped, db_DTP.ap_data.rx_packets);
+            db_DTP.ap_data.tx_errors_pct = safe_pct(db_DTP.ap_data.tx_errors - tp_base_.ap_data.tx_errors, db_DTP.ap_data.tx_packets);
+            db_DTP.ap_data.rx_errors_pct = safe_pct(db_DTP.ap_data.rx_errors - tp_base_.ap_data.rx_errors, db_DTP.ap_data.rx_packets);
 
             for(auto &radio:db_DTP.radio_data) {
-                radio.active_pct = safe_pct(radio.active_ms / 1000 , time_lapse);
-                radio.busy_pct = safe_pct(radio.busy_ms / 1000 , time_lapse);
-                radio.receive_pct = safe_pct(radio.receive_ms / 1000 , time_lapse);
-                radio.transmit_pct = safe_pct(radio.transmit_ms / 1000 ,time_lapse);
+                bool found=false;
+                for(const auto &base_radio:tp_base_.radio_data) {
+
+                    if(radio.channel==base_radio.channel) {
+                        found = true;
+                        radio.active_pct = safe_pct( (radio.active_ms - base_radio.active_ms) / 1000 , time_lapse);
+                        radio.busy_pct = safe_pct( (radio.busy_ms - base_radio.busy_ms) / 1000 , time_lapse);
+                        radio.receive_pct = safe_pct( (radio.receive_ms - base_radio.receive_ms) / 1000 , time_lapse);
+                        radio.transmit_pct = safe_pct( (radio.transmit_ms - base_radio.transmit_ms) / 1000 ,time_lapse);
+                    }
+                }
+
+                if(!found) {
+                    radio.active_pct = safe_pct(radio.active_ms / 1000, time_lapse);
+                    radio.busy_pct = safe_pct(radio.busy_ms / 1000, time_lapse);
+                    radio.receive_pct = safe_pct(radio.receive_ms / 1000, time_lapse);
+                    radio.transmit_pct = safe_pct(radio.transmit_ms / 1000, time_lapse);
+                }
             }
 
             for(auto &ssid:db_DTP.ssid_data) {
@@ -248,16 +262,18 @@ namespace OpenWifi {
                         association.rx_bytes_bw = safe_div( association.rx_bytes - ue_tp.rx_bytes , time_lapse );
                         association.tx_packets_bw = safe_div( association.tx_packets - ue_tp.tx_packets , time_lapse );
                         association.rx_packets_bw = safe_div( association.rx_packets - ue_tp.rx_packets , time_lapse );
+                        association.tx_failed_pct = safe_pct( association.tx_failed - ue_tp.tx_failed, association.tx_packets);
+                        association.tx_retries_pct = safe_pct( association.tx_retries - ue_tp.tx_retries, association.tx_packets);
+                        association.tx_duration_pct = safe_pct( (association.tx_duration - ue_tp.tx_duration) / 1000000 , time_lapse );
                     } else {
                         association.tx_bytes_bw = safe_div( association.tx_bytes , time_lapse );
                         association.rx_bytes_bw = safe_div( association.rx_bytes , time_lapse );
                         association.tx_packets_bw = safe_div( association.tx_packets , time_lapse );
                         association.rx_packets_bw = safe_div( association.rx_packets , time_lapse );
+                        association.tx_failed_pct = safe_pct( association.tx_failed, association.tx_packets);
+                        association.tx_retries_pct = safe_pct( association.tx_retries, association.tx_packets);
+                        association.tx_duration_pct = safe_pct( association.tx_duration / 1000000, time_lapse );
                     }
-
-                    association.tx_failed_pct = safe_pct( association.tx_failed, association.tx_packets);
-                    association.tx_retries_pct = safe_pct( association.tx_retries, association.tx_packets);
-                    association.tx_duration_pct = safe_pct( association.tx_duration, time_lapse );
 
                     ssid.tx_failed_pct.max = std::max(ssid.tx_failed_pct.max, association.tx_failed_pct);
                     ssid.tx_failed_pct.min = std::max(ssid.tx_failed_pct.min, association.tx_failed_pct);
@@ -280,6 +296,7 @@ namespace OpenWifi {
                     ssid.rx_packets_bw.max = std::max(ssid.rx_packets_bw.max, association.rx_packets_bw);
                     ssid.rx_packets_bw.min = std::max(ssid.rx_packets_bw.min, association.rx_packets_bw);
                 }
+
                 ssid.tx_bytes_bw.avg = Average(&AnalyticsObjects::UETimePoint::tx_bytes_bw,ssid.associations);
                 ssid.rx_bytes_bw.avg = Average(&AnalyticsObjects::UETimePoint::rx_bytes_bw,ssid.associations);
                 ssid.tx_packets_bw.avg = Average(&AnalyticsObjects::UETimePoint::tx_packets_bw,ssid.associations);
