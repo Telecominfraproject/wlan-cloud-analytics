@@ -510,9 +510,9 @@ components:
           $ref: '#/components/schemas/AveragePoint'
         tx_packets_bw:
           $ref: '#/components/schemas/AveragePoint'
-        rx_errors_pct =:
+        rx_errors_pct:
           $ref: '#/components/schemas/AveragePoint'
-        tx_errors_pct =:
+        tx_errors_pct:
           $ref: '#/components/schemas/AveragePoint'
 
     DeviceTimePointList:
@@ -942,11 +942,23 @@ paths:
             type: integer
             default: 100
           required: false
-
         - in: query
-          name: stats
+          name: statsOnly
           schema:
             type: boolean
+            default: false
+          required: false
+        - in: query
+          name: pointsOnly
+          schema:
+            type: boolean
+            default: false
+          required: false
+        - in: query
+          name: pointsStatsOnly
+          schema:
+            type: boolean
+            default: false
           required: false
 
       responses:
