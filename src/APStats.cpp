@@ -84,15 +84,16 @@ namespace OpenWifi {
 
             DTP.timestamp = DI_.lastState;
 
-            std::map<uint, uint> radio_band;
+            std::map<uint, std::pair<uint,uint> > radio_map;
             if(State->contains("radios") && (*State)["radios"].is_array()) {
                 auto radios = (*State)["radios"];
                 uint radio_index = 0;
                 for (const auto &radio: radios) {
                     if (radio.contains("channel")) {
                         AnalyticsObjects::RadioTimePoint  RTP;
+                        RTP.channel = radio["channel"];
                         RTP.band = radio["channel"] <= 16 ? 2 : 5;
-                        radio_band[radio_index++] = RTP.band;
+                        radio_map[radio_index++] = std::make_pair(RTP.band, RTP.channel);
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
                         GetJSON("transmit_ms", radio, RTP.transmit_ms, (uint64_t) 0);
@@ -142,8 +143,9 @@ namespace OpenWifi {
                                 auto radio_parts = Poco::StringTokenizer(ref, "/");
                                 if(radio_parts.count()==3) {
                                     radio_location = std::strtol(radio_parts[2].c_str(), nullptr, 10);
-                                    if(radio_band.find(radio_location)!=radio_band.end()) {
-                                        SSIDTP.band = radio_band[radio_location];
+                                    if(radio_map.find(radio_location)!=radio_map.end()) {
+                                        SSIDTP.band = radio_map[radio_location].first;
+                                        SSIDTP.channel = radio_map[radio_location].second;
                                     }
                                 }
                             }
@@ -153,9 +155,9 @@ namespace OpenWifi {
                         GetJSON("ssid",ssid,SSIDTP.ssid, std::string{""} );
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
                             auto associations = ssid["associations"];
-                            auto it = radio_band.find(radio_location);
-                            if(it!=radio_band.end()) {
-                                auto the_radio = it->second;
+                            auto it = radio_map.find(radio_location);
+                            if(it!=radio_map.end()) {
+                                auto the_radio = it->second.first;
                                 if (the_radio == 2)
                                     DI_.associations_2g += associations.size();
                                 else if (the_radio == 5)

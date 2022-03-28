@@ -138,7 +138,6 @@ namespace OpenWifi {
                     tx_retries_pct = 0.0 ,
                     tx_duration_pct = 0.0;
 
-
             UE_rate tx_rate,
                     rx_rate;
             std::vector<TIDstat_entry> tidstats;
@@ -177,7 +176,8 @@ namespace OpenWifi {
             std::string bssid,
                         mode,
                         ssid;
-            uint64_t    band=0;
+            uint64_t    band=0,
+                        channel=0;
             std::vector<UETimePoint> associations;
             AveragePoint    tx_bytes_bw,
                             rx_bytes_bw,

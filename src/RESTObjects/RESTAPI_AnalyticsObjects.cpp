@@ -340,6 +340,7 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"mode",mode);
         field_to_json(Obj,"ssid",ssid);
         field_to_json(Obj,"band",band);
+        field_to_json(Obj,"channel",channel);
         field_to_json(Obj,"associations",associations);
         field_to_json(Obj,"tx_bytes_bw",tx_bytes_bw);
         field_to_json(Obj,"rx_bytes_bw",rx_bytes_bw);
@@ -356,6 +357,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"mode",mode);
             field_from_json(Obj,"ssid",ssid);
             field_from_json(Obj,"band",band);
+            field_from_json(Obj,"channel",channel);
             field_from_json(Obj,"associations",associations);
             field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
             field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
