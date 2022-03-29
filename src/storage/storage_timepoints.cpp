@@ -16,7 +16,7 @@ namespace OpenWifi {
             ORM::Field{"ap_data",ORM::FieldType::FT_TEXT},
             ORM::Field{"ssid_data",ORM::FieldType::FT_TEXT},
             ORM::Field{"radio_data",ORM::FieldType::FT_TEXT},
-            ORM::Field{"device_info",ORM::FieldType::FT_BIGINT},
+            ORM::Field{"device_info",ORM::FieldType::FT_TEXT},
             ORM::Field{"serialNumber",ORM::FieldType::FT_TEXT}
     };
 
