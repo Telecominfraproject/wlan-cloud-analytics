@@ -78,6 +78,21 @@ namespace OpenWifi {
     bool TimePointDB::DeleteBoard(const std::string &boardId) {
         return DeleteRecords(fmt::format(" boardId='{}' ", boardId));
     }
+
+    bool TimePointDB::DeleteTimeLine(const std::string &boardId, uint64_t FromDate, uint64_t LastDate) {
+        std::string WhereClause;
+
+        if(FromDate && LastDate) {
+            WhereClause = fmt::format(" boardId='{}' and (timestamp >= {} ) and ( timestamp <= {} ) ", boardId, FromDate, LastDate);
+        } else if (FromDate) {
+            WhereClause = fmt::format(" boardId='{}' and (timestamp >= {}) ", boardId, FromDate);
+        } else if (LastDate) {
+            WhereClause = fmt::format(" boardId='{}' and (timestamp <= {}) ", boardId, LastDate);
+        }
+        DeleteRecords(WhereClause);
+        return true;
+    }
+
 }
 
 template<> void ORM::DB<OpenWifi::TimePointDBRecordType, OpenWifi::AnalyticsObjects::DeviceTimePoint>::Convert(const OpenWifi::TimePointDBRecordType &In, OpenWifi::AnalyticsObjects::DeviceTimePoint &Out) {

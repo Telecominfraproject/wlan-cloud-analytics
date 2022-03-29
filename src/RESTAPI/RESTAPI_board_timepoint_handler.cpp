@@ -91,7 +91,7 @@ namespace OpenWifi {
 
     void RESTAPI_board_timepoint_handler::DoGet() {
         auto id = GetBinding("id","");
-        if(id.empty()) {
+        if(id.empty() || !Utils::ValidUUID(id)) {
             return BadRequest(RESTAPI::Errors::MissingUUID);
         }
 
@@ -205,15 +205,25 @@ namespace OpenWifi {
             Answer->set("stats", *Stats_Array);
         }
 
-/*        static int f=0;
-        std::ostringstream OO;
-        Answer.stringify(OO);
-        std::ofstream of("msg"+std::to_string(f++)+".json", std::ios_base::trunc );
-        of << OO.str();
-*/
-
-
-
         return ReturnObject(*Answer);
     }
+
+    void RESTAPI_board_timepoint_handler::DoDelete() {
+        auto id = GetBinding("id","");
+        if(id.empty() || !Utils::ValidUUID(id)) {
+            return BadRequest(RESTAPI::Errors::MissingUUID);
+        }
+
+        AnalyticsObjects::BoardInfo B;
+        if(!StorageService()->BoardsDB().GetRecord("id",id,B)) {
+            return NotFound();
+        }
+
+        auto fromDate = GetParameter("fromDate",0);
+        auto endDate = GetParameter("endDate",0);
+
+        StorageService()->TimePointsDB().DeleteTimeLine(id,fromDate,endDate);
+        return OK();
+    }
+
 }

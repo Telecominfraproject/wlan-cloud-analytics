@@ -969,15 +969,31 @@ paths:
             default: false
           required: false
 
+    delete:
+      tags:
+        - Board data
+      summary: delete board data for a given time period.
+      operationId: deleteBoardTimepoints
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: fromDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: endDate
+          schema:
+            type: integer
+          required: false
       responses:
         200:
-          description: Successfull retrieval of timepoints
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/DeviceTimePointList'
-                  - $ref: '#/components/schemas/DeviceTimePointStats'
+          $ref: '#/components/responses/Success'
         400:
           $ref: '#/components/responses/BadRequest'
         403:

@@ -25,6 +25,7 @@ namespace OpenWifi {
         bool GetStats(const std::string &id, AnalyticsObjects::DeviceTimePointStats &S);
         bool SelectRecords(const std::string &boardId, uint64_t FromDate, uint64_t LastDate, uint64_t MaxRecords, DB::RecordVec & Recs);
         bool DeleteBoard(const std::string &boardId);
+        bool DeleteTimeLine(const std::string &boardId, uint64_t fromDate, uint64_t endDate);
         virtual ~TimePointDB() {};
     private:
         bool Upgrade(uint32_t from, uint32_t &to) override;
