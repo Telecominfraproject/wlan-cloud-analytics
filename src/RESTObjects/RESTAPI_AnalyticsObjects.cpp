@@ -381,6 +381,7 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"ssid_data",ssid_data);
         field_to_json(Obj,"radio_data",radio_data);
         field_to_json(Obj,"device_info",device_info);
+        field_to_json(Obj,"serialNumber",serialNumber);
     }
 
     bool DeviceTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -392,6 +393,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"ssid_data",ssid_data);
             field_from_json(Obj,"radio_data",radio_data);
             field_from_json(Obj,"device_info",device_info);
+            field_from_json(Obj,"serialNumber",serialNumber);
             return true;
         } catch(...) {
 

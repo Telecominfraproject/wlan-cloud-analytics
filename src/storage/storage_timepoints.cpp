@@ -16,16 +16,26 @@ namespace OpenWifi {
             ORM::Field{"ap_data",ORM::FieldType::FT_TEXT},
             ORM::Field{"ssid_data",ORM::FieldType::FT_TEXT},
             ORM::Field{"radio_data",ORM::FieldType::FT_TEXT},
-            ORM::Field{"device_info",ORM::FieldType::FT_BIGINT}
+            ORM::Field{"device_info",ORM::FieldType::FT_BIGINT},
+            ORM::Field{"serialNumber",ORM::FieldType::FT_TEXT}
     };
 
     static  ORM::IndexVec    TimePointDB_Indexes{
-            { std::string("timepoint_board_index"),
-              ORM::IndexEntryVec{
+            {
+                std::string("timepoint_board_index"),
+                ORM::IndexEntryVec{
                       {std::string("boardId"),
                        ORM::Indextype::ASC},
                       {std::string("timestamp"),
-                       ORM::Indextype::ASC}} }
+                       ORM::Indextype::ASC}}},
+            {
+                std::string("timepoint_serial_time_index"),
+                ORM::IndexEntryVec{
+                        {std::string("serialNumber"),
+                                ORM::Indextype::ASC},
+                        {std::string("timestamp"),
+                                ORM::Indextype::ASC}}
+           }
     };
 
     TimePointDB::TimePointDB( OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L) :
@@ -78,6 +88,7 @@ template<> void ORM::DB<OpenWifi::TimePointDBRecordType, OpenWifi::AnalyticsObje
     Out.ssid_data = OpenWifi::RESTAPI_utils::to_object_array<OpenWifi::AnalyticsObjects::SSIDTimePoint>(In.get<4>());
     Out.radio_data = OpenWifi::RESTAPI_utils::to_object_array<OpenWifi::AnalyticsObjects::RadioTimePoint>(In.get<5>());
     Out.device_info = OpenWifi::RESTAPI_utils::to_object<OpenWifi::AnalyticsObjects::DeviceInfo>(In.get<6>());
+    Out.serialNumber = In.get<7>();
 }
 
 template<> void ORM::DB<    OpenWifi::TimePointDBRecordType, OpenWifi::AnalyticsObjects::DeviceTimePoint>::Convert(const OpenWifi::AnalyticsObjects::DeviceTimePoint &In, OpenWifi::TimePointDBRecordType &Out) {
@@ -88,4 +99,5 @@ template<> void ORM::DB<    OpenWifi::TimePointDBRecordType, OpenWifi::Analytics
     Out.set<4>(OpenWifi::RESTAPI_utils::to_string(In.ssid_data));
     Out.set<5>(OpenWifi::RESTAPI_utils::to_string(In.radio_data));
     Out.set<6>(OpenWifi::RESTAPI_utils::to_string(In.device_info));
+    Out.set<7>(In.serialNumber);
 }

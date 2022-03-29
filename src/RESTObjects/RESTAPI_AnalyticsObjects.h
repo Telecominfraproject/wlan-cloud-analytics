@@ -247,6 +247,7 @@ namespace OpenWifi {
             std::vector<SSIDTimePoint>      ssid_data;
             std::vector<RadioTimePoint>     radio_data;
             AnalyticsObjects::DeviceInfo    device_info;
+            std::string                     serialNumber;
 
             void to_json(Poco::JSON::Object &Obj) const;
             bool from_json(const Poco::JSON::Object::Ptr &Obj);
