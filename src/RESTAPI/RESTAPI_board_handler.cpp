@@ -84,11 +84,15 @@ namespace OpenWifi {
         }
 
         ProvObjects::UpdateObjectInfo(RawObject,UserInfo_.userinfo,Existing.info);
+
         if(RawObject->has("venueList")) {
-            // reconsile new venuelist compared to old...
+            if(NewObject.venueList.empty()) {
+                return BadRequest("Invalid VenueList.");
+            }
+            Existing.venueList = NewObject.venueList;
         }
 
-        if(StorageService()->BoardsDB().CreateRecord(Existing)) {
+        if(StorageService()->BoardsDB().UpdateRecord("id",Existing.info.id,Existing)) {
             VenueCoordinator()->ModifyBoard(Existing.info.id);
             AnalyticsObjects::BoardInfo NewBoard;
             StorageService()->BoardsDB().GetRecord("id",Existing.info.id,NewBoard);
@@ -96,5 +100,6 @@ namespace OpenWifi {
             NewBoard.to_json(Answer);
             return ReturnObject(Answer);
         }
+        return InternalError("Board could nto be modified. Verify and try again.")
     }
 }
