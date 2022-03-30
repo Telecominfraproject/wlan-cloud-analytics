@@ -100,6 +100,6 @@ namespace OpenWifi {
             NewBoard.to_json(Answer);
             return ReturnObject(Answer);
         }
-        return InternalError("Board could nto be modified. Verify and try again.")
+        return InternalError("Board could nto be modified. Verify and try again.");
     }
 }
