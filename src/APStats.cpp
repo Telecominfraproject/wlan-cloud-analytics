@@ -56,6 +56,19 @@ namespace OpenWifi {
         return result;
     }
 
+    //  This is used to detect a new association VS an existing one. This may happen when a device is connected, disconnects, and
+    //  reconnects in between 2 samples.
+    static bool new_connection(const AnalyticsObjects::UETimePoint &Existing_UE, const AnalyticsObjects::UETimePoint &new_association) {
+        if( new_association.tx_packets < Existing_UE.tx_packets ||
+            new_association.rx_packets < Existing_UE.rx_packets ||
+            new_association.tx_bytes < Existing_UE.tx_bytes     ||
+            new_association.rx_bytes < Existing_UE.rx_bytes     ||
+            new_association.tx_failed < Existing_UE.tx_failed) {
+            return true;
+        }
+        return false;
+    }
+
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
@@ -262,7 +275,7 @@ namespace OpenWifi {
             for(auto &ssid:db_DTP.ssid_data) {
                 for(auto &association:ssid.associations) {
                     AnalyticsObjects::UETimePoint ue_tp;
-                    if(find_ue(association.station, tp_base_.ssid_data, ue_tp)) {
+                    if(find_ue(association.station, tp_base_.ssid_data, ue_tp) && !new_connection(ue_tp,association)) {
                         association.tx_bytes_bw = safe_div( association.tx_bytes - ue_tp.tx_bytes , time_lapse );
                         association.rx_bytes_bw = safe_div( association.rx_bytes - ue_tp.rx_bytes , time_lapse );
                         association.tx_packets_bw = safe_div( association.tx_packets - ue_tp.tx_packets , time_lapse );
