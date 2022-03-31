@@ -328,6 +328,27 @@ components:
           type: number
         tx_duration_pct:
           type: number
+        tx_bytes_delta:
+          type: integer
+          format: int64
+        rx_bytes_delta:
+          type: integer
+          format: int64
+        tx_packets_delta:
+          type: integer
+          format: int64
+        rx_packets_delta:
+          type: integer
+          format: int64
+        tx_failed_delta:
+          type: integer
+          format: int64
+        tx_retries_delta:
+          type: integer
+          format: int64
+        tx_duration_delta:
+          type: integer
+          format: int64
 
     AveragePoint:
       type: object
@@ -402,22 +423,30 @@ components:
         tx_packets:
           type: integer
           format: int64
-        tx_bytes_bw:
-          type: number
-        rx_bytes_bw:
-          type: number
-        rx_dropped_pct:
-          type: number
-        tx_dropped_pct:
-          type: number
-        rx_packets_bw:
-          type: number
-        tx_packets_bw:
-          type: number
-        rx_errors_pct:
-          type: number
-        tx_errors_pct:
-          type: number
+        tx_bytes_delta:
+          type: integer
+          format: int64
+        rx_bytes_delta:
+          type: integer
+          format: int64
+        rx_dropped_delta:
+          type: integer
+          format: int64
+        tx_dropped_delta:
+          type: integer
+          format: int64
+        rx_packets_delta:
+          type: integer
+          format: int64
+        tx_packets_delta:
+          type: integer
+          format: int64
+        rx_errors_delta:
+          type: integer
+          format: int64
+        tx_errors_delta:
+          type: integer
+          format: int64
 
     RadioTimePoint:
       type: object

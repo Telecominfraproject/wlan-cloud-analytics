@@ -242,14 +242,24 @@ namespace OpenWifi {
 
             auto time_lapse = DTP.timestamp - tp_base_.timestamp;
             if(time_lapse==0) time_lapse = 1;
-            db_DTP.ap_data.tx_bytes_bw =  safe_div(db_DTP.ap_data.tx_bytes - tp_base_.ap_data.tx_bytes, time_lapse);
-            db_DTP.ap_data.rx_bytes_bw =  safe_div(db_DTP.ap_data.rx_bytes - tp_base_.ap_data.rx_bytes, time_lapse);
-            db_DTP.ap_data.tx_packets_bw = safe_div(db_DTP.ap_data.tx_packets - tp_base_.ap_data.tx_packets, time_lapse);
-            db_DTP.ap_data.rx_packets_bw = safe_div(db_DTP.ap_data.rx_packets - tp_base_.ap_data.rx_packets, time_lapse);
-            db_DTP.ap_data.tx_dropped_pct = safe_pct(db_DTP.ap_data.tx_dropped - tp_base_.ap_data.tx_dropped, db_DTP.ap_data.tx_packets);
-            db_DTP.ap_data.rx_dropped_pct = safe_pct(db_DTP.ap_data.rx_dropped - tp_base_.ap_data.rx_dropped, db_DTP.ap_data.rx_packets);
-            db_DTP.ap_data.tx_errors_pct = safe_pct(db_DTP.ap_data.tx_errors - tp_base_.ap_data.tx_errors, db_DTP.ap_data.tx_packets);
-            db_DTP.ap_data.rx_errors_pct = safe_pct(db_DTP.ap_data.rx_errors - tp_base_.ap_data.rx_errors, db_DTP.ap_data.rx_packets);
+
+            db_DTP.ap_data.tx_bytes_delta =  db_DTP.ap_data.tx_bytes - tp_base_.ap_data.tx_bytes;
+            db_DTP.ap_data.rx_bytes_delta =  db_DTP.ap_data.rx_bytes - tp_base_.ap_data.rx_bytes;
+            db_DTP.ap_data.tx_packets_delta = db_DTP.ap_data.tx_packets - tp_base_.ap_data.tx_packets;
+            db_DTP.ap_data.rx_packets_delta = db_DTP.ap_data.rx_packets - tp_base_.ap_data.rx_packets;
+            db_DTP.ap_data.tx_dropped_delta = db_DTP.ap_data.tx_dropped - tp_base_.ap_data.tx_dropped;
+            db_DTP.ap_data.rx_dropped_delta = db_DTP.ap_data.rx_dropped - tp_base_.ap_data.rx_dropped;
+            db_DTP.ap_data.tx_errors_delta = db_DTP.ap_data.tx_errors - tp_base_.ap_data.tx_errors;
+            db_DTP.ap_data.rx_errors_delta = db_DTP.ap_data.rx_errors - tp_base_.ap_data.rx_errors;
+
+            db_DTP.ap_data.tx_bytes_bw =  safe_div(db_DTP.ap_data.tx_bytes_delta, time_lapse);
+            db_DTP.ap_data.rx_bytes_bw =  safe_div(db_DTP.ap_data.rx_bytes_delta , time_lapse);
+            db_DTP.ap_data.tx_packets_bw = safe_div(db_DTP.ap_data.tx_packets_delta, time_lapse);
+            db_DTP.ap_data.rx_packets_bw = safe_div(db_DTP.ap_data.rx_packets_delta, time_lapse);
+            db_DTP.ap_data.tx_dropped_pct = safe_pct(db_DTP.ap_data.tx_dropped_delta, db_DTP.ap_data.tx_packets);
+            db_DTP.ap_data.rx_dropped_pct = safe_pct(db_DTP.ap_data.rx_dropped_delta, db_DTP.ap_data.rx_packets);
+            db_DTP.ap_data.tx_errors_pct = safe_pct(db_DTP.ap_data.tx_errors_delta, db_DTP.ap_data.tx_packets);
+            db_DTP.ap_data.rx_errors_pct = safe_pct(db_DTP.ap_data.rx_errors_delta, db_DTP.ap_data.rx_packets);
 
             for(auto &radio:db_DTP.radio_data) {
                 bool found=false;
@@ -276,22 +286,30 @@ namespace OpenWifi {
                 for(auto &association:ssid.associations) {
                     AnalyticsObjects::UETimePoint ue_tp;
                     if(find_ue(association.station, tp_base_.ssid_data, ue_tp) && !new_connection(ue_tp,association)) {
-                        association.tx_bytes_bw = safe_div( association.tx_bytes - ue_tp.tx_bytes , time_lapse );
-                        association.rx_bytes_bw = safe_div( association.rx_bytes - ue_tp.rx_bytes , time_lapse );
-                        association.tx_packets_bw = safe_div( association.tx_packets - ue_tp.tx_packets , time_lapse );
-                        association.rx_packets_bw = safe_div( association.rx_packets - ue_tp.rx_packets , time_lapse );
-                        association.tx_failed_pct = safe_pct( association.tx_failed - ue_tp.tx_failed, association.tx_packets);
-                        association.tx_retries_pct = safe_pct( association.tx_retries - ue_tp.tx_retries, association.tx_packets);
-                        association.tx_duration_pct = safe_pct( (association.tx_duration - ue_tp.tx_duration) / 1000000 , time_lapse );
+                        association.tx_bytes_delta = association.tx_bytes - ue_tp.tx_bytes;
+                        association.rx_bytes_delta = association.rx_bytes - ue_tp.rx_bytes;
+                        association.tx_packets_delta = association.tx_packets - ue_tp.tx_packets;
+                        association.rx_packets_delta = association.rx_packets - ue_tp.rx_packets;
+                        association.tx_failed_delta = association.tx_failed - ue_tp.tx_failed;
+                        association.tx_retries_delta = association.tx_retries - ue_tp.tx_retries;
+                        association.tx_duration_delta = association.tx_duration - ue_tp.tx_duration;
                     } else {
-                        association.tx_bytes_bw = safe_div( association.tx_bytes , time_lapse );
-                        association.rx_bytes_bw = safe_div( association.rx_bytes , time_lapse );
-                        association.tx_packets_bw = safe_div( association.tx_packets , time_lapse );
-                        association.rx_packets_bw = safe_div( association.rx_packets , time_lapse );
-                        association.tx_failed_pct = safe_pct( association.tx_failed, association.tx_packets);
-                        association.tx_retries_pct = safe_pct( association.tx_retries, association.tx_packets);
-                        association.tx_duration_pct = safe_pct( association.tx_duration / 1000000, time_lapse );
+                        association.tx_bytes_delta = association.tx_bytes;
+                        association.rx_bytes_delta = association.rx_bytes;
+                        association.tx_packets_delta = association.tx_packets;
+                        association.rx_packets_delta = association.rx_packets;
+                        association.tx_failed_delta = association.tx_failed;
+                        association.tx_retries_delta = association.tx_retries;
+                        association.tx_duration_delta = association.tx_duration;
                     }
+
+                    association.tx_bytes_bw = safe_div( association.tx_bytes_delta , time_lapse );
+                    association.rx_bytes_bw = safe_div( association.rx_bytes_delta , time_lapse );
+                    association.tx_packets_bw = safe_div( association.tx_packets_delta , time_lapse );
+                    association.rx_packets_bw = safe_div( association.rx_packets_delta , time_lapse );
+                    association.tx_failed_pct = safe_pct( association.tx_failed_delta, association.tx_packets);
+                    association.tx_retries_pct = safe_pct( association.tx_retries_delta, association.tx_packets);
+                    association.tx_duration_pct = safe_pct( (association.tx_duration_delta) / 1000000 , time_lapse );
 
                     ssid.tx_failed_pct.max = std::max(ssid.tx_failed_pct.max, association.tx_failed_pct);
                     ssid.tx_failed_pct.min = std::min(ssid.tx_failed_pct.min, association.tx_failed_pct);
