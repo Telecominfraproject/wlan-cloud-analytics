@@ -177,8 +177,6 @@ namespace OpenWifi::AnalyticsObjects {
         field_to_json(Obj,"tx_retries_pct",tx_retries_pct);
         field_to_json(Obj,"tx_duration_pct",tx_duration_pct);
 
-        std::cout << "To: " << station << " " << tx_bytes_delta << " " << rx_bytes_delta << std::endl;
-
         field_to_json(Obj,"tx_bytes_delta",tx_bytes_delta);
         field_to_json(Obj,"rx_bytes_delta",rx_bytes_delta);
         field_to_json(Obj,"tx_packets_delta",tx_packets_delta);
