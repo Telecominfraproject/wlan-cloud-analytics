@@ -190,6 +190,7 @@ namespace OpenWifi::AnalyticsObjects {
 
     bool UETimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
+            std::cout << "From start: " << station << " " << tx_bytes_delta << " " << rx_bytes_delta << std::endl;
             field_from_json(Obj,"station",station);
             field_from_json(Obj,"rssi",rssi);
             field_from_json(Obj,"tx_bytes",tx_bytes);
@@ -205,6 +206,7 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"rx_rate",rx_rate);
 //          field_from_json(Obj,"tidstats",tidstats);
 
+            std::cout << "From: " << station << " " << tx_bytes_delta << " " << rx_bytes_delta << std::endl;
             field_from_json(Obj,"tx_bytes_bw",tx_bytes_bw);
             field_from_json(Obj,"rx_bytes_bw",rx_bytes_bw);
             field_from_json(Obj,"tx_packets_bw",tx_packets_bw);
@@ -214,13 +216,13 @@ namespace OpenWifi::AnalyticsObjects {
             field_from_json(Obj,"tx_duration_pct",tx_duration_pct);
 
             field_from_json(Obj,"tx_bytes_delta",tx_bytes_delta);
-            std::cout << "From: " << station << " " << tx_bytes_delta << " " << rx_bytes_delta << std::endl;
             field_from_json(Obj,"rx_bytes_delta",rx_bytes_delta);
             field_from_json(Obj,"tx_packets_delta",tx_packets_delta);
             field_from_json(Obj,"rx_packets_delta",rx_packets_delta);
             field_from_json(Obj,"tx_failed_delta",tx_failed_delta);
             field_from_json(Obj,"tx_retries_delta",tx_retries_delta);
             field_from_json(Obj,"tx_duration_delta",tx_duration_delta);
+            std::cout << "From done: " << station << " " << tx_bytes_delta << " " << rx_bytes_delta << std::endl;
 
             return true;
         } catch(...) {
