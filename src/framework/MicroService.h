@@ -2225,7 +2225,6 @@ namespace OpenWifi {
                         if( AcceptedEncoding->second.find("gzip")!=std::string::npos ||
                             AcceptedEncoding->second.find("compress")!=std::string::npos) {
                             Response->set("Content-Encoding", "gzip");
-                            std::cout << "Compressing output" << std::endl;
                             std::ostream &Answer = Response->send();
                             Poco::DeflatingOutputStream deflater(Answer, Poco::DeflatingStreamBuf::STREAM_GZIP);
                             Poco::JSON::Stringifier::stringify(Object, deflater);
