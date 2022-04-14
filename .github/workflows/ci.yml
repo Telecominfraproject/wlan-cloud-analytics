@@ -78,3 +78,25 @@ jobs:
         token: ${{ secrets.WLAN_TESTING_PAT }}
         ref: master
         inputs: '{"deployment_version": "${{ env.BASE_BRANCH }}", "owgw_version": "${{ env.OWGW_BASE_BRANCH }}", "owsec_version": "${{ env.BASE_BRANCH }}", "owfms_version": "${{ env.BASE_BRANCH }}", "owprov_version": "${{ env.BASE_BRANCH }}", "owanalytics_version": "${{ github.sha }}", "owsub_version": "${{ env.BASE_BRANCH }}", "microservice": "all"}'
+
+  trigger-deploy-to-dev:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - docker
+    steps:
+    - name: Checkout actions repo
+      uses: actions/checkout@v2
+      with:
+        repository: Telecominfraproject/.github
+        path: github
+
+    - name: Trigger deployment of the latest version to dev instance and wait for result
+      uses: ./github/composite-actions/trigger-workflow-and-wait
+      with:
+        owner: Telecominfraproject
+        repo: wlan-testing
+        workflow: ucentralgw-dev-deployment.yaml
+        token: ${{ secrets.WLAN_TESTING_PAT }}
+        ref: master
+        inputs: '{"force_latest": "true"}'
