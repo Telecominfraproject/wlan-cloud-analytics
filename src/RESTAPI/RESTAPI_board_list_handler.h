@@ -21,7 +21,7 @@ namespace OpenWifi {
                                  TransactionId,
                                  Internal){}
 
-        static const std::list<const char *> PathName() { return std::list<const char *>{"/api/v1/boards"}; };
+        static auto PathName() { return std::list<std::string>{"/api/v1/boards"}; };
 
     private:
         BoardsDB   & DB_=StorageService()->BoardsDB();
