@@ -75,6 +75,7 @@ add_executable(owanalytics
         src/framework/ConfigurationValidator.cpp
         src/framework/ConfigurationValidator.h
         src/framework/ow_constants.h
+        src/framework/WebSocketClientNotifications.h
         src/RESTObjects/RESTAPI_SecurityObjects.h src/RESTObjects/RESTAPI_SecurityObjects.cpp
         src/RESTObjects/RESTAPI_ProvObjects.cpp src/RESTObjects/RESTAPI_ProvObjects.h
         src/RESTObjects/RESTAPI_GWobjects.h src/RESTObjects/RESTAPI_GWobjects.cpp
