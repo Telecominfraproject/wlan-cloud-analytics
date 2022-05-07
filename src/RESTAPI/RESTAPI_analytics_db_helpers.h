@@ -20,7 +20,7 @@ namespace OpenWifi {
                 Rec.to_json(Obj);
                 ObjArr.add(Obj);
             } else {
-                return R.BadRequest(RESTAPI::Errors::UnknownId + i);
+                return R.BadRequest(RESTAPI::Errors::UnknownId);
             }
         }
         Poco::JSON::Object  Answer;

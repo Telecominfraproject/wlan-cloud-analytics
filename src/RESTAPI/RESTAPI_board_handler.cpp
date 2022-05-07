@@ -48,7 +48,7 @@ namespace OpenWifi {
             return BadRequest(RESTAPI::Errors::MissingUUID);
         }
 
-        auto RawObject = ParseStream();
+        const auto & RawObject = ParsedBody_;
         AnalyticsObjects::BoardInfo NewObject;
         if(!NewObject.from_json(RawObject)) {
             return BadRequest(RESTAPI::Errors::InvalidJSONDocument);
@@ -77,7 +77,7 @@ namespace OpenWifi {
             return NotFound();
         }
 
-        auto RawObject = ParseStream();
+        const auto & RawObject = ParsedBody_;
         AnalyticsObjects::BoardInfo NewObject;
         if(!NewObject.from_json(RawObject)) {
             return BadRequest(RESTAPI::Errors::InvalidJSONDocument);
@@ -87,7 +87,7 @@ namespace OpenWifi {
 
         if(RawObject->has("venueList")) {
             if(NewObject.venueList.empty()) {
-                return BadRequest("Invalid VenueList.");
+                return BadRequest(RESTAPI::Errors::VenueMustExist);
             }
             Existing.venueList = NewObject.venueList;
         }
@@ -100,6 +100,6 @@ namespace OpenWifi {
             NewBoard.to_json(Answer);
             return ReturnObject(Answer);
         }
-        return InternalError("Board could nto be modified. Verify and try again.");
+        return InternalError(RESTAPI::Errors::RecordNotUpdated);
     }
 }
