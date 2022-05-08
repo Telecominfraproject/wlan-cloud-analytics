@@ -24,7 +24,11 @@ namespace OpenWifi {
         void ModifyBoard(const std::string &id);
         void AddBoard(const std::string &id);
 
+        bool GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices, bool & VenueExists);
         void GetDevices(std::string &id, AnalyticsObjects::DeviceInfoList & DIL);
+        void GetBoardList();
+        bool Watching(const std::string &id);
+        void RetireBoard(const AnalyticsObjects::BoardInfo &B);
 
     private:
         Poco::Thread                                        Worker_;

@@ -8,9 +8,10 @@
 namespace OpenWifi::SDK::Prov {
 
     namespace Venue {
-        bool GetDevices(RESTAPIHandler *client, const std::string &VenueId, bool WithChildren, ProvObjects::VenueDeviceList & DeviceList) {
+        bool GetDevices(RESTAPIHandler *client, const std::string &VenueId, bool WithChildren, ProvObjects::VenueDeviceList & DeviceList, bool & VenueExists ) {
             std::string         EndPoint = "/api/v1/venue/" + VenueId ;
 
+            VenueExists = true;
             auto Query = WithChildren ? OpenWifi::Types::StringPairVec{{"getDevices","true"},{"getChildren","true"}} :
                          OpenWifi::Types::StringPairVec{{"getDevices","true"}};
 
@@ -24,6 +25,45 @@ namespace OpenWifi::SDK::Prov {
                 } catch (...) {
                     return false;
                 }
+            } else if (ResponseStatus == Poco::Net::HTTPResponse::HTTP_NOT_FOUND) {
+                VenueExists = false;
+            }
+            return false;
+        }
+
+        bool Get(RESTAPIHandler *client, const std::string &VenueId, ProvObjects::Venue & Venue, bool & Exists) {
+            std::string         EndPoint = "/api/v1/venue/" + VenueId ;
+
+            Exists = true;
+            auto API = OpenAPIRequestGet(uSERVICE_PROVISIONING, EndPoint, {} , 60000);
+            auto CallResponse = Poco::makeShared<Poco::JSON::Object>();
+
+            auto ResponseStatus = API.Do(CallResponse, client==nullptr ? "" : client->UserInfo_.webtoken.access_token_);
+            if(ResponseStatus == Poco::Net::HTTPServerResponse::HTTP_OK) {
+                try {
+                    return Venue.from_json(CallResponse);
+                } catch (...) {
+                    return false;
+                }
+            } else if (ResponseStatus == Poco::Net::HTTPResponse::HTTP_NOT_FOUND) {
+                Exists = false;
+            }
+            return false;
+        }
+
+        bool Exists(RESTAPIHandler *client, const std::string &VenueId, bool & Exists) {
+            std::string         EndPoint = "/api/v1/venue/" + VenueId ;
+
+            Exists = true;
+            auto API = OpenAPIRequestGet(uSERVICE_PROVISIONING, EndPoint, {} , 60000);
+            auto CallResponse = Poco::makeShared<Poco::JSON::Object>();
+
+            auto ResponseStatus = API.Do(CallResponse, client==nullptr ? "" : client->UserInfo_.webtoken.access_token_);
+            if(ResponseStatus == Poco::Net::HTTPServerResponse::HTTP_OK) {
+                return true;
+            } else if (ResponseStatus == Poco::Net::HTTPResponse::HTTP_NOT_FOUND) {
+                Exists = false;
+                return true;
             }
             return false;
         }

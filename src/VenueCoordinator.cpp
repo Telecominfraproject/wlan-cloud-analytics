@@ -11,15 +11,19 @@
 namespace OpenWifi {
 
     int VenueCoordinator::Start() {
+        GetBoardList();
+        Worker_.start(*this);
+        return 0;
+    }
 
+    void VenueCoordinator::GetBoardList() {
+        BoardsToWatch_.clear();
         auto F = [&](const AnalyticsObjects::BoardInfo &B) ->bool {
             BoardsToWatch_.insert(B);
             Logger().information(fmt::format("Starting watch for {}.", B.info.name));
             return true;
         };
         StorageService()->BoardsDB().Iterate(F);
-        Worker_.start(*this);
-        return 0;
     }
 
     void VenueCoordinator::Stop() {
@@ -37,32 +41,45 @@ namespace OpenWifi {
                 break;
 
             std::lock_guard         G(Mutex_);
+
+            GetBoardList();
+
             if(!BoardsToWatch_.empty()) {
-                for(auto board_to_start=BoardsToWatch_.begin(); board_to_start!=BoardsToWatch_.end(); ) {
-                    if(StartBoard(*board_to_start)) {
-                        board_to_start = BoardsToWatch_.erase(board_to_start);
-                    } else {
-                        ++board_to_start;
+                for(const auto &board_to_start:BoardsToWatch_) {
+                    bool VenueExists = true;
+                    if(!Watching(board_to_start.info.id)) {
+                        StartBoard(board_to_start);
+                    } else if(SDK::Prov::Venue::Exists(nullptr,board_to_start.info.id,VenueExists) && !VenueExists) {
+                        RetireBoard(board_to_start);
                     }
                 }
             }
-
         }
     }
 
-    bool GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices) {
+    void VenueCoordinator::RetireBoard(const AnalyticsObjects::BoardInfo &B) {
+        StopBoard(B.info.id);
+        StorageService()->BoardsDB().DeleteRecord("id",B.info.id);
+    }
+
+    bool VenueCoordinator::GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices, bool & VenueExists) {
         ProvObjects::VenueDeviceList    VDL;
-        if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL)) {
+        if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL, VenueExists)) {
             Devices.clear();
-            for(const auto &device:VDL.devices) {
+            for (const auto &device: VDL.devices) {
                 Devices.push_back(Utils::SerialNumberToInt(device));
             }
-
-            std::sort(Devices.begin(),Devices.end());
-            auto LastDevice = std::unique(Devices.begin(),Devices.end());
-            Devices.erase(LastDevice,Devices.end());
+            std::sort(Devices.begin(), Devices.end());
+            auto LastDevice = std::unique(Devices.begin(), Devices.end());
+            Devices.erase(LastDevice, Devices.end());
             return true;
         }
+
+        if(!VenueExists) {
+            Logger().error(fmt::format("Venue {} is no longer in the system. Removing its associated board.", B.venueList[0].id));
+            RetireBoard(B);
+        }
+
         return false;
     }
 
@@ -70,14 +87,24 @@ namespace OpenWifi {
         if(B.venueList.empty())
             return true;
 
+        bool VenueExists=true;
         std::vector<uint64_t>   Devices;
-        if(GetDevicesForBoard(B,Devices)) {
+        if(GetDevicesForBoard(B,Devices,VenueExists)) {
+            std::lock_guard G(Mutex_);
             ExistingBoards_[B.info.id] = Devices;
-            Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id,Logger(),Devices);
+            Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id, Logger(), Devices);
             Watchers_[B.info.id]->Start();
-            Logger().information(fmt::format("Started board {}",B.info.name));
+            Logger().information(fmt::format("Started board {}", B.info.name));
             return true;
         }
+
+        if(!VenueExists) {
+            Logger().error(fmt::format("Venue {} is no longer in the system. Removing its associated board.", B.venueList[0].id));
+            StopBoard(B.info.id);
+            StorageService()->BoardsDB().DeleteRecord("id",B.info.id);
+            return false;
+        }
+
         Logger().information(fmt::format("Could not start board {}",B.info.name));
         return false;
     }
@@ -96,8 +123,9 @@ namespace OpenWifi {
         AnalyticsObjects::BoardInfo B;
         if(StorageService()->BoardsDB().GetRecord("id",id,B)) {
             std::vector<uint64_t>   Devices;
-            if(GetDevicesForBoard(B,Devices)) {
-
+            bool VenueExists=true;
+            if(GetDevicesForBoard(B,Devices,VenueExists)) {
+                std::lock_guard     G(Mutex_);
                 auto it = ExistingBoards_.find(id);
                 if(it!=ExistingBoards_.end()) {
                     if(it->second!=Devices) {
@@ -113,8 +141,20 @@ namespace OpenWifi {
                 Logger().information(fmt::format("Modified board {}",B.info.name));
                 return;
             }
-            Logger().information(fmt::format("Could not start board {}",B.info.name));
+
+            if(!VenueExists) {
+                Logger().error(fmt::format("Venue {} is no longer in the system. Removing its associated board.", B.venueList[0].id));
+                RetireBoard(B);
+                return;
+            }
+
+            Logger().information(fmt::format("Could not modify board {}",B.info.name));
         }
+    }
+
+    bool VenueCoordinator::Watching(const std::string &id) {
+        std::lock_guard     G(Mutex_);
+        return (ExistingBoards_.find(id) != ExistingBoards_.end());
     }
 
     void VenueCoordinator::AddBoard(const std::string &id) {
