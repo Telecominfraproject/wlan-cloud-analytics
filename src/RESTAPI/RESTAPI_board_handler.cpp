@@ -32,13 +32,9 @@ namespace OpenWifi {
         if(!StorageService()->BoardsDB().GetRecord("id",id,B)) {
             return NotFound();
         }
-
         VenueCoordinator()->StopBoard(id);
-        if(!StorageService()->BoardsDB().DeleteRecord("id",id)) {
-            return NotFound();
-        }
+        StorageService()->BoardsDB().DeleteRecord("id",id);
         StorageService()->TimePointsDB().DeleteBoard(id);
-
         return OK();
     }
 
