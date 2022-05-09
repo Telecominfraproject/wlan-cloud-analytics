@@ -27,6 +27,7 @@ namespace OpenWifi::SDK::Prov {
                 }
             } else if (ResponseStatus == Poco::Net::HTTPResponse::HTTP_NOT_FOUND) {
                 VenueExists = false;
+                return true;
             }
             return false;
         }

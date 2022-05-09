@@ -58,12 +58,14 @@ namespace OpenWifi {
     }
 
     void VenueCoordinator::RetireBoard(const AnalyticsObjects::BoardInfo &B) {
+        Logger().error(fmt::format("Venue {} is no longer in the system. Retiring its associated board.", B.venueList[0].id));
         StopBoard(B.info.id);
         StorageService()->BoardsDB().DeleteRecord("id",B.info.id);
     }
 
     bool VenueCoordinator::GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices, bool & VenueExists) {
         ProvObjects::VenueDeviceList    VDL;
+
         if(SDK::Prov::Venue::GetDevices(nullptr,B.venueList[0].id,B.venueList[0].monitorSubVenues, VDL, VenueExists)) {
             Devices.clear();
             for (const auto &device: VDL.devices) {
@@ -76,7 +78,6 @@ namespace OpenWifi {
         }
 
         if(!VenueExists) {
-            Logger().error(fmt::format("Venue {} is no longer in the system. Removing its associated board.", B.venueList[0].id));
             RetireBoard(B);
         }
 
@@ -99,9 +100,7 @@ namespace OpenWifi {
         }
 
         if(!VenueExists) {
-            Logger().error(fmt::format("Venue {} is no longer in the system. Removing its associated board.", B.venueList[0].id));
-            StopBoard(B.info.id);
-            StorageService()->BoardsDB().DeleteRecord("id",B.info.id);
+            RetireBoard(B);
             return false;
         }
 
@@ -143,7 +142,6 @@ namespace OpenWifi {
             }
 
             if(!VenueExists) {
-                Logger().error(fmt::format("Venue {} is no longer in the system. Removing its associated board.", B.venueList[0].id));
                 RetireBoard(B);
                 return;
             }
