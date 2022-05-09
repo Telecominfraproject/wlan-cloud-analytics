@@ -50,7 +50,6 @@ namespace OpenWifi {
                     if(!Watching(board_to_start.info.id)) {
                         StartBoard(board_to_start);
                     } else if(SDK::Prov::Venue::Exists(nullptr,board_to_start.venueList[0].id,VenueExists) && !VenueExists) {
-                        std::cout << "Removing board 1" << std::endl;
                         RetireBoard(board_to_start);
                     }
                 }
@@ -59,7 +58,6 @@ namespace OpenWifi {
     }
 
     void VenueCoordinator::RetireBoard(const AnalyticsObjects::BoardInfo &B) {
-        std::cout << "Removing board" << std::endl;
         Logger().error(fmt::format("Venue board '{}' is no longer in the system. Retiring its associated board.", B.venueList[0].name));
         StopBoard(B.info.id);
         StorageService()->BoardsDB().DeleteRecord("id",B.info.id);
@@ -81,7 +79,6 @@ namespace OpenWifi {
         }
 
         if(!VenueExists) {
-            std::cout << "Removing board 2" << std::endl;
             RetireBoard(B);
         }
 
@@ -104,7 +101,6 @@ namespace OpenWifi {
         }
 
         if(!VenueExists) {
-            std::cout << "Removing board 3" << std::endl;
             RetireBoard(B);
             return false;
         }
@@ -147,7 +143,6 @@ namespace OpenWifi {
             }
 
             if(!VenueExists) {
-                std::cout << "Removing board 4" << std::endl;
                 RetireBoard(B);
                 return;
             }
