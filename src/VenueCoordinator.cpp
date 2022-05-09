@@ -50,6 +50,7 @@ namespace OpenWifi {
                     if(!Watching(board_to_start.info.id)) {
                         StartBoard(board_to_start);
                     } else if(SDK::Prov::Venue::Exists(nullptr,board_to_start.info.id,VenueExists) && !VenueExists) {
+                        std::cout << "Removing board 1" << std::endl;
                         RetireBoard(board_to_start);
                     }
                 }
@@ -80,6 +81,7 @@ namespace OpenWifi {
         }
 
         if(!VenueExists) {
+            std::cout << "Removing board 2" << std::endl;
             RetireBoard(B);
         }
 
@@ -102,6 +104,7 @@ namespace OpenWifi {
         }
 
         if(!VenueExists) {
+            std::cout << "Removing board 3" << std::endl;
             RetireBoard(B);
             return false;
         }
@@ -144,6 +147,7 @@ namespace OpenWifi {
             }
 
             if(!VenueExists) {
+                std::cout << "Removing board 4" << std::endl;
                 RetireBoard(B);
                 return;
             }
