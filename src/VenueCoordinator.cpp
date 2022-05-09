@@ -58,9 +58,11 @@ namespace OpenWifi {
     }
 
     void VenueCoordinator::RetireBoard(const AnalyticsObjects::BoardInfo &B) {
+        std::cout << "Removing board" << std::endl;
         Logger().error(fmt::format("Venue {} is no longer in the system. Retiring its associated board.", B.venueList[0].id));
         StopBoard(B.info.id);
         StorageService()->BoardsDB().DeleteRecord("id",B.info.id);
+        StorageService()->TimePointsDB().DeleteRecords(fmt::format(" boardId='{}' ", B.info.id));
     }
 
     bool VenueCoordinator::GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices, bool & VenueExists) {
