@@ -8,12 +8,31 @@
 
 namespace OpenWifi {
 
+    static std::string mac_filter(const std::string &m) {
+        std::string r;
+        for(const auto &c:m)
+            if(c!=':' && c!='-') r += c;
+        return r;
+    }
+
     template <typename T> void GetJSON(const char *field, const nlohmann::json & doc, T & v , const T & def ) {
-        if(doc.contains(field) && !doc[field].is_null()) {
+        try {
             v = doc[field].get<T>();
-        } else {
-            v = def;
+            return;
+        } catch (...) {
+
         }
+        v = def;
+    }
+
+    template <typename T> void GetJSON(const char *field1, const char *field2, const nlohmann::json & doc, T & v , const T & def ) {
+        try {
+            v = doc[field1][field2].get<T>();
+            return;
+        } catch (...) {
+
+        }
+        v = def;
     }
 
     inline double safe_div(uint64_t a , uint64_t b) {
@@ -115,6 +134,7 @@ namespace OpenWifi {
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 0);
                         GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
+                        GetJSON("channel_width", radio, RTP.channel_width, (uint64_t) 20);
                         if(RTP.temperature==0)
                             RTP.temperature = 20;
                         GetJSON("noise", radio, RTP.noise, (int64_t) -90);
@@ -168,9 +188,9 @@ namespace OpenWifi {
                         GetJSON("ssid",ssid,SSIDTP.ssid, std::string{""} );
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
                             auto associations = ssid["associations"];
-                            auto it = radio_map.find(radio_location);
-                            if(it!=radio_map.end()) {
-                                auto the_radio = it->second.first;
+                            auto radio_it = radio_map.find(radio_location);
+                            if(radio_it!=radio_map.end()) {
+                                auto the_radio = radio_it->second.first;
                                 if (the_radio == 2)
                                     DI_.associations_2g += associations.size();
                                 else if (the_radio == 5)
@@ -179,6 +199,7 @@ namespace OpenWifi {
                                     DI_.associations_6g += associations.size();
                             }
                             for(const auto &association:associations) {
+
                                 AnalyticsObjects::UETimePoint TP;
                                 GetJSON("station",association,TP.station, std::string{} );
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
@@ -191,6 +212,54 @@ namespace OpenWifi {
                                 GetJSON("tx_failed",association,TP.tx_failed, (uint64_t)0 );
                                 GetJSON("connected",association,TP.connected, (uint64_t)0 );
                                 GetJSON("inactive",association,TP.inactive, (uint64_t)0 );
+
+                                AnalyticsObjects::WifiClientHistory WFH;
+
+                                WFH.stationId = mac_filter(TP.station);
+                                WFH.bssId = mac_filter(SSIDTP.bssid);
+                                WFH.ssid = SSIDTP.ssid;
+                                WFH.rssi = TP.rssi;
+                                GetJSON("rx_rate","bitrate",association,WFH.rx_bitrate,(uint32_t)0);
+                                GetJSON("rx_rate","chwidth",association,WFH.rx_chwidth,(uint32_t)0);
+                                GetJSON("rx_rate","mcs",association,WFH.rx_mcs,(uint16_t)0);
+                                GetJSON("rx_rate","nss",association,WFH.rx_nss,(uint16_t)0);
+                                GetJSON("rx_rate","vht",association,WFH.rx_vht,false);
+                                GetJSON("tx_rate","bitrate",association,WFH.tx_bitrate,(uint32_t)0);
+                                GetJSON("tx_rate","chwidth",association,WFH.tx_chwidth,(uint32_t)0);
+                                GetJSON("tx_rate","mcs",association,WFH.tx_mcs,(uint16_t)0);
+                                GetJSON("tx_rate","nss",association,WFH.tx_nss,(uint16_t)0);
+                                GetJSON("tx_rate","vht",association,WFH.tx_vht,false);
+                                GetJSON("rx_bytes",association,WFH.rx_bytes,(uint64_t)0);
+                                GetJSON("tx_bytes",association,WFH.tx_bytes,(uint64_t)0);
+                                GetJSON("rx_duration",association,WFH.rx_duration,(uint64_t)0);
+                                GetJSON("tx_duration",association,WFH.tx_duration,(uint64_t)0);
+                                GetJSON("rx_packets",association,WFH.rx_packets,(uint64_t)0);
+                                GetJSON("tx_packets",association,WFH.tx_packets,(uint64_t)0);
+
+                                WFH.ipv4 = "---";
+                                WFH.ipv6 = "----";
+
+                                for(const auto &rd:DTP.radio_data) {
+                                    if(rd.band == SSIDTP.band) {
+                                        WFH.channel_width = rd.channel_width;
+                                        WFH.noise = rd.noise;
+                                        WFH.tx_power = rd.tx_power;
+                                        WFH.channel = rd.channel;
+                                        WFH.active_ms = rd.active_ms;
+                                        WFH.busy_ms = rd.busy_ms;
+                                        WFH.receive_ms = rd.receive_ms;
+                                        break;
+                                    }
+                                }
+
+                                WFH.mode = SSIDTP.mode;
+                                GetJSON("ack_signal",association,WFH.ack_signal,(int64_t)0);
+                                GetJSON("ack_signal_avg",association,WFH.ack_signal_avg,(int64_t)0);
+                                GetJSON("connected",association,WFH.connected,(uint64_t)0);
+                                GetJSON("inactive",association,WFH.inactive,(uint64_t)0);
+                                GetJSON("tx_retries",association,WFH.tx_retries,(uint64_t)0);
+
+                                StorageService()->WifiClientHistoryDB().CreateRecord(WFH);
 
                                 if(association.contains("tid_stats") && association["tid_stats"].is_array()) {
                                     auto tid_stats = association["tid_stats"];

@@ -17,9 +17,13 @@ namespace OpenWifi {
 		StorageClass::Start();
 
         BoardsDB_ = std::make_unique<OpenWifi::BoardsDB>(dbType_,*Pool_, Logger());
-        BoardsDB_->Create();
         TimePointsDB_ = std::make_unique<OpenWifi::TimePointDB>(dbType_,*Pool_, Logger());
+        WifiClientHistoryDB_ = std::make_unique<OpenWifi::WifiClientHistoryDB>(dbType_,*Pool_, Logger());
+
         TimePointsDB_->Create();
+        BoardsDB_->Create();
+        WifiClientHistoryDB_->Create();
+
         PeriodicCleanup_ = MicroService::instance().ConfigGetInt("storage.cleanup.interval", 6*60*60);
         if(PeriodicCleanup_<1*60*60)
             PeriodicCleanup_ = 1*60*60;

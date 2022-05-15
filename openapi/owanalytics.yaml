@@ -498,7 +498,7 @@ components:
           format: uuid
         boardId:
           type: string
-          format:
+          format: uuid
         serialNumber:
           type: string
         timestamp:
@@ -576,6 +576,90 @@ components:
         count:
           type: integer
           format: int64
+
+    WifiClientHistory:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+        stationId:
+          type: string
+        bssId:
+          type: string
+        ssid:
+          type: string
+        rssi:
+          type: integer
+        rx_bitrate:
+          type: integer
+        rx_chwidth:
+          type: integer
+        rx_mcs:
+          type: integer
+        rx_nss:
+          type: integer
+        rx_vht:
+          type: boolean
+        tx_bitrate:
+          type: integer
+        tx_chwidth:
+          type: integer
+        tx_mcs:
+          type: integer
+        tx_nss:
+          type: integer
+        tx_vht:
+          type: boolean
+        rx_bytes:
+          type: integer
+        tx_bytes:
+          type: integer
+        rx_duration:
+          type: integer
+        tx_duration:
+          type: integer
+        rx_packets:
+          type: integer
+        tx_packets:
+          type: integer
+        ipv4:
+          type: string
+        ipv6:
+          type: string
+        channel_width:
+          type: integer
+        noise:
+          type: integer
+        tx_power:
+          type: integer
+        channel:
+          type: integer
+        active_ms:
+          type: integer
+        busy_ms:
+          type: integer
+        receive_ms:
+          type: integer
+        mode:
+          type: string
+        ack_signal:
+          type: integer
+        ack_signal_avg:
+          type: integer
+        connected:
+          type: integer
+        inactive:
+          type: integer
+        tx_retries:
+          type: integer
+
+    WifiClientHistoryList:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/WifiClientHistory'
 
     #########################################################################################
     ##
@@ -998,6 +1082,16 @@ paths:
             default: false
           required: false
 
+      responses:
+        200:
+          $ref: '#/components/schemas/DeviceTimePointList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
     delete:
       tags:
         - Board data
@@ -1061,6 +1155,50 @@ paths:
                       type: string
         400:
           $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /wifiClientHistory/{client}:
+    get:
+      tags:
+        - WiFiClientHistory
+      operationId: getWifiClientHistory
+      summary: Retrieve WiFi client history for debugging purpose
+      parameters:
+        - in: path
+          name: client
+          schema:
+            type: string
+            example:
+              "112233aabbcc"
+          required: true
+        - in: query
+          name: fromDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: endDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Pagination start (starts at 1. If not specified, 1 is assumed)
+          name: offset
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: limit
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          $ref: '#/components/schemas/WifiClientHistoryList'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:

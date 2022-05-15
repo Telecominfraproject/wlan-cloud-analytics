@@ -316,7 +316,7 @@ namespace OpenWifi::AnalyticsObjects {
 
     void RadioTimePoint::to_json(Poco::JSON::Object &Obj) const {
         field_to_json(Obj,"band",band);
-        field_to_json(Obj,"radio_channel",radio_channel);
+        field_to_json(Obj,"channel_width",channel_width);
         field_to_json(Obj,"active_ms",active_ms);
         field_to_json(Obj,"busy_ms",busy_ms);
         field_to_json(Obj,"receive_ms",receive_ms);
@@ -334,7 +334,7 @@ namespace OpenWifi::AnalyticsObjects {
     bool RadioTimePoint::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
             field_from_json(Obj,"band",band);
-            field_from_json(Obj,"radio_channel",radio_channel);
+            field_from_json(Obj,"channel_width",channel_width);
             field_from_json(Obj,"active_ms",active_ms);
             field_from_json(Obj,"busy_ms",busy_ms);
             field_from_json(Obj,"receive_ms",receive_ms);
@@ -514,4 +514,109 @@ namespace OpenWifi::AnalyticsObjects {
         return false;
     }
 
+    void WifiClientRate::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"bitrate",bitrate);
+        field_to_json(Obj,"chwidth",chwidth);
+        field_to_json(Obj,"mcs",mcs);
+        field_to_json(Obj,"nss",nss);
+        field_to_json(Obj,"vht",vht);
+    }
+
+    bool WifiClientRate::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"bitrate",bitrate);
+            field_from_json(Obj,"chwidth",chwidth);
+            field_from_json(Obj,"mcs",mcs);
+            field_from_json(Obj,"nss",nss);
+            field_from_json(Obj,"vht",vht);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
+
+    void WifiClientHistory::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"timestamp",timestamp);
+        field_to_json(Obj,"stationId",stationId);
+        field_to_json(Obj,"bssId",bssId);
+        field_to_json(Obj,"ssid",ssid);
+        field_to_json(Obj,"rssi",rssi);
+        field_to_json(Obj,"rx_bitrate",rx_bitrate);
+        field_to_json(Obj,"rx_chwidth",rx_chwidth);
+        field_to_json(Obj,"rx_mcs",rx_mcs);
+        field_to_json(Obj,"rx_nss",rx_nss);
+        field_to_json(Obj,"rx_vht",rx_vht);
+        field_to_json(Obj,"tx_bitrate",tx_bitrate);
+        field_to_json(Obj,"tx_chwidth",tx_chwidth);
+        field_to_json(Obj,"tx_mcs",tx_mcs);
+        field_to_json(Obj,"tx_nss",tx_nss);
+        field_to_json(Obj,"tx_vht",tx_vht);
+        field_to_json(Obj,"rx_bytes",rx_bytes);
+        field_to_json(Obj,"tx_bytes",tx_bytes);
+        field_to_json(Obj,"rx_duration",rx_duration);
+        field_to_json(Obj,"tx_duration",tx_duration);
+        field_to_json(Obj,"rx_packets",rx_packets);
+        field_to_json(Obj,"tx_packets",tx_packets);
+        field_to_json(Obj,"ipv4",ipv4);
+        field_to_json(Obj,"ipv6",ipv6);
+        field_to_json(Obj,"channel_width",channel_width);
+        field_to_json(Obj,"noise",noise);
+        field_to_json(Obj,"tx_power",tx_power);
+        field_to_json(Obj,"channel",channel);
+        field_to_json(Obj,"active_ms",active_ms);
+        field_to_json(Obj,"busy_ms",busy_ms);
+        field_to_json(Obj,"receive_ms",receive_ms);
+        field_to_json(Obj,"mode",mode);
+        field_to_json(Obj,"ack_signal",ack_signal);
+        field_to_json(Obj,"ack_signal_avg",ack_signal_avg);
+        field_to_json(Obj,"connected",connected);
+        field_to_json(Obj,"inactive",inactive);
+        field_to_json(Obj,"tx_retries",tx_retries);
+    }
+
+    bool WifiClientHistory::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"timestamp",timestamp);
+            field_from_json(Obj,"stationId",stationId);
+            field_from_json(Obj,"bssId",bssId);
+            field_from_json(Obj,"ssid",ssid);
+            field_from_json(Obj,"rssi",rssi);
+            field_from_json(Obj,"rx_bitrate",rx_bitrate);
+            field_from_json(Obj,"rx_chwidth",rx_chwidth);
+            field_from_json(Obj,"rx_mcs",rx_mcs);
+            field_from_json(Obj,"rx_nss",rx_nss);
+            field_from_json(Obj,"rx_vht",rx_vht);
+            field_from_json(Obj,"tx_bitrate",tx_bitrate);
+            field_from_json(Obj,"tx_chwidth",tx_chwidth);
+            field_from_json(Obj,"tx_mcs",tx_mcs);
+            field_from_json(Obj,"tx_nss",tx_nss);
+            field_from_json(Obj,"tx_vht",tx_vht);
+            field_from_json(Obj,"rx_bytes",rx_bytes);
+            field_from_json(Obj,"tx_bytes",tx_bytes);
+            field_from_json(Obj,"rx_duration",rx_duration);
+            field_from_json(Obj,"tx_duration",tx_duration);
+            field_from_json(Obj,"rx_packets",rx_packets);
+            field_from_json(Obj,"tx_packets",tx_packets);
+            field_from_json(Obj,"ipv4",ipv4);
+            field_from_json(Obj,"ipv6",ipv6);
+            field_from_json(Obj,"channel_width",channel_width);
+            field_from_json(Obj,"noise",noise);
+            field_from_json(Obj,"tx_power",tx_power);
+            field_from_json(Obj,"channel",channel);
+            field_from_json(Obj,"active_ms",active_ms);
+            field_from_json(Obj,"busy_ms",busy_ms);
+            field_from_json(Obj,"receive_ms",receive_ms);
+            field_from_json(Obj,"mode",mode);
+            field_from_json(Obj,"ack_signal",ack_signal);
+            field_from_json(Obj,"ack_signal_avg",ack_signal_avg);
+            field_from_json(Obj,"connected",connected);
+            field_from_json(Obj,"inactive",inactive);
+            field_from_json(Obj,"tx_retries",tx_retries);
+            return true;
+        } catch(...) {
+
+        }
+        return false;
+    }
 }

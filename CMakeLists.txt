@@ -100,7 +100,7 @@ add_executable(owanalytics
         src/HealthReceiver.cpp src/HealthReceiver.h
         src/StatFunc.h
         src/RESTAPI/RESTAPI_board_timepoint_handler.cpp src/RESTAPI/RESTAPI_board_timepoint_handler.h
-        src/storage/storage_timepoints.cpp src/storage/storage_timepoints.h)
+        src/storage/storage_timepoints.cpp src/storage/storage_timepoints.h src/storage/storage_wificlients.cpp src/storage/storage_wificlients.h src/RESTAPI/RESTAPI_wificlienthistory_handler.cpp src/RESTAPI/RESTAPI_wificlienthistory_handler.h)
 
 target_link_libraries(owanalytics PUBLIC
                         ${Poco_LIBRARIES}
