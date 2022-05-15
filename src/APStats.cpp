@@ -17,21 +17,20 @@ namespace OpenWifi {
     }
 
     template <typename T> void GetJSON(const char *field, const nlohmann::json & doc, T & v , const T & def ) {
-        try {
+        if(doc.contains(field) && !doc[field].is_null()) {
             v = doc[field].get<T>();
             return;
-        } catch (...) {
-
         }
         v = def;
     }
 
     template <typename T> void GetJSON(const char *field1, const char *field2, const nlohmann::json & doc, T & v , const T & def ) {
-        try {
-            v = doc[field1][field2].get<T>();
-            return;
-        } catch (...) {
-
+        if(doc.contains(field1) && !doc[field1].is_null()) {
+            auto subDoc = doc[field1];
+            if(subDoc.contains(field2) && !subDoc[field2].is_null()) {
+                v = subDoc[field2].get<T>();
+                return;
+            }
         }
         v = def;
     }
