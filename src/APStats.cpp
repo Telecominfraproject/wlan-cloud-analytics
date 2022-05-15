@@ -260,6 +260,8 @@ namespace OpenWifi {
                                 GetJSON("inactive",association,WFH.inactive,(uint64_t)0);
                                 GetJSON("tx_retries",association,WFH.tx_retries,(uint64_t)0);
 
+                                std::cout << "Adding WiFiClient: " << WFH.stationId << std::endl;
+
                                 WifiClientCache()->AddSerialNumber(WFH.stationId);
                                 StorageService()->WifiClientHistoryDB().CreateRecord(WFH);
 
