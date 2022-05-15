@@ -57,7 +57,12 @@ namespace OpenWifi {
             }
             done = (BoardList.size() < batch);
         }
-        Logger().information(fmt::format("Done cleanup of TimePoint Database. Next run in {} seconds.", PeriodicCleanup_));
+
+        auto MaxDays = MicroService::instance().ConfigGetInt("wificlient.age.limit",14);
+        auto LowerDate = OpenWifi::Now() - (MaxDays*60*60*24);
+        Logger().information(fmt::format("Removing WiFi Clients history older than {} days.", MaxDays));
+        StorageService()->WifiClientHistoryDB().DeleteRecords(fmt::format(" timestamp<{} ", LowerDate));
+        Logger().information(fmt::format("Done cleanup of databases. Next run in {} seconds.", PeriodicCleanup_));
     }
 
     void Storage::run() {
