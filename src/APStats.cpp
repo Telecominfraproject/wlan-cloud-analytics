@@ -214,8 +214,8 @@ namespace OpenWifi {
                                 GetJSON("inactive",association,TP.inactive, (uint64_t)0 );
 
                                 AnalyticsObjects::WifiClientHistory WFH;
-
                                 WFH.stationId = mac_filter(TP.station);
+                                std::cout << "Adding WiFiClient: " << WFH.stationId << std::endl;
                                 WFH.bssId = mac_filter(SSIDTP.bssid);
                                 WFH.ssid = SSIDTP.ssid;
                                 WFH.rssi = TP.rssi;
