@@ -3,11 +3,23 @@
 //
 
 #include "RESTAPI_wificlienthistory_handler.h"
-#include "RESTAPI/RESTAPI_analytics_db_helpers.h"
+#include "WifiClientCache.h"
 
 namespace OpenWifi {
 
     void RESTAPI_wificlienthistory_handler::DoGet() {
+
+        if(GetBoolParameter("macsOnly")) {
+            auto macFilter = GetParameter("macFilter","");
+            std::vector<uint64_t>    Macs;
+            WifiClientCache()->FindNumbers(macFilter,500,Macs);
+            Poco::JSON::Array   Arr;
+            for(const auto &mac: Macs)
+                Arr.add(Utils::IntToSerialNumber(mac));
+            Poco::JSON::Object  Answer;
+            Answer.set("entries", Arr);
+            return ReturnObject(Answer);
+        }
 
         auto stationId = GetBinding("client");
         if(!Utils::ValidSerialNumber(stationId)) {

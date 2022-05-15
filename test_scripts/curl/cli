@@ -85,6 +85,7 @@ findbrowser() {
 setprov() {
 if [ -z ${OWPROV_OVERRIDE+x} ]; then
 	curl  ${FLAGS} -X GET "https://${OWSEC}/api/v1/systemEndpoints" \
+        -H "Content-Type: application/json" \
         -H "accept: application/json" \
         -H "Authorization: Bearer ${token}"  > ${result_file}
 	rawurl="$(cat ${result_file} | jq -r '.endpoints[] | select( .type == "owprov" ) | .uri')"
@@ -111,7 +112,8 @@ fi
 setanalytics() {
     if [ -z ${OWANALYTICS_OVERRIDE+x} ]; then
     curl  ${FLAGS} -X GET "https://${OWSEC}/api/v1/systemEndpoints" \
-        -H "accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/json" \
         -H "Authorization: Bearer ${token}"  > ${result_file}
     rawurl="$(cat ${result_file} | jq -r '.endpoints[] | select( .type == "owanalytics" ) | .uri')"
     if [[ ! -z "${rawurl}" ]]; then
@@ -136,133 +138,153 @@ setanalytics() {
 
 
 logout() {
-  curl  ${FLAGS} -X DELETE -H "Content-Type: application/json" \
+  curl  ${FLAGS} -X DELETE "https://${OWSEC}/api/v1/oauth2/${token}" \
         -H "Authorization: Bearer ${token}" \
-        "https://${OWSEC}/api/v1/oauth2/${token}"
+        -H "Content-Type: application/json"
   rm -rf token.json
 }
 
 venuecount() {
     curl ${FLAGS} "https://${OWPROV}/api/v1/venue?countOnly=true" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${token}" \
-    -H "accept: application/json" > ${result_file}
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -H "accept: application/json" > ${result_file}
     jq < ${result_file}
 }
 
 contactcount() {
     curl ${FLAGS} "https://${OWPROV}/api/v1/contact?countOnly=true" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${token}" \
-    -H "accept: application/json" > ${result_file}
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -H "Accept: application/json" > ${result_file}
     jq < ${result_file}
 }
 
 setloglevel() {
     payload="{ \"command\" : \"setloglevel\" , \"subsystems\" : [ { \"tag\" : \"$1\" , \"value\" : \"$2\" } ] }"
-            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
-            -H  "accept: application/json" \
-            -H "Authorization: Bearer ${token}" \
-            -d "$payload"
+    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -d "$payload"
 }
 
 getloglevels() {
     payload="{ \"command\" : \"getloglevels\" }"
-            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
-            -H  "accept: application/json" \
-            -H "Authorization: Bearer ${token}" \
-            -d "$payload"
+    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -d "$payload"
 }
 
 getloglevelnames() {
     payload="{ \"command\" : \"getloglevelnames\" }"
-            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
-            -H  "accept: application/json" \
-            -H "Authorization: Bearer ${token}" \
-            -d "$payload"
+    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -d "$payload"
 }
 
 getsubsystemnames() {
     payload="{ \"command\" : \"getsubsystemnames\" }"
-            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
-            -H  "accept: application/json" \
-            -H "Authorization: Bearer ${token}" \
-            -d "$payload"
+    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -d "$payload"
 }
 
 systeminfo() {
     curl  ${FLAGS} -X GET "https://${OWPROV}/api/v1/system?command=info" \
-    -H "accept: application/json" \
+    -H "Accept: application/json" \
     -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 reloadsubsystem() {
     payload="{ \"command\" : \"reload\", \"subsystems\" : [ \"$1\" ] }"
-            curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
-            -H  "accept: application/json" \
-            -H "Authorization: Bearer ${token}" \
-            -d "$payload"
+    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" \
+        -d "$payload"
 }
 
 tree() {
     curl    ${FLAGS} "https://${OWPROV}/api/v1/entity?getTree=true" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${token}" \
-    -H "accept: application/json" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 createboard() {
     payload="{ \"name\" : \"MegaLab\", \"venueList\" : [ { \"id\" : \"$1\" , \"name\" : \"MegaLab Venue\" , \"retention\" : 86000 , \"interval\" : 60, \"monitorSubVenues\" : true } ] }"
     curl ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/board/0" \
-    -H  "accept: application/json" \
-    -H "Authorization: Bearer ${token}" \
-    -d "$payload" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 deleteboard() {
     curl ${FLAGS} -X DELETE "https://${OWANALYTICS}/api/v1/board/$1" \
-    -H  "accept: application/json" \
-    -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 listboards() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/boards" \
-    -H "accept: application/json" \
-    -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 boardsforvenue() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/boards?forVenue=$1" \
-    -H "accept: application/json" \
-    -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 boarddevices() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/devices" \
-    -H "accept: application/json" \
-    -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 points() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/timepoints?pointsStatsOnly=true" \
-    -H "accept: application/json" \
-    -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
 
 pointstats() {
     curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/board/$1/timepoints?stats=true" \
-    -H "accept: application/json" \
-    -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
 }
+
+wificlientsonly() {
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/wifiClientHistory?macsOnly=true&macFilter=$1" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${token}" > ${result_file}
+    jq < ${result_file}
+}
+
 
 shopt -s nocasematch
 case "$1" in
@@ -281,6 +303,7 @@ case "$1" in
     "boardsforvenue") login; boardsforvenue $2; logout;;
     "points") login; points $2; logout;;
     "pointstats") login; pointstats $2; logout;;
+    "wificlientsonly") login; wificlientsonly $2; logout;;
     *) help ;;
 esac
 

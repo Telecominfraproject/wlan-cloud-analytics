@@ -661,6 +661,14 @@ components:
           items:
             $ref: '#/components/schemas/WifiClientHistory'
 
+    MacList:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            type: string
+
     #########################################################################################
     ##
     ## These are endpoints that all services in the OPenWiFI stack must provide
@@ -1196,9 +1204,30 @@ paths:
           schema:
             type: integer
           required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: macsOnly
+          schema:
+            type: boolean
+            default: false
+          required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: macFilter
+          schema:
+            type: string
+            example:
+              112233445566, 11223344*, *5566
+          required: false
       responses:
         200:
-          $ref: '#/components/schemas/WifiClientHistoryList'
+          description: Successfully returning list of records
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/WifiClientHistoryList'
+                  - $ref: '#/components/schemas/StringList'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:

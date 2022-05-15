@@ -5,6 +5,7 @@
 #include "APStats.h"
 #include "dict_ssid.h"
 #include "StorageService.h"
+#include "WifiClientCache.h"
 
 namespace OpenWifi {
 
@@ -259,6 +260,7 @@ namespace OpenWifi {
                                 GetJSON("inactive",association,WFH.inactive,(uint64_t)0);
                                 GetJSON("tx_retries",association,WFH.tx_retries,(uint64_t)0);
 
+                                WifiClientCache()->AddSerialNumber(WFH.stationId);
                                 StorageService()->WifiClientHistoryDB().CreateRecord(WFH);
 
                                 if(association.contains("tid_stats") && association["tid_stats"].is_array()) {

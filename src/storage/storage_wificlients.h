@@ -51,6 +51,7 @@ namespace OpenWifi {
     public:
         WifiClientHistoryDB( OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L);
         virtual ~WifiClientHistoryDB() {};
+        bool GetClientMacs(std::vector<std::string> &Macs);
     private:
         bool Upgrade(uint32_t from, uint32_t &to) override;
     };

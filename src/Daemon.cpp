@@ -16,6 +16,7 @@
 #include "StateReceiver.h"
 #include "DeviceStatusReceiver.h"
 #include "HealthReceiver.h"
+#include "WifiClientCache.h"
 
 namespace OpenWifi {
 	class Daemon *Daemon::instance_ = nullptr;
@@ -32,7 +33,8 @@ namespace OpenWifi {
                                        StateReceiver(),
                                        DeviceStatusReceiver(),
                                        HealthReceiver(),
-                                       VenueCoordinator()
+                                       VenueCoordinator(),
+                                       WifiClientCache()
 								   });
 		}
 		return instance_;

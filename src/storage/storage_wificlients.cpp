@@ -74,6 +74,30 @@ namespace OpenWifi {
         to = 2;
         return true;
     }
+
+    bool WifiClientHistoryDB::GetClientMacs(std::vector<std::string> &Macs) {
+        try {
+            Poco::Data::Session     Session = Pool_.get();
+            Poco::Data::Statement   Select(Session);
+
+            std::string             St = "Select distinct(stationId) from " + TableName_;
+            typedef Poco::Tuple< std::string >  Record;
+            std::vector<Record>                 RecordList;
+
+            Select << St,
+                        Poco::Data::Keywords::into(RecordList);
+            Select.execute();
+
+            for(const auto &i:RecordList)
+                Macs.push_back(i.get<0>());
+            return true;
+
+        } catch (const Poco::Exception &E) {
+            Logger().log(E);
+        }
+        return false;
+    }
+
 }
 
 template<> void ORM::DB<OpenWifi::WifiClientHistoryDBRecordType, OpenWifi::AnalyticsObjects::WifiClientHistory>::Convert(const OpenWifi::WifiClientHistoryDBRecordType &In, OpenWifi::AnalyticsObjects::WifiClientHistory &Out) {
