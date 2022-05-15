@@ -129,9 +129,13 @@ namespace OpenWifi {
                     if (radio.contains("channel")) {
                         std::cout << __LINE__ << std::endl;
                         AnalyticsObjects::RadioTimePoint  RTP;
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("channel",radio,RTP.channel,(uint64_t)2);
+                        std::cout << __LINE__ << std::endl;
                         RTP.band = RTP.channel <= 16 ? 2 : 5;
+                        std::cout << __LINE__ << std::endl;
                         radio_map[radio_index++] = std::make_pair(RTP.band, RTP.channel);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
                         GetJSON("transmit_ms", radio, RTP.transmit_ms, (uint64_t) 0);
@@ -141,9 +145,11 @@ namespace OpenWifi {
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 0);
                         GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
                         GetJSON("channel_width", radio, RTP.channel_width, (uint64_t) 20);
+                        std::cout << __LINE__ << std::endl;
                         if(RTP.temperature==0)
                             RTP.temperature = 20;
                         GetJSON("noise", radio, RTP.noise, (int64_t) -90);
+                        std::cout << __LINE__ << std::endl;
                         if(RTP.noise==0)
                             RTP.noise=-90;
                         DTP.radio_data.push_back(RTP);
