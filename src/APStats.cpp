@@ -137,17 +137,26 @@ namespace OpenWifi {
                         radio_map[radio_index++] = std::make_pair(RTP.band, RTP.channel);
                         std::cout << __LINE__ << std::endl;
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("transmit_ms", radio, RTP.transmit_ms, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("tx_power", radio, RTP.tx_power, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 0);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("channel_width", radio, RTP.channel_width, (uint64_t) 20);
                         std::cout << __LINE__ << std::endl;
                         if(RTP.temperature==0)
                             RTP.temperature = 20;
+                        std::cout << __LINE__ << std::endl;
                         GetJSON("noise", radio, RTP.noise, (int64_t) -90);
                         std::cout << __LINE__ << std::endl;
                         if(RTP.noise==0)
