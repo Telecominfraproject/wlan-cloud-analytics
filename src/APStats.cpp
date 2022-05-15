@@ -128,9 +128,9 @@ namespace OpenWifi {
                     std::cout << __LINE__ << std::endl;
                     if (radio.contains("channel")) {
                         std::cout << __LINE__ << std::endl;
-                        AnalyticsObjects::RadioTimePoint  RTP;
+                        AnalyticsObjects::RadioTimePoint RTP;
                         std::cout << __LINE__ << std::endl;
-                        GetJSON("channel",radio,RTP.channel,(uint64_t)2);
+                        GetJSON("channel", radio, RTP.channel, (uint64_t) 2);
                         std::cout << __LINE__ << std::endl;
                         RTP.band = RTP.channel <= 16 ? 2 : 5;
                         std::cout << __LINE__ << std::endl;
@@ -152,7 +152,16 @@ namespace OpenWifi {
                         std::cout << __LINE__ << std::endl;
                         GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
                         std::cout << __LINE__ << std::endl;
-                        GetJSON("channel_width", radio, RTP.channel_width, (uint64_t) 20);
+                        if (radio.contains("channel_width") && !radio["channel_width"].is_null()) {
+                            if(radio["channel_width"].is_string()) {
+                                std::string C = radio["channel_width"];
+                                RTP.channel_width = std::strtoull(C.c_str(), nullptr,10);
+                            } else if(radio["channel_width"].is_number_integer()) {
+                                RTP.channel_width = radio["channel_width"];
+                            } else {
+                                RTP.channel_width = 20;
+                            }
+                        }
                         std::cout << __LINE__ << std::endl;
                         if(RTP.temperature==0)
                             RTP.temperature = 20;
