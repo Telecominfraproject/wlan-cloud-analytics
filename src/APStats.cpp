@@ -129,8 +129,8 @@ namespace OpenWifi {
                     if (radio.contains("channel")) {
                         std::cout << __LINE__ << std::endl;
                         AnalyticsObjects::RadioTimePoint  RTP;
-                        RTP.channel = radio["channel"];
-                        RTP.band = radio["channel"] <= 16 ? 2 : 5;
+                        GetJSON("channel",radio,RTP.channel,(uint64_t)2);
+                        RTP.band = RTP.channel <= 16 ? 2 : 5;
                         radio_map[radio_index++] = std::make_pair(RTP.band, RTP.channel);
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
