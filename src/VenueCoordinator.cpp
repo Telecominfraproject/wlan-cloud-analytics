@@ -20,7 +20,7 @@ namespace OpenWifi {
         BoardsToWatch_.clear();
         auto F = [&](const AnalyticsObjects::BoardInfo &B) ->bool {
             BoardsToWatch_.insert(B);
-            Logger().information(fmt::format("Starting watch for {}.", B.info.name));
+            // Logger().information(fmt::format("Starting watch for {}.", B.info.name));
             return true;
         };
         StorageService()->BoardsDB().Iterate(F);

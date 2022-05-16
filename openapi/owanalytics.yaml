@@ -1168,11 +1168,63 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
 
-  /wifiClientHistory/{client}:
+  /wifiClientHistory:
     get:
       tags:
         - WiFiClientHistory
       operationId: getWifiClientHistory
+      summary: Retrieve WiFi client history for debugging purpose
+      parameters:
+        - in: query
+          name: fromDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: endDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Pagination start (starts at 1. If not specified, 1 is assumed)
+          name: offset
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: limit
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: macsOnly
+          schema:
+            type: boolean
+            default: false
+          required: true
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: macFilter
+          schema:
+            type: string
+            example:
+              112233445566, 11223344*, *5566
+          required: false
+      responses:
+        200:
+         $ref: '#/components/schemas/StringList'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /wifiClientHistory/{client}:
+    get:
+      tags:
+        - WiFiClientHistory
+      operationId: getWifiClients
       summary: Retrieve WiFi client history for debugging purpose
       parameters:
         - in: path
@@ -1228,6 +1280,45 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/WifiClientHistoryList'
                   - $ref: '#/components/schemas/StringList'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - WiFiClientHistory
+      operationId: deleteWifiClientHistory
+      summary: Retrieve WiFi client history for debugging purpose
+      parameters:
+        - in: path
+          name: client
+          schema:
+            type: string
+            example:
+              "112233aabbcc"
+          required: true
+        - in: query
+          name: fromDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: endDate
+          schema:
+            type: integer
+          required: false
+        - in: query
+          description: Maximum number of entries to return (if absent, no limit is assumed)
+          name: macFilter
+          schema:
+            type: string
+            example:
+              112233445566, 11223344*, *5566
+          required: false
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
