@@ -221,11 +221,12 @@ tree() {
 }
 
 createboard() {
-    payload="{ \"name\" : \"MegaLab\", \"venueList\" : [ { \"id\" : \"$1\" , \"name\" : \"MegaLab Venue\" , \"retention\" : 86000 , \"interval\" : 60, \"monitorSubVenues\" : true } ] }"
+    payload="{ \"name\" : \"Demo\", \"venueList\" : [ { \"id\" : \"$1\" , \"name\" : \"Demo\" , \"retention\" : 86000 , \"interval\" : 60, \"monitorSubVenues\" : true } ] }"
     curl ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/board/0" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${token}" > ${result_file}
+        -H "Authorization: Bearer ${token}" \
+        -d "$payload" > ${result_file}
     jq < ${result_file}
 }
 

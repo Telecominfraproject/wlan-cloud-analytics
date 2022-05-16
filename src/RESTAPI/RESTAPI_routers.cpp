@@ -7,6 +7,7 @@
 #include "RESTAPI/RESTAPI_board_handler.h"
 #include "RESTAPI/RESTAPI_board_devices_handler.h"
 #include "RESTAPI/RESTAPI_board_timepoint_handler.h"
+#include "RESTAPI/RESTAPI_wificlienthistory_handler.h"
 
 namespace OpenWifi {
 
@@ -18,7 +19,8 @@ namespace OpenWifi {
                     RESTAPI_board_devices_handler,
                     RESTAPI_board_timepoint_handler,
                     RESTAPI_board_handler,
-                    RESTAPI_board_list_handler
+                    RESTAPI_board_list_handler,
+                    RESTAPI_wificlienthistory_handler
                 >(Path,Bindings,L, S, TransactionId);
     }
 
@@ -30,7 +32,8 @@ namespace OpenWifi {
                 RESTAPI_board_devices_handler,
                 RESTAPI_board_timepoint_handler,
                 RESTAPI_board_handler,
-                RESTAPI_board_list_handler
+                RESTAPI_board_list_handler,
+                RESTAPI_wificlienthistory_handler
             >(Path, Bindings, L, S, TransactionId);
     }
 
