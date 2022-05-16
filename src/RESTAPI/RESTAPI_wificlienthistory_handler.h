@@ -21,7 +21,7 @@ namespace OpenWifi {
                                  TransactionId,
                                  Internal){}
 
-        static auto PathName() { return std::list<std::string>{"/api/v1//wifiClientHistory/{client}", "/api/v1//wifiClientHistory"}; };
+        static auto PathName() { return std::list<std::string>{"/api/v1/wifiClientHistory/{client}", "/api/v1/wifiClientHistory"}; };
 
     private:
         OpenWifi::WifiClientHistoryDB  & DB_=StorageService()->WifiClientHistoryDB();
