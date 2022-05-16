@@ -38,9 +38,6 @@ namespace OpenWifi {
 	}
 
     void WifiClientCache::AddSerialNumber(const std::string &venue_id, const std::string &S, [[maybe_unused]] std::lock_guard<std::recursive_mutex> & G) {
-
-
-        bool added=false;
         auto VenueIt = Cache_.find(venue_id);
         if(VenueIt==Cache_.end()) {
             Cache_.insert(std::pair(venue_id, Cache{}));
