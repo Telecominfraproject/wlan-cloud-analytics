@@ -120,7 +120,8 @@ namespace OpenWifi {
 		if(S.empty()) {
             auto Start = SNs_.begin();
             while(HowMany && Start!=SNs_.end()) {
-                A.push_back(*Start++);
+                A.push_back(*Start);
+                Start++;
                 HowMany--;
             }
             return;
