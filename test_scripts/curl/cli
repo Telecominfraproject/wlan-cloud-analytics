@@ -279,7 +279,7 @@ pointstats() {
 }
 
 wificlientsonly() {
-    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/wifiClientHistory?macsOnly=true&macFilter=$1" \
+    curl ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/wifiClientHistory?macsOnly=true&macFilter=$2&venue=$1" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${token}" > ${result_file}
@@ -304,7 +304,7 @@ case "$1" in
     "boardsforvenue") login; boardsforvenue $2; logout;;
     "points") login; points $2; logout;;
     "pointstats") login; pointstats $2; logout;;
-    "wificlientsonly") login; wificlientsonly $2; logout;;
+    "wificlientsonly") login; wificlientsonly $2 $3; logout;;
     *) help ;;
 esac
 

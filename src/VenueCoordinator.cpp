@@ -96,7 +96,7 @@ namespace OpenWifi {
             ExistingBoards_[B.info.id] = Devices;
             Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id, B.venueList[0].id, Logger(), Devices);
             Watchers_[B.info.id]->Start();
-            Logger().information(fmt::format("Started board {}", B.info.name));
+            Logger().information(fmt::format("Started board {} for venue {}", B.info.name,B.venueList[0].id ));
             return true;
         }
 

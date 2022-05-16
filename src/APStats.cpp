@@ -97,7 +97,6 @@ namespace OpenWifi {
 
         // find radios first to get associations.
         try {
-            std::cout << __LINE__ << std::endl;
             if(State->contains("unit")) {
                 auto unit = (*State)["unit"];
                 GetJSON("localtime", unit, DI_.lastState, (uint64_t) 0);
@@ -115,43 +114,26 @@ namespace OpenWifi {
                 }
             }
 
-            std::cout << __LINE__ << std::endl;
-
             DTP.timestamp = DI_.lastState;
 
             std::map<uint, std::pair<uint,uint> > radio_map;
             if(State->contains("radios") && (*State)["radios"].is_array()) {
-                std::cout << __LINE__ << std::endl;
                 auto radios = (*State)["radios"];
                 uint radio_index = 0;
                 for (const auto &radio: radios) {
-                    std::cout << __LINE__ << std::endl;
                     if (radio.contains("channel")) {
-                        std::cout << __LINE__ << std::endl;
                         AnalyticsObjects::RadioTimePoint RTP;
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 2);
-                        std::cout << __LINE__ << std::endl;
                         RTP.band = RTP.channel <= 16 ? 2 : 5;
-                        std::cout << __LINE__ << std::endl;
                         radio_map[radio_index++] = std::make_pair(RTP.band, RTP.channel);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("transmit_ms", radio, RTP.transmit_ms, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("tx_power", radio, RTP.tx_power, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("active_ms", radio, RTP.active_ms, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 0);
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("temperature", radio, RTP.temperature, (int64_t) 20);
-                        std::cout << __LINE__ << std::endl;
                         if (radio.contains("channel_width") && !radio["channel_width"].is_null()) {
                             if(radio["channel_width"].is_string()) {
                                 std::string C = radio["channel_width"];
@@ -162,12 +144,9 @@ namespace OpenWifi {
                                 RTP.channel_width = 20;
                             }
                         }
-                        std::cout << __LINE__ << std::endl;
                         if(RTP.temperature==0)
                             RTP.temperature = 20;
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("noise", radio, RTP.noise, (int64_t) -90);
-                        std::cout << __LINE__ << std::endl;
                         if(RTP.noise==0)
                             RTP.noise=-90;
                         DTP.radio_data.push_back(RTP);
@@ -175,15 +154,11 @@ namespace OpenWifi {
                 }
             }
 
-            std::cout << __LINE__ << std::endl;
-
             //  now that we know the radio bands, look for associations
             auto interfaces = (*State)["interfaces"];
             DI_.associations_2g = DI_.associations_5g = DI_.associations_6g = 0;
             for(const auto &interface:interfaces) {
-                std::cout << __LINE__ << std::endl;
                 if(interface.contains("counters")) {
-                    std::cout << __LINE__ << std::endl;
                     auto counters = interface["counters"];
                     GetJSON("collisions", counters, DTP.ap_data.collisions, (uint64_t) 0);
                     GetJSON("multicast", counters, DTP.ap_data.multicast, (uint64_t) 0);
@@ -197,37 +172,29 @@ namespace OpenWifi {
                     GetJSON("tx_packets", counters, DTP.ap_data.tx_packets, (uint64_t) 0);
                 }
 
-                std::cout << __LINE__ << std::endl;
                 if(interface.contains("ssids")) {
                     auto ssids = interface["ssids"];
                     for (const auto &ssid: ssids) {
-                        std::cout << __LINE__ << std::endl;
                         AnalyticsObjects::SSIDTimePoint   SSIDTP;
                         uint radio_location=0;
                         SSIDTP.band = 2;
                         if(ssid.contains("radio")) {
-                            std::cout << __LINE__ << std::endl;
                             auto radio = ssid["radio"];
                             if(radio.contains("$ref")) {
-                                std::cout << __LINE__ << std::endl;
                                 auto ref = radio["$ref"];
                                 auto radio_parts = Poco::StringTokenizer(ref, "/");
                                 if(radio_parts.count()==3) {
-                                    std::cout << __LINE__ << std::endl;
                                     radio_location = std::strtol(radio_parts[2].c_str(), nullptr, 10);
                                     if(radio_map.find(radio_location)!=radio_map.end()) {
-                                        std::cout << __LINE__ << std::endl;
                                         SSIDTP.band = radio_map[radio_location].first;
                                         SSIDTP.channel = radio_map[radio_location].second;
                                     }
                                 }
                             }
                         }
-                        std::cout << __LINE__ << std::endl;
                         GetJSON("bssid",ssid,SSIDTP.bssid, std::string{""});
                         GetJSON("mode",ssid,SSIDTP.mode, std::string{""} );
                         GetJSON("ssid",ssid,SSIDTP.ssid, std::string{""} );
-                        std::cout << __LINE__ << std::endl;
                         if (ssid.contains("associations") && ssid["associations"].is_array()) {
                             auto associations = ssid["associations"];
                             auto radio_it = radio_map.find(radio_location);
@@ -240,10 +207,7 @@ namespace OpenWifi {
                                 else if (the_radio == 6)
                                     DI_.associations_6g += associations.size();
                             }
-                            std::cout << __LINE__ << std::endl;
                             for(const auto &association:associations) {
-
-                                std::cout << __LINE__ << std::endl;
                                 AnalyticsObjects::UETimePoint TP;
                                 GetJSON("station",association,TP.station, std::string{} );
                                 GetJSON("rssi",association,TP.rssi, (int64_t)0 );
@@ -259,7 +223,6 @@ namespace OpenWifi {
 
                                 AnalyticsObjects::WifiClientHistory WFH;
                                 WFH.station_id = mac_filter(TP.station);
-                                std::cout << "Adding WiFiClient: " << WFH.station_id << std::endl;
                                 WFH.bssid = mac_filter(SSIDTP.bssid);
                                 WFH.ssid = SSIDTP.ssid;
                                 WFH.rssi = TP.rssi;
@@ -280,7 +243,6 @@ namespace OpenWifi {
                                 GetJSON("rx_packets",association,WFH.rx_packets,(uint64_t)0);
                                 GetJSON("tx_packets",association,WFH.tx_packets,(uint64_t)0);
 
-                                std::cout << __LINE__ << std::endl;
                                 WFH.ipv4 = "---";
                                 WFH.ipv6 = "----";
 
@@ -304,11 +266,8 @@ namespace OpenWifi {
                                 GetJSON("inactive",association,WFH.inactive,(uint64_t)0);
                                 GetJSON("tx_retries",association,WFH.tx_retries,(uint64_t)0);
 
-                                std::cout << "Adding WiFiClient: " << WFH.station_id << std::endl;
-
                                 WifiClientCache()->AddSerialNumber(venue_id_,WFH.station_id);
                                 StorageService()->WifiClientHistoryDB().CreateRecord(WFH);
-                                std::cout << __LINE__ << std::endl;
 
                                 if(association.contains("tid_stats") && association["tid_stats"].is_array()) {
                                     auto tid_stats = association["tid_stats"];
@@ -322,7 +281,6 @@ namespace OpenWifi {
                                     }
                                 }
 
-                                std::cout << __LINE__ << std::endl;
                                 if(association.contains("tx_rate")) {
                                     auto tx_rate = association["tx_rate"];
                                     GetJSON("bitrate",tx_rate,TP.tx_rate.bitrate, (uint64_t)0 );

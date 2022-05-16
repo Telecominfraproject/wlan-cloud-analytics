@@ -18,6 +18,7 @@ namespace OpenWifi {
             boardId_(BoardId),
             Logger_(L)
         {
+            std::cout << "Ap Venue: " << venue_id_ << std::endl;
             DI_.serialNumber = Utils::IntToSerialNumber(mac);
         }
 
