@@ -267,6 +267,7 @@ namespace OpenWifi {
                                 GetJSON("tx_retries",association,WFH.tx_retries,(uint64_t)0);
 
                                 WifiClientCache()->AddSerialNumber(venue_id_,WFH.station_id);
+                                WFH.venue_id = venue_id_;
                                 StorageService()->WifiClientHistoryDB().CreateRecord(WFH);
 
                                 if(association.contains("tid_stats") && association["tid_stats"].is_array()) {

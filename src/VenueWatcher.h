@@ -40,7 +40,6 @@ namespace OpenWifi {
                 venue_id_(venue_id),
                 Logger_(L),
                 SerialNumbers_(SerialNumbers) {
-            std::cout << "VenueWatcher: " << venue_id_ << std::endl;
             std::sort(SerialNumbers_.begin(),SerialNumbers_.end());
             auto last = std::unique(SerialNumbers_.begin(),SerialNumbers_.end());
             SerialNumbers_.erase(last,SerialNumbers_.end());
