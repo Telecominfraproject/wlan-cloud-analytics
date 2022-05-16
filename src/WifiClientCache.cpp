@@ -82,7 +82,7 @@ namespace OpenWifi {
 	void WifiClientCache::ReturnNumbers(const std::string &S, uint HowMany, const std::vector<uint64_t> &SNArr, std::vector<uint64_t> &A, bool ReverseResult) {
 		std::lock_guard G(Mutex_);
 
-		if (S.length() == 12) {
+        if (S.length() == 12) {
 			uint64_t SN = std::stoull(S, nullptr, 16);
 			auto It = std::find(SNArr.begin(), SNArr.end(), SN);
 			if (It != SNArr.end()) {
@@ -116,8 +116,15 @@ namespace OpenWifi {
 	}
 
 	void WifiClientCache::FindNumbers(const std::string &S, uint HowMany, std::vector<uint64_t> &A) {
-		if(S.empty())
-			return;
+        A.clear();
+		if(S.empty()) {
+            auto Start = SNs_.begin();
+            while(HowMany && Start!=SNs_.end()) {
+                A.push_back(*Start++);
+                HowMany--;
+            }
+            return;
+        }
 
 		if (S[0] == '*') {
 			std::string Reversed;
