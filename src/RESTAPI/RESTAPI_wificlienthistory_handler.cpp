@@ -11,9 +11,14 @@ namespace OpenWifi {
 
         std::cout << __LINE__ << std::endl;
         if(GetBoolParameter("macsOnly")) {
+            auto venue = GetParameter("venue","");
+            if(venue.empty()) {
+                return BadRequest(RESTAPI::Errors::VenueMustExist);
+            }
+
             auto macFilter = GetParameter("macFilter","");
             std::vector<uint64_t>    Macs;
-            WifiClientCache()->FindNumbers(macFilter,500,Macs);
+            WifiClientCache()->FindNumbers(venue,macFilter,500,Macs);
             Poco::JSON::Array   Arr;
             for(const auto &mac: Macs)
                 Arr.add(Utils::IntToSerialNumber(mac));

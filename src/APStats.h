@@ -13,7 +13,8 @@ namespace OpenWifi {
 
     class AP {
     public:
-        explicit AP(uint64_t mac, const std::string &BoardId, Poco::Logger &L) :
+        explicit AP(uint64_t mac, const std::string &venue_id, const std::string &BoardId, Poco::Logger &L) :
+            venue_id_(venue_id),
             boardId_(BoardId),
             Logger_(L)
         {
@@ -26,6 +27,7 @@ namespace OpenWifi {
 
         [[nodiscard]] const AnalyticsObjects::DeviceInfo & Info() const { return DI_; }
     private:
+        std::string                                     venue_id_;
         std::string                                     boardId_;
         AnalyticsObjects::DeviceInfo                    DI_;
         AnalyticsObjects::DeviceTimePoint               tp_base_;

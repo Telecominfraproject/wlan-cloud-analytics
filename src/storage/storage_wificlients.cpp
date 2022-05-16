@@ -14,8 +14,8 @@ namespace OpenWifi {
 
     static  ORM::FieldVec    Boards_Fields{
             ORM::Field{"timestamp",ORM::FieldType::FT_BIGINT},
-            ORM::Field{"stationId",ORM::FieldType::FT_TEXT},
-            ORM::Field{"bssId",ORM::FieldType::FT_TEXT},
+            ORM::Field{"station_id",ORM::FieldType::FT_TEXT},
+            ORM::Field{"bssid",ORM::FieldType::FT_TEXT},
             ORM::Field{"ssid",ORM::FieldType::FT_TEXT},
             ORM::Field{"rssi",ORM::FieldType::FT_BIGINT},
             ORM::Field{"rx_bitrate",ORM::FieldType::FT_BIGINT},
@@ -48,17 +48,20 @@ namespace OpenWifi {
             ORM::Field{"ack_signal_avg",ORM::FieldType::FT_BIGINT},
             ORM::Field{"connected",ORM::FieldType::FT_BIGINT},
             ORM::Field{"inactive",ORM::FieldType::FT_BIGINT},
-            ORM::Field{"tx_retries",ORM::FieldType::FT_BIGINT}
+            ORM::Field{"tx_retries",ORM::FieldType::FT_BIGINT},
+            ORM::Field{"venue_id",ORM::FieldType::FT_TEXT}
     };
 
     static  ORM::IndexVec    BoardsDB_Indexes{
             { std::string("stationid_name_index"),
               ORM::IndexEntryVec{
-                      {std::string("stationId"),
+                      {std::string("station_id"),
                        ORM::Indextype::ASC} } },
-            { std::string("stationtsid_name_index"),
+            { std::string("station_ven_ts_id_name_index"),
               ORM::IndexEntryVec{
-                      {std::string("stationId"),
+                      {std::string("venue_id"),
+                      ORM::Indextype::ASC} ,
+                      {std::string("station_id"),
                        ORM::Indextype::ASC} ,
                       {std::string("timestamp"),
                        ORM::Indextype::ASC}} }
@@ -75,13 +78,13 @@ namespace OpenWifi {
         return true;
     }
 
-    bool WifiClientHistoryDB::GetClientMacs(std::vector<std::string> &Macs) {
+    bool WifiClientHistoryDB::GetClientMacs(std::vector<std::pair<std::string,std::string>>  &Macs) {
         try {
             Poco::Data::Session     Session = Pool_.get();
             Poco::Data::Statement   Select(Session);
 
-            std::string             St = "Select distinct(stationId) from " + TableName_;
-            typedef Poco::Tuple< std::string >  Record;
+            std::string             St = "Select distinct stationId, venue_id from " + TableName_;
+            typedef Poco::Tuple< std::string, std::string >  Record;
             std::vector<Record>                 RecordList;
 
             Select << St,
@@ -89,7 +92,7 @@ namespace OpenWifi {
             Select.execute();
 
             for(const auto &i:RecordList)
-                Macs.push_back(i.get<0>());
+                Macs.push_back(std::pair(i.get<0>(),i.get<1>()));
             return true;
 
         } catch (const Poco::Exception &E) {
@@ -102,8 +105,8 @@ namespace OpenWifi {
 
 template<> void ORM::DB<OpenWifi::WifiClientHistoryDBRecordType, OpenWifi::AnalyticsObjects::WifiClientHistory>::Convert(const OpenWifi::WifiClientHistoryDBRecordType &In, OpenWifi::AnalyticsObjects::WifiClientHistory &Out) {
     Out.timestamp = In.get<0>();
-    Out.stationId = In.get<1>();
-    Out.bssId= In.get<2>();
+    Out.station_id = In.get<1>();
+    Out.bssid= In.get<2>();
     Out.ssid= In.get<3>();
     Out.rssi= In.get<4>();
     Out.rx_bitrate= In.get<5>();
@@ -137,12 +140,13 @@ template<> void ORM::DB<OpenWifi::WifiClientHistoryDBRecordType, OpenWifi::Analy
     Out.connected= In.get<33>();
     Out.inactive= In.get<34>();
     Out.tx_retries= In.get<35>();
+    Out.venue_id= In.get<36>();
 }
 
 template<> void ORM::DB<OpenWifi::WifiClientHistoryDBRecordType, OpenWifi::AnalyticsObjects::WifiClientHistory>::Convert(const OpenWifi::AnalyticsObjects::WifiClientHistory &In, OpenWifi::WifiClientHistoryDBRecordType &Out) {
     Out.set<0>(In.timestamp);
-    Out.set<1>(In.stationId);
-    Out.set<2>(In.bssId);
+    Out.set<1>(In.station_id);
+    Out.set<2>(In.bssid);
     Out.set<3>(In.ssid);
     Out.set<4>(In.rssi);
     Out.set<5>(In.rx_bitrate);
@@ -176,5 +180,5 @@ template<> void ORM::DB<OpenWifi::WifiClientHistoryDBRecordType, OpenWifi::Analy
     Out.set<33>(In.connected);
     Out.set<34>(In.inactive);
     Out.set<35>(In.tx_retries);
-
+    Out.set<36>(In.venue_id);
 }

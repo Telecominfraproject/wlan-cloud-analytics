@@ -44,14 +44,15 @@ namespace OpenWifi {
         int64_t,        //         ack_signal_avg=0;
         int64_t,        //         connected=0;
         int64_t,        //         inactive=0;
-        int64_t         //         tx_retries=0;
+        int64_t,         //         tx_retries=0;
+        std::string
     > WifiClientHistoryDBRecordType;
 
     class WifiClientHistoryDB : public ORM::DB<WifiClientHistoryDBRecordType, AnalyticsObjects::WifiClientHistory> {
     public:
         WifiClientHistoryDB( OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L);
         virtual ~WifiClientHistoryDB() {};
-        bool GetClientMacs(std::vector<std::string> &Macs);
+        bool GetClientMacs(std::vector<std::pair<std::string,std::string>>  &Macs);
     private:
         bool Upgrade(uint32_t from, uint32_t &to) override;
     };

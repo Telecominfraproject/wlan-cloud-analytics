@@ -94,7 +94,7 @@ namespace OpenWifi {
         if(GetDevicesForBoard(B,Devices,VenueExists)) {
             std::lock_guard G(Mutex_);
             ExistingBoards_[B.info.id] = Devices;
-            Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id, Logger(), Devices);
+            Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id, B.venueList[0].id, Logger(), Devices);
             Watchers_[B.info.id]->Start();
             Logger().information(fmt::format("Started board {}", B.info.name));
             return true;

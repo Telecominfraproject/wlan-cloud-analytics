@@ -18,12 +18,15 @@ namespace OpenWifi {
 
 		int Start() override;
 		void Stop() override;
-		void AddSerialNumber(const std::string &SerialNumber);
-		void DeleteSerialNumber(const std::string &SerialNumber);
-		void FindNumbers(const std::string &SerialNumber, uint HowMany, std::vector<uint64_t> &A);
-		inline bool NumberExists(uint64_t SerialNumber) {
+		void AddSerialNumber(const std::string &venueId, const std::string &SerialNumber);
+		void DeleteSerialNumber(const std::string &venueId, const std::string &SerialNumber);
+		void FindNumbers(const std::string &venueId, const std::string &SerialNumber, uint HowMany, std::vector<uint64_t> &A);
+		inline bool NumberExists(const std::string &venueId, uint64_t SerialNumber) {
 			std::lock_guard		G(Mutex_);
-			return std::find(SNs_.begin(),SNs_.end(),SerialNumber)!=SNs_.end();
+            auto It = Cache_.find(venueId);
+            if(It==Cache_.end())
+                return false;
+			return std::find(It->second.SNs_.begin(),It->second.SNs_.end(),SerialNumber)!=It->second.SNs_.end();
 		}
 
 		static inline std::string ReverseSerialNumber(const std::string &S) {
@@ -34,19 +37,21 @@ namespace OpenWifi {
         void onTimer(Poco::Timer & timer);
 
 	  private:
-		std::vector<uint64_t>		                            SNs_;
-		std::vector<uint64_t>		                            Reverse_SNs_;
+        struct Cache {
+            std::vector<uint64_t>		                            SNs_;
+            std::vector<uint64_t>		                            Reverse_SNs_;
+        };
+        std::map<std::string,Cache>                             Cache_;
         Poco::Timer                                             Timer_;
         std::unique_ptr<Poco::TimerCallback<WifiClientCache>>   TimerCallback_;
 
-        void AddSerialNumber(const std::string &S, std::lock_guard<std::recursive_mutex> & G);
+        void AddSerialNumber(const std::string &venueId, const std::string &S, std::lock_guard<std::recursive_mutex> & G);
 
         void ReturnNumbers(const std::string &S, uint HowMany, const std::vector<uint64_t> & SNArr, std::vector<uint64_t> &A, bool ReverseResult);
 
         WifiClientCache() noexcept:
 			SubSystemServer("SerialNumberCache", "SNCACHE-SVR", "serialcache")
 			{
-				SNs_.reserve(2000);
 			}
 	};
 

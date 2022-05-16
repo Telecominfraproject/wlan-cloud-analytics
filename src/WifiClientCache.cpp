@@ -22,48 +22,58 @@ namespace OpenWifi {
 	}
 
     void WifiClientCache::onTimer([[maybe_unused]] Poco::Timer & timer) {
-        std::vector<std::string>    WifiClients;
+        std::vector<std::pair<std::string,std::string>>    WifiClients;
         if(StorageService()->WifiClientHistoryDB().GetClientMacs(WifiClients)) {
             //  Let's replace current cache...
             std::lock_guard		G(Mutex_);
-            SNs_.clear();
-            Reverse_SNs_.clear();
+            Cache_.clear();
             for(const auto &mac:WifiClients)
-                AddSerialNumber(mac,G);
+                AddSerialNumber(mac.second,mac.first,G);
         }
     }
 
-	void WifiClientCache::AddSerialNumber(const std::string &S) {
+	void WifiClientCache::AddSerialNumber(const std::string &venue_id, const std::string &S) {
 		std::lock_guard		G(Mutex_);
-        AddSerialNumber(S,G);
+        AddSerialNumber(venue_id, S,G);
 	}
 
-    void WifiClientCache::AddSerialNumber(const std::string &S, [[maybe_unused]] std::lock_guard<std::recursive_mutex> & G) {
+    void WifiClientCache::AddSerialNumber(const std::string &venue_id, const std::string &S, [[maybe_unused]] std::lock_guard<std::recursive_mutex> & G) {
+
+
+        bool added=false;
+        auto VenueIt = Cache_.find(venue_id);
+        if(VenueIt==Cache_.end())
+            std::pair(VenueIt,added) = Cache_.insert(std::pair(venue_id,Cache{}));
+
         uint64_t SN = std::stoull(S, nullptr, 16);
-        if (std::find(std::begin(SNs_), std::end(SNs_), SN) == std::end(SNs_)) {
-            auto insert_point = std::lower_bound(SNs_.begin(), SNs_.end(), SN);
-            SNs_.insert(insert_point, SN);
+        if (std::find(std::begin(VenueIt->second.SNs_), std::end(VenueIt->second.SNs_), SN) == std::end(VenueIt->second.SNs_)) {
+            auto insert_point = std::lower_bound(VenueIt->second.SNs_.begin(), VenueIt->second.SNs_.end(), SN);
+            VenueIt->second.SNs_.insert(insert_point, SN);
 
             auto R = ReverseSerialNumber(S);
             uint64_t RSN = std::stoull(R, nullptr, 16);
-            auto rev_insert_point = std::lower_bound(Reverse_SNs_.begin(), Reverse_SNs_.end(), RSN);
-            Reverse_SNs_.insert(rev_insert_point, RSN);
+            auto rev_insert_point = std::lower_bound(VenueIt->second.Reverse_SNs_.begin(), VenueIt->second.Reverse_SNs_.end(), RSN);
+            VenueIt->second.Reverse_SNs_.insert(rev_insert_point, RSN);
         }
     }
 
-    void WifiClientCache::DeleteSerialNumber(const std::string &S) {
+    void WifiClientCache::DeleteSerialNumber(const std::string &venue_id, const std::string &S) {
 		std::lock_guard		G(Mutex_);
 
 		uint64_t SN = std::stoull(S,nullptr,16);
-		auto It = std::find(SNs_.begin(),SNs_.end(),SN);
-		if(It != SNs_.end()) {
-			SNs_.erase(It);
+
+        auto VenueIt = Cache_.find(venue_id);
+        if(VenueIt==Cache_.end())
+            return;
+		auto It = std::find(VenueIt->second.SNs_.begin(),VenueIt->second.SNs_.end(),SN);
+		if(It != VenueIt->second.SNs_.end()) {
+            VenueIt->second.SNs_.erase(It);
 
 			auto R = ReverseSerialNumber(S);
 			uint64_t RSN = std::stoull(R, nullptr, 16);
-			auto RIt = std::find(Reverse_SNs_.begin(),Reverse_SNs_.end(),RSN);
-			if(RIt != Reverse_SNs_.end()) {
-				Reverse_SNs_.erase(RIt);
+			auto RIt = std::find(VenueIt->second.Reverse_SNs_.begin(),VenueIt->second.Reverse_SNs_.end(),RSN);
+			if(RIt != VenueIt->second.Reverse_SNs_.end()) {
+                VenueIt->second.Reverse_SNs_.erase(RIt);
 			}
 		}
 	}
@@ -115,11 +125,18 @@ namespace OpenWifi {
 		}
 	}
 
-	void WifiClientCache::FindNumbers(const std::string &S, uint HowMany, std::vector<uint64_t> &A) {
+	void WifiClientCache::FindNumbers(const std::string &venue_id, const std::string &S, uint HowMany, std::vector<uint64_t> &A) {
+        std::lock_guard G(Mutex_);
+
         A.clear();
+
+        auto VenueIt = Cache_.find(venue_id);
+        if(VenueIt==Cache_.end())
+            return;
+
 		if(S.empty()) {
-            auto Start = SNs_.begin();
-            while(HowMany && Start!=SNs_.end()) {
+            auto Start = VenueIt->second.SNs_.begin();
+            while(HowMany && Start!=VenueIt->second.SNs_.end()) {
                 A.push_back(*Start);
                 Start++;
                 HowMany--;
@@ -132,9 +149,9 @@ namespace OpenWifi {
 			std::copy(rbegin(S), rend(S)-1, std::back_inserter(Reversed));
 			if(Reversed.empty())
 				return;
-			return ReturnNumbers(Reversed, HowMany, Reverse_SNs_, A, true);
+			return ReturnNumbers(Reversed, HowMany, VenueIt->second.Reverse_SNs_, A, true);
 		} else {
-			return ReturnNumbers(S, HowMany, SNs_, A, false);
+			return ReturnNumbers(S, HowMany, VenueIt->second.SNs_, A, false);
 		}
 	}
 }

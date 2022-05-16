@@ -258,9 +258,9 @@ namespace OpenWifi {
                                 GetJSON("inactive",association,TP.inactive, (uint64_t)0 );
 
                                 AnalyticsObjects::WifiClientHistory WFH;
-                                WFH.stationId = mac_filter(TP.station);
-                                std::cout << "Adding WiFiClient: " << WFH.stationId << std::endl;
-                                WFH.bssId = mac_filter(SSIDTP.bssid);
+                                WFH.station_id = mac_filter(TP.station);
+                                std::cout << "Adding WiFiClient: " << WFH.station_id << std::endl;
+                                WFH.bssid = mac_filter(SSIDTP.bssid);
                                 WFH.ssid = SSIDTP.ssid;
                                 WFH.rssi = TP.rssi;
                                 GetJSON("rx_rate","bitrate",association,WFH.rx_bitrate,(uint32_t)0);
@@ -304,9 +304,9 @@ namespace OpenWifi {
                                 GetJSON("inactive",association,WFH.inactive,(uint64_t)0);
                                 GetJSON("tx_retries",association,WFH.tx_retries,(uint64_t)0);
 
-                                std::cout << "Adding WiFiClient: " << WFH.stationId << std::endl;
+                                std::cout << "Adding WiFiClient: " << WFH.station_id << std::endl;
 
-                                WifiClientCache()->AddSerialNumber(WFH.stationId);
+                                WifiClientCache()->AddSerialNumber(venue_id_,WFH.station_id);
                                 StorageService()->WifiClientHistoryDB().CreateRecord(WFH);
                                 std::cout << __LINE__ << std::endl;
 

@@ -35,8 +35,9 @@ namespace OpenWifi {
 
     class VenueWatcher : public Poco::Runnable {
     public:
-        explicit VenueWatcher(const std::string &boardId, Poco::Logger &L, const std::vector<uint64_t> & SerialNumbers) :
+        explicit VenueWatcher(const std::string &boardId, const std::string &venue_id,Poco::Logger &L, const std::vector<uint64_t> & SerialNumbers) :
                 boardId_(boardId),
+                venue_id_(venue_id),
                 Logger_(L),
                 SerialNumbers_(SerialNumbers) {
             std::sort(SerialNumbers_.begin(),SerialNumbers_.end());
@@ -72,6 +73,7 @@ namespace OpenWifi {
     private:
         std::recursive_mutex                        Mutex_;
         std::string                                 boardId_;
+        std::string                                 venue_id_;
         Poco::NotificationQueue                     Queue_;
         Poco::Logger                                &Logger_;
         Poco::Thread                                Worker_;

@@ -582,9 +582,9 @@ components:
       properties:
         timestamp:
           type: integer
-        stationId:
+        station_id:
           type: string
-        bssId:
+        bssid:
           type: string
         ssid:
           type: string
@@ -652,6 +652,8 @@ components:
           type: integer
         tx_retries:
           type: integer
+        venue_id:
+          type: string
 
     WifiClientHistoryList:
       type: object
@@ -1212,6 +1214,13 @@ paths:
             example:
               112233445566, 11223344*, *5566
           required: false
+        - in: query
+          description: The venue to for the search.
+          name: venue
+          schema:
+            type: string
+            format: uuid
+          required: true
       responses:
         200:
          $ref: '#/components/schemas/StringList'
