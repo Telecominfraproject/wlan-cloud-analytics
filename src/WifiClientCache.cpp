@@ -42,8 +42,10 @@ namespace OpenWifi {
 
         bool added=false;
         auto VenueIt = Cache_.find(venue_id);
-        if(VenueIt==Cache_.end())
-            std::pair(VenueIt,added) = Cache_.insert(std::pair(venue_id,Cache{}));
+        if(VenueIt==Cache_.end()) {
+            Cache_.insert(std::pair(venue_id, Cache{}));
+            VenueIt = Cache_.find(venue_id);
+        }
 
         uint64_t SN = std::stoull(S, nullptr, 16);
         if (std::find(std::begin(VenueIt->second.SNs_), std::end(VenueIt->second.SNs_), SN) == std::end(VenueIt->second.SNs_)) {
@@ -129,7 +131,6 @@ namespace OpenWifi {
         std::lock_guard G(Mutex_);
 
         A.clear();
-
         auto VenueIt = Cache_.find(venue_id);
         if(VenueIt==Cache_.end())
             return;
