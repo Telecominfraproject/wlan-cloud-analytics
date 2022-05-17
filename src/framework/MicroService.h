@@ -4152,6 +4152,8 @@ namespace OpenWifi {
                 KafkaManager()->Logger().log(E);
             } catch (const cppkafka::HandleException &E) {
                 KafkaManager()->Logger().error(fmt::format("{}: Exception --> {}", E.get_error().to_string(), E.what()));
+            } catch (...) {
+                KafkaManager()->Logger().error("std::exception");
             }
 			Note = Queue_.waitDequeueNotification();
 		}
