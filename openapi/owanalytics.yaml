@@ -1286,6 +1286,13 @@ paths:
       operationId: deleteWifiClientHistory
       summary: Retrieve WiFi client history for debugging purpose
       parameters:
+        - in: query
+          description: The venue to for the search.
+          name: venue
+          schema:
+            type: string
+            format: uuid
+          required: true
         - in: path
           name: client
           schema:
