@@ -9,11 +9,12 @@ namespace OpenWifi {
 
     void RESTAPI_wificlienthistory_handler::DoGet() {
 
+        auto venue = GetParameter("venue","");
+        if(venue.empty()) {
+            return BadRequest(RESTAPI::Errors::VenueMustExist);
+        }
+
         if(GetBoolParameter("macsOnly")) {
-            auto venue = GetParameter("venue","");
-            if(venue.empty()) {
-                return BadRequest(RESTAPI::Errors::VenueMustExist);
-            }
 
             auto macFilter = GetParameter("macFilter","");
             std::vector<uint64_t>    Macs;
@@ -36,14 +37,19 @@ namespace OpenWifi {
 
         WifiClientHistoryDB::RecordVec Results;
         std::string Where;
-        if(fromDate && endDate)
-            Where = fmt::format(" stationId='{}' and timestamp>={} and timestamp<={} ", stationId, fromDate, endDate);
-        else if(fromDate && !endDate)
-            Where = fmt::format(" stationId='{}' and timestamp>={} ", stationId, fromDate);
-        else if(!fromDate && endDate)
-            Where = fmt::format(" stationId='{}' and timestamp<={} ", stationId, endDate);
+        if(fromDate!=0 && endDate!=0)
+            Where = fmt::format(" venue='{}' and stationId='{}' and timestamp>={} and timestamp<={} ", venue, stationId, fromDate, endDate);
+        else if(fromDate!=0 && endDate==0)
+            Where = fmt::format(" venue='{}' and stationId='{}' and timestamp>={} ", venue, stationId, fromDate);
+        else if(fromDate==0 && endDate!=0)
+            Where = fmt::format(" venue='{}' and stationId='{}' and timestamp<={} ", venue, stationId, endDate);
         else
-            Where = fmt::format(" stationId='{}' ", stationId);
+            Where = fmt::format(" venue='{}' and stationId='{}' ", venue, stationId);
+
+        if(GetBoolParameter("countOnly")) {
+            auto Count = DB_.Count(Where);
+            return ReturnCountOnly(Count);
+        }
 
         if(StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where)) {
             return ReturnObject("entries",Results);
