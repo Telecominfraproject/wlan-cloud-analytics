@@ -38,13 +38,13 @@ namespace OpenWifi {
         WifiClientHistoryDB::RecordVec Results;
         std::string Where;
         if(fromDate!=0 && endDate!=0)
-            Where = fmt::format(" venue='{}' and stationId='{}' and timestamp>={} and timestamp<={} ", venue, stationId, fromDate, endDate);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' and timestamp>={} and timestamp<={} ", venue, stationId, fromDate, endDate);
         else if(fromDate!=0 && endDate==0)
-            Where = fmt::format(" venue='{}' and stationId='{}' and timestamp>={} ", venue, stationId, fromDate);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' and timestamp>={} ", venue, stationId, fromDate);
         else if(fromDate==0 && endDate!=0)
-            Where = fmt::format(" venue='{}' and stationId='{}' and timestamp<={} ", venue, stationId, endDate);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' and timestamp<={} ", venue, stationId, endDate);
         else
-            Where = fmt::format(" venue='{}' and stationId='{}' ", venue, stationId);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' ", venue, stationId);
 
         if(GetBoolParameter("countOnly")) {
             auto Count = DB_.Count(Where);
@@ -64,6 +64,11 @@ namespace OpenWifi {
             return UnAuthorized(RESTAPI::Errors::ACCESS_DENIED);
         }
 
+        auto venue = GetParameter("venue","");
+        if(venue.empty()) {
+            return BadRequest(RESTAPI::Errors::VenueMustExist);
+        }
+
         auto stationId = GetBinding("client");
         if(!Utils::ValidSerialNumber(stationId)) {
             return BadRequest(RESTAPI::Errors::InvalidSerialNumber);
@@ -75,13 +80,13 @@ namespace OpenWifi {
         WifiClientHistoryDB::RecordVec Results;
         std::string Where;
         if(fromDate && endDate)
-            Where = fmt::format(" stationId='{}' and timestamp>={} and timestamp<={} ", stationId, fromDate, endDate);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' and timestamp>={} and timestamp<={} ", venue, stationId, fromDate, endDate);
         else if(fromDate && !endDate)
-            Where = fmt::format(" stationId='{}' and timestamp>={} ", stationId, fromDate);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' and timestamp>={} ", venue, stationId, fromDate);
         else if(!fromDate && endDate)
-            Where = fmt::format(" stationId='{}' and timestamp<={} ", stationId, endDate);
+            Where = fmt::format(" venue_id='{}' and station_id='{}' and timestamp<={} ", venue, stationId, endDate);
         else
-            Where = fmt::format(" stationId='{}' ", stationId);
+            Where = fmt::format("venue_id='{}' and  station_id='{}' ", stationId);
 
         if(StorageService()->WifiClientHistoryDB().DeleteRecords(Where)) {
             return OK();
