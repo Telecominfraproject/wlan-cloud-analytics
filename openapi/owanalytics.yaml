@@ -1223,7 +1223,7 @@ paths:
           required: true
       responses:
         200:
-         $ref: '#/components/schemas/StringList'
+          $ref: '#/components/schemas/StringList'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -1266,29 +1266,15 @@ paths:
             type: integer
           required: false
         - in: query
-          description: Maximum number of entries to return (if absent, no limit is assumed)
-          name: macsOnly
-          schema:
-            type: boolean
-            default: false
-          required: false
-        - in: query
-          description: Maximum number of entries to return (if absent, no limit is assumed)
-          name: macFilter
+          description: The venue to for the search.
+          name: venue
           schema:
             type: string
-            example:
-              112233445566, 11223344*, *5566
-          required: false
+            format: uuid
+          required: true
       responses:
         200:
-          description: Successfully returning list of records
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/WifiClientHistoryList'
-                  - $ref: '#/components/schemas/StringList'
+          $ref: '#/components/schemas/WifiClientHistoryList'
         403:
           $ref: '#/components/responses/Unauthorized'
         404:
