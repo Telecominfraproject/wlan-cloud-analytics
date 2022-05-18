@@ -32,6 +32,21 @@ namespace OpenWifi {
             return BadRequest(RESTAPI::Errors::InvalidSerialNumber);
         }
 
+        auto orderBy = GetParameter("orderBy");
+        if(orderBy.empty()) {
+            orderBy = " timestamp DESC";
+        } else {
+            auto tokens = Poco::StringTokenizer(orderBy,":",Poco::StringTokenizer::TOK_TRIM);
+            if(tokens.count()!=2 || (tokens[1]!="a" && tokens[1]!="d")) {
+                return BadRequest(RESTAPI::Errors::MissingOrInvalidParameters);
+            }
+            if(!StorageService()->WifiClientHistoryDB().ValidFieldName(tokens[0])) {
+                return BadRequest(RESTAPI::Errors::MissingOrInvalidParameters);
+            }
+            orderBy = fmt::format(" {} {}",tokens[0] , tokens[1]=="a" ? "asc" : "desc");
+        }
+
+
         auto fromDate = GetParameter("fromDate",0);
         auto endDate = GetParameter("endDate",0);
 
@@ -51,7 +66,7 @@ namespace OpenWifi {
             return ReturnCountOnly(Count);
         }
 
-        if(StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where)) {
+        if(StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where, orderBy)) {
             return ReturnObject("entries",Results);
         }
 
