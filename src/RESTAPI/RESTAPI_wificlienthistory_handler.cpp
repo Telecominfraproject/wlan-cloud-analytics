@@ -34,7 +34,7 @@ namespace OpenWifi {
 
         auto orderBy = GetParameter("orderBy");
         if(orderBy.empty()) {
-            orderBy = " timestamp DESC";
+            orderBy = " order by timestamp DESC";
         } else {
             auto tokens = Poco::StringTokenizer(orderBy,":",Poco::StringTokenizer::TOK_TRIM);
             if(tokens.count()!=2 || (tokens[1]!="a" && tokens[1]!="d")) {
@@ -43,7 +43,7 @@ namespace OpenWifi {
             if(!StorageService()->WifiClientHistoryDB().ValidFieldName(tokens[0])) {
                 return BadRequest(RESTAPI::Errors::MissingOrInvalidParameters);
             }
-            orderBy = fmt::format(" {} {}",tokens[0] , tokens[1]=="a" ? "asc" : "desc");
+            orderBy = fmt::format(" order by {} {}",tokens[0] , tokens[1]=="a" ? "asc" : "desc");
         }
 
 
