@@ -58,4 +58,12 @@ namespace OpenWifi {
         }
     }
 
+    template <typename DBType> void ReturnFieldList(DBType & DB, RESTAPIHandler &H) {
+        Types::StringVec Fields;
+        DB.GetFieldNames(Fields);
+        Poco::JSON::Object  Answer;
+        RESTAPI_utils::field_to_json(Answer,"list",Fields);
+        return H.ReturnObject(Answer);
+    }
+
 }

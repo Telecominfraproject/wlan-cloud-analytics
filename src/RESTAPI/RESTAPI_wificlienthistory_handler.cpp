@@ -4,10 +4,15 @@
 
 #include "RESTAPI_wificlienthistory_handler.h"
 #include "WifiClientCache.h"
+#include "RESTAPI_analytics_db_helpers.h"
 
 namespace OpenWifi {
 
     void RESTAPI_wificlienthistory_handler::DoGet() {
+
+        if(GetBoolParameter("orderSpec")) {
+            return ReturnFieldList(DB_,*this);
+        }
 
         auto venue = GetParameter("venue","");
         if(venue.empty()) {
@@ -32,20 +37,12 @@ namespace OpenWifi {
             return BadRequest(RESTAPI::Errors::InvalidSerialNumber);
         }
 
-        auto orderBy = GetParameter("orderBy");
-        if(orderBy.empty()) {
-            orderBy = " order by timestamp DESC";
-        } else {
-            auto tokens = Poco::StringTokenizer(orderBy,":",Poco::StringTokenizer::TOK_TRIM);
-            if(tokens.count()!=2 || (tokens[1]!="a" && tokens[1]!="d")) {
-                return BadRequest(RESTAPI::Errors::MissingOrInvalidParameters);
+        std::string OrderBy{" ORDER BY timestamp DESC "}, Arg;
+        if(HasParameter("orderBy",Arg)) {
+            if(!DB_.PrepareOrderBy(Arg,OrderBy)) {
+                return BadRequest(RESTAPI::Errors::InvalidLOrderBy);
             }
-            if(!StorageService()->WifiClientHistoryDB().ValidFieldName(tokens[0])) {
-                return BadRequest(RESTAPI::Errors::MissingOrInvalidParameters);
-            }
-            orderBy = fmt::format(" order by {} {}",tokens[0] , tokens[1]=="a" ? "asc" : "desc");
         }
-
 
         auto fromDate = GetParameter("fromDate",0);
         auto endDate = GetParameter("endDate",0);
@@ -66,7 +63,7 @@ namespace OpenWifi {
             return ReturnCountOnly(Count);
         }
 
-        if(StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where, orderBy)) {
+        if(StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where, OrderBy)) {
             return ReturnObject("entries",Results);
         }
 
