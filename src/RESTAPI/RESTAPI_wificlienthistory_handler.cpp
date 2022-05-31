@@ -63,11 +63,8 @@ namespace OpenWifi {
             return ReturnCountOnly(Count);
         }
 
-        if(StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where, OrderBy)) {
-            return ReturnObject("entries",Results);
-        }
-
-        return BadRequest(RESTAPI::Errors::MissingOrInvalidParameters);
+        StorageService()->WifiClientHistoryDB().GetRecords(QB_.Offset,QB_.Limit, Results, Where, OrderBy);
+        return ReturnObject("entries",Results);
     }
 
     void RESTAPI_wificlienthistory_handler::DoDelete() {
