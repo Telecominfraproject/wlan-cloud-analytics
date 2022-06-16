@@ -439,7 +439,7 @@ namespace OpenWifi {
         try {
             if (Connection->contains("ping")) {
                 got_connection = true;
-                Logger().information(fmt::format("{}: ping message.", DI_.serialNumber));
+                poco_debug(Logger(),fmt::format("{}: ping message.", DI_.serialNumber));
                 DI_.connected = true;
                 DI_.lastPing = OpenWifi::Now();
                 auto ping = (*Connection)["ping"];
@@ -455,13 +455,13 @@ namespace OpenWifi {
                     }
                 }
             } else if (Connection->contains("disconnection")) {
-                Logger().information(fmt::format("{}: disconnection message.", DI_.serialNumber));
+                poco_debug(Logger(),fmt::format("{}: disconnection message.", DI_.serialNumber));
                 auto Disconnection = (*Connection)["disconnection"];
                 GetJSON("timestamp", Disconnection, DI_.lastDisconnection, (uint64_t)0 );
                 got_base = got_health = got_connection = false;
                 DI_.connected = false;
             } else if (Connection->contains("capabilities")) {
-                Logger().information(fmt::format("{}: connection message.", DI_.serialNumber));
+                poco_debug(Logger(),fmt::format("{}: connection message.", DI_.serialNumber));
                 got_connection = true;
                 DI_.connected = true;
                 DI_.lastConnection = OpenWifi::Now();
@@ -486,7 +486,7 @@ namespace OpenWifi {
             got_health = true;
             GetJSON("timestamp", *Health, DI_.lastHealth, (uint64_t)0 );
             GetJSON("sanity", *Health, DI_.health, (uint64_t)0 );
-            Logger().information(fmt::format("{}: health message.", DI_.serialNumber));
+            poco_debug(Logger(),fmt::format("{}: health message.", DI_.serialNumber));
         } catch(...) {
             Logger().information(fmt::format("{}: error parsing health message.", DI_.serialNumber));
         }

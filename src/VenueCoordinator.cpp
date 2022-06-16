@@ -29,19 +29,18 @@ namespace OpenWifi {
     void VenueCoordinator::Stop() {
         Running_=false;
         Worker_.wakeUp();
+        Worker_.wakeUp();
         Worker_.join();
     }
 
     void VenueCoordinator::run() {
         Running_=true;
         while(Running_) {
-            Poco::Thread::trySleep(2000);
-
+            Poco::Thread::trySleep(20000);
             if(!Running_)
                 break;
 
             std::lock_guard         G(Mutex_);
-
             GetBoardList();
 
             if(!BoardsToWatch_.empty()) {

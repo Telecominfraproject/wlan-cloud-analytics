@@ -58,7 +58,7 @@ namespace OpenWifi {
 
     void StateReceiver::StateReceived( const std::string & Key, const std::string & Payload) {
         std::lock_guard G(Mutex_);
-        Logger().information(fmt::format("Device({}): State message.", Key));
+        poco_debug(Logger(),fmt::format("Device({}): State message.", Key));
         Queue_.enqueueNotification( new StateMessage(Key,Payload));
     }
 

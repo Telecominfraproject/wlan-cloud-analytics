@@ -83,7 +83,7 @@ namespace OpenWifi {
             Poco::Data::Session     Session = Pool_.get();
             Poco::Data::Statement   Select(Session);
 
-            std::string             St = "Select distinct stationId, venue_id from " + TableName_;
+            std::string             St = "Select distinct station_id, venue_id from " + TableName_;
             typedef Poco::Tuple< std::string, std::string >  Record;
             std::vector<Record>                 RecordList;
 

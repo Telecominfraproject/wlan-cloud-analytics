@@ -60,6 +60,7 @@ namespace OpenWifi {
             NewBoard.to_json(Answer);
             return ReturnObject(Answer);
         }
+        return InternalError(RESTAPI::Errors::RecordNotCreated);
     }
 
     void RESTAPI_board_handler::DoPut() {
