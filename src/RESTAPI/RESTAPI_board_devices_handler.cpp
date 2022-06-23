@@ -8,7 +8,12 @@
 
 namespace OpenWifi {
     void RESTAPI_board_devices_handler::DoGet() {
+
         auto id = GetBinding("id","");
+
+        if(id.empty()) {
+            return BadRequest(RESTAPI::Errors::MissingUUID);
+        }
 
         AnalyticsObjects::BoardInfo BI;
         if(!StorageService()->BoardsDB().GetRecord("id",id,BI)) {
