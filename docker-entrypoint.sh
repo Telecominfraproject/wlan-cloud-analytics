@@ -5,7 +5,7 @@ if [ "$SELFSIGNED_CERTS" = 'true' ]; then
     update-ca-certificates
 fi
 
-if [[ "$TEMPLATE_CONFIG" = 'true' && ! -f "$OWANALYTICS_CONFIG"/owanalytics.properties ]]; then
+if [[ "$TEMPLATE_CONFIG" = 'true' ]]; then
   RESTAPI_HOST_ROOTCA=${RESTAPI_HOST_ROOTCA:-"\$OWANALYTICS_ROOT/certs/restapi-ca.pem"} \
   RESTAPI_HOST_PORT=${RESTAPI_HOST_PORT:-"16009"} \
   RESTAPI_HOST_CERT=${RESTAPI_HOST_CERT:-"\$OWANALYTICS_ROOT/certs/restapi-cert.pem"} \
