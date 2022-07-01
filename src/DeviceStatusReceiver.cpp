@@ -23,6 +23,7 @@ namespace OpenWifi {
     }
 
     void DeviceStatusReceiver::run() {
+        Utils::SetThreadName("dev-status");
         Poco::AutoPtr<Poco::Notification>	Note(Queue_.waitDequeueNotification());
         while(Note && Running_) {
             auto Msg = dynamic_cast<DeviceStatusMessage *>(Note.get());

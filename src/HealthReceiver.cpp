@@ -23,6 +23,7 @@ namespace OpenWifi {
     }
 
     void HealthReceiver::run() {
+        Utils::SetThreadName("dev-health");
         Poco::AutoPtr<Poco::Notification>	Note(Queue_.waitDequeueNotification());
         while(Note && Running_) {
             auto Msg = dynamic_cast<HealthMessage *>(Note.get());

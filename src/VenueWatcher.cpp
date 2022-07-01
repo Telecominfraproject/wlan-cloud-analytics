@@ -34,6 +34,7 @@ namespace OpenWifi {
     }
 
     void VenueWatcher::run() {
+        Utils::SetThreadName("venue-watch");
         Running_ = true;
         Poco::AutoPtr<Poco::Notification>	Msg(Queue_.waitDequeueNotification());
         while(Msg && Running_) {
