@@ -25,6 +25,7 @@ namespace OpenWifi {
 
     void StateReceiver::run() {
         Poco::AutoPtr<Poco::Notification>	Note(Queue_.waitDequeueNotification());
+        Utils::SetThreadName("dev-state");
         while(Note && Running_) {
             auto Msg = dynamic_cast<StateMessage *>(Note.get());
             if(Msg!= nullptr) {
