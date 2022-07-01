@@ -66,6 +66,7 @@ namespace OpenWifi {
     }
 
     void Storage::run() {
+        Utils::SetThreadName("strg-updtr");
 	    Running_ = true ;
 	    bool FirstRun=true;
 	    long Retry = 2000;

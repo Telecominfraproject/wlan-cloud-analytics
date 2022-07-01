@@ -34,6 +34,7 @@ namespace OpenWifi {
     }
 
     void VenueCoordinator::run() {
+        Utils::SetThreadName("venue-coord");
         Running_=true;
         while(Running_) {
             Poco::Thread::trySleep(20000);
