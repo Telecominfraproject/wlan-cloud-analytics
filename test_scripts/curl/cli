@@ -144,25 +144,9 @@ logout() {
   rm -rf token.json
 }
 
-venuecount() {
-    curl ${FLAGS} "https://${OWPROV}/api/v1/venue?countOnly=true" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${token}" \
-        -H "accept: application/json" > ${result_file}
-    jq < ${result_file}
-}
-
-contactcount() {
-    curl ${FLAGS} "https://${OWPROV}/api/v1/contact?countOnly=true" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${token}" \
-        -H "Accept: application/json" > ${result_file}
-    jq < ${result_file}
-}
-
 setloglevel() {
     payload="{ \"command\" : \"setloglevel\" , \"subsystems\" : [ { \"tag\" : \"$1\" , \"value\" : \"$2\" } ] }"
-    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+    curl  ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/system" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${token}" \
@@ -171,7 +155,7 @@ setloglevel() {
 
 getloglevels() {
     payload="{ \"command\" : \"getloglevels\" }"
-    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+    curl  ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/system" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${token}" \
@@ -180,7 +164,7 @@ getloglevels() {
 
 getloglevelnames() {
     payload="{ \"command\" : \"getloglevelnames\" }"
-    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+    curl  ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/system" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${token}" \
@@ -189,7 +173,7 @@ getloglevelnames() {
 
 getsubsystemnames() {
     payload="{ \"command\" : \"getsubsystemnames\" }"
-    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+    curl  ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/system" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${token}" \
@@ -197,7 +181,7 @@ getsubsystemnames() {
 }
 
 systeminfo() {
-    curl  ${FLAGS} -X GET "https://${OWPROV}/api/v1/system?command=info" \
+    curl  ${FLAGS} -X GET "https://${OWANALYTICS}/api/v1/system?command=info" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer ${token}" > ${result_file}
     jq < ${result_file}
@@ -205,7 +189,7 @@ systeminfo() {
 
 reloadsubsystem() {
     payload="{ \"command\" : \"reload\", \"subsystems\" : [ \"$1\" ] }"
-    curl  ${FLAGS} -X POST "https://${OWPROV}/api/v1/system" \
+    curl  ${FLAGS} -X POST "https://${OWANALYTICS}/api/v1/system" \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${token}" \
