@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(owanalytics VERSION 2.6.0)
+project(owanalytics VERSION 2.7.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_GENERATOR "Unix Makefiles")
