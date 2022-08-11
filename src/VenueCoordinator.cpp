@@ -13,7 +13,23 @@ namespace OpenWifi {
     int VenueCoordinator::Start() {
         GetBoardList();
         Worker_.start(*this);
+
+        ReconcileTimerCallback_ = std::make_unique<Poco::TimerCallback<VenueCoordinator>>(*this,&VenueCoordinator::onReconcileTimer);
+        ReconcileTimerTimer_.setStartInterval( 3 * 60 * 1000 );
+        ReconcileTimerTimer_.setPeriodicInterval(3 * 60 * 1000); // 1 hours
+        ReconcileTimerTimer_.start(*ReconcileTimerCallback_, MicroService::instance().TimerPool());
+
         return 0;
+    }
+
+    void VenueCoordinator::onReconcileTimer([[maybe_unused]] Poco::Timer &timer) {
+        std::lock_guard     G(Mutex_);
+
+        Logger().information("Starting to reconcile board information.");
+        for(const auto &[board_id, watcher]:Watchers_) {
+            UpdateBoard(board_id);
+        }
+        Logger().information("Finished reconciling board information.");
     }
 
     void VenueCoordinator::GetBoardList() {
@@ -121,7 +137,7 @@ namespace OpenWifi {
         }
     }
 
-    void VenueCoordinator::ModifyBoard(const std::string &id) {
+    void VenueCoordinator::UpdateBoard(const std::string &id) {
         AnalyticsObjects::BoardInfo B;
         if(StorageService()->BoardsDB().GetRecord("id",id,B)) {
             std::vector<uint64_t>   Devices;

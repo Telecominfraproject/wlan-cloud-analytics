@@ -90,7 +90,7 @@ namespace OpenWifi {
         }
 
         if(StorageService()->BoardsDB().UpdateRecord("id",Existing.info.id,Existing)) {
-            VenueCoordinator()->ModifyBoard(Existing.info.id);
+            VenueCoordinator()->UpdateBoard(Existing.info.id);
             AnalyticsObjects::BoardInfo NewBoard;
             StorageService()->BoardsDB().GetRecord("id",Existing.info.id,NewBoard);
             Poco::JSON::Object  Answer;
