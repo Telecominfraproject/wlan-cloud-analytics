@@ -27,6 +27,7 @@ namespace OpenWifi {
 
         Logger().information("Starting to reconcile board information.");
         for(const auto &[board_id, watcher]:Watchers_) {
+            std::cout << "Updating: " << board_id << std::endl;
             UpdateBoard(board_id);
         }
         Logger().information("Finished reconciling board information.");
@@ -148,11 +149,14 @@ namespace OpenWifi {
                 if(it!=ExistingBoards_.end()) {
                     if(it->second!=Devices) {
                         auto it2 = Watchers_.find(id);
-                        if(it2!=Watchers_.end())
+                        if(it2!=Watchers_.end()) {
+                            std::cout << "Board: " << B.info.id << " updated." << std::endl;
                             it2->second->ModifySerialNumbers(Devices);
+                        }
                         ExistingBoards_[id] = Devices;
                         Logger().information(fmt::format("Modified board {}",B.info.name));
                     } else {
+                        std::cout << "No change Board: " << B.info.id << " updated." << std::endl;
                         Logger().information(fmt::format("No device changes in board {}",B.info.name));
                     }
                 }
