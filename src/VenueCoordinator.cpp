@@ -24,6 +24,7 @@ namespace OpenWifi {
 
     void VenueCoordinator::onReconcileTimer([[maybe_unused]] Poco::Timer &timer) {
         std::lock_guard     G(Mutex_);
+        Utils::SetThreadName("brd-refresh");
 
         Logger().information("Starting to reconcile board information.");
         for(const auto &[board_id, watcher]:Watchers_) {
@@ -150,17 +151,14 @@ namespace OpenWifi {
                     if(it->second!=Devices) {
                         auto it2 = Watchers_.find(id);
                         if(it2!=Watchers_.end()) {
-                            std::cout << "Board: " << B.info.id << " updated." << std::endl;
                             it2->second->ModifySerialNumbers(Devices);
                         }
                         ExistingBoards_[id] = Devices;
                         Logger().information(fmt::format("Modified board {}",B.info.name));
                     } else {
-                        std::cout << "No change Board: " << B.info.id << " updated." << std::endl;
                         Logger().information(fmt::format("No device changes in board {}",B.info.name));
                     }
                 }
-                Logger().information(fmt::format("Modified board {}",B.info.name));
                 return;
             }
 
