@@ -3,8 +3,11 @@
 //
 
 #pragma once
+
 #include "framework/MicroService.h"
 #include "VenueWatcher.h"
+
+#include "Poco/Timer.h"
 
 namespace OpenWifi {
 
@@ -21,7 +24,7 @@ namespace OpenWifi {
         void run() override;
 
         void StopBoard(const std::string &id);
-        void ModifyBoard(const std::string &id);
+        void UpdateBoard(const std::string &id);
         void AddBoard(const std::string &id);
 
         bool GetDevicesForBoard(const AnalyticsObjects::BoardInfo &B, std::vector<uint64_t> & Devices, bool & VenueExists);
@@ -30,13 +33,17 @@ namespace OpenWifi {
         bool Watching(const std::string &id);
         void RetireBoard(const AnalyticsObjects::BoardInfo &B);
 
-    private:
-        Poco::Thread                                        Worker_;
-        std::atomic_bool                                    Running_=false;
-        std::set<AnalyticsObjects::BoardInfo>               BoardsToWatch_;
-        std::map<std::string,std::shared_ptr<VenueWatcher>> Watchers_;
+        void onReconcileTimer(Poco::Timer & timer);
 
-        std::map<std::string,std::vector<uint64_t>>            ExistingBoards_;
+    private:
+        Poco::Thread                                            Worker_;
+        std::atomic_bool                                        Running_=false;
+        std::set<AnalyticsObjects::BoardInfo>                   BoardsToWatch_;
+        std::map<std::string,std::shared_ptr<VenueWatcher>>     Watchers_;
+        std::unique_ptr<Poco::TimerCallback<VenueCoordinator>>  ReconcileTimerCallback_;
+        Poco::Timer                     		                ReconcileTimerTimer_;
+
+        std::map<std::string,std::vector<uint64_t>>             ExistingBoards_;
 
         VenueCoordinator() noexcept:
                 SubSystemServer("VenueCoordinator", "VENUE-COORD", "venue.coordinator")

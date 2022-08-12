@@ -69,9 +69,11 @@ namespace OpenWifi {
         void GetDevices(std::vector<AnalyticsObjects::DeviceInfo> & DI);
 
         void GetBandwidth(uint64_t start, uint64_t end, uint64_t interval , AnalyticsObjects::BandwidthAnalysis & BW);
-
+        inline std::string Venue() const {
+            return venue_id_;
+        }
     private:
-        std::recursive_mutex                        Mutex_;
+        std::mutex                                  Mutex_;
         std::string                                 boardId_;
         std::string                                 venue_id_;
         Poco::NotificationQueue                     Queue_;
