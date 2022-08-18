@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 if [ "$SELFSIGNED_CERTS" = 'true' ]; then
@@ -48,7 +48,7 @@ if [ "$1" = '/openwifi/owanalytics' -a "$(id -u)" = '0' ]; then
     if [ "$RUN_CHOWN" = 'true' ]; then
       chown -R "$OWANALYTICS_USER": "$OWANALYTICS_ROOT" "$OWANALYTICS_CONFIG"
     fi
-    exec su-exec "$OWANALYTICS_USER" "$@"
+    exec gosu "$OWANALYTICS_USER" "$@"
 fi
 
 exec "$@"
