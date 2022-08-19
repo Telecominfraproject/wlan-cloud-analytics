@@ -119,6 +119,8 @@ COPY --from=owanalytics-build /owanalytics/cmake-build/owanalytics /openwifi/owa
 COPY --from=cppkafka-build /cppkafka/cmake-build/src/lib/* /usr/local/lib
 COPY --from=poco-build /poco/cmake-build/lib/* /usr/local/lib
 
+RUN ldconfig
+
 EXPOSE 16009 17009 16109
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
