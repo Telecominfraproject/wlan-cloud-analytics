@@ -71,7 +71,7 @@ namespace OpenWifi {
         } else if (LastDate) {
             WhereClause = fmt::format(" boardId='{}' and (timestamp <= {}) ", boardId, LastDate);
         }
-        GetRecords(0,MaxRecords,Recs,WhereClause," order by timestamp ASC ");
+        GetRecords(0,MaxRecords,Recs,WhereClause," order by timestamp, serialNumber ASC ");
         return true;
     }
 
