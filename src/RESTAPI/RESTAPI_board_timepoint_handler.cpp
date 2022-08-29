@@ -102,7 +102,12 @@ namespace OpenWifi {
 
         auto fromDate = GetParameter("fromDate",0);
         auto endDate = GetParameter("endDate",0);
-        auto maxRecords = GetParameter("maxRecords",1000);
+        std::uint64_t maxRecords;
+        if(Request->has("limit"))
+            maxRecords = QB_.Limit;
+        else
+            maxRecords = GetParameter("maxRecords",1000);
+
         auto statsOnly = GetBoolParameter("statsOnly");
         auto pointsOnly = GetBoolParameter("pointsOnly");
         auto pointsStatsOnly = GetBoolParameter("pointsStatsOnly");
@@ -117,6 +122,7 @@ namespace OpenWifi {
 
         auto Points = std::make_unique<AnalyticsObjects::DeviceTimePointList>();
         StorageService()->TimePointsDB().SelectRecords(id,fromDate, endDate, maxRecords, Points->points);
+        std::cout << "1 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
 
         // sort by timestamp & serial number.
         struct {
@@ -141,13 +147,15 @@ namespace OpenWifi {
             }
         } Association_sort;
 
+
         std::sort( Points->points.begin(), Points->points.end(), DeviceTimePoint_sort);
+        std::cout << "2 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
         auto BucketsNeeded = find_number_of_buckets(Points->points);
 
-        auto sp = std::make_unique<split_points>();
-        split_in_buckets(BucketsNeeded,Points->points, *sp);
+        split_points sp;
+        split_in_buckets(BucketsNeeded,Points->points, sp);
         // must sort each bucket according to serial number.
-        for(auto &i: *sp) {
+        for(auto &i: sp) {
             std::sort(i.begin(),i.end(),DeviceTimePoint_sort);
             // now sort according to UEs within a block
             for(auto &j:i) {
@@ -158,25 +166,25 @@ namespace OpenWifi {
             }
         }
 
-        auto Answer = std::make_unique<Poco::JSON::Object>();
+        Poco::JSON::Object  Answer;
         if(!pointsStatsOnly) {
-            auto Points_OuterArray = std::make_unique<Poco::JSON::Array>();
-            for (const auto &point_list:*sp) {
+            Poco::JSON::Array   Points_OuterArray;
+            for (const auto &point_list:sp) {
                 Poco::JSON::Array Points_InnerArray;
                 for (const auto &point: point_list) {
                     Poco::JSON::Object O;
                     point.to_json(O);
                     Points_InnerArray.add(O);
                 }
-                Points_OuterArray->add(Points_InnerArray);
+                Points_OuterArray.add(Points_InnerArray);
             }
-            Answer->set("points",*Points_OuterArray);
+            Answer.set("points",Points_OuterArray);
         }
 
         //  calculate the stats for each time slot
         if(!pointsOnly) {
-            auto Stats_Array = std::make_unique<Poco::JSON::Array>();
-            for (const auto &point_list:*sp) {
+            Poco::JSON::Array   Stats_Array;
+            for (const auto &point_list:sp) {
                 AnalyticsObjects::DeviceTimePointAnalysis DTPA;
 
                 DTPA.timestamp = point_list[0].timestamp;
@@ -199,12 +207,12 @@ namespace OpenWifi {
 
                 Poco::JSON::Object Stats_point;
                 DTPA.to_json(Stats_point);
-                Stats_Array->add(Stats_point);
+                Stats_Array.add(Stats_point);
             }
-            Answer->set("stats", *Stats_Array);
+            Answer.set("stats", Stats_Array);
         }
 
-        return ReturnObject(*Answer);
+        return ReturnObject(Answer);
     }
 
     void RESTAPI_board_timepoint_handler::DoDelete() {
