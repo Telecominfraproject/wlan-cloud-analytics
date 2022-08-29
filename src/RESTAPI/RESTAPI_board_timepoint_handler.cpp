@@ -215,6 +215,8 @@ namespace OpenWifi {
                 AnalyticsObjects::DeviceTimePointAnalysis DTPA;
 
                 std::cout << __LINE__ << std::endl;
+                if(sp.empty())
+                    continue;
 
                 DTPA.timestamp = point_list[0].timestamp;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_bytes_bw, point_list, DTPA.tx_bytes_bw);
