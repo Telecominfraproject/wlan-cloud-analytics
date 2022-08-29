@@ -17,7 +17,8 @@ namespace OpenWifi {
     }
 
     typedef std::vector<std::pair<std::uint64_t , std::uint64_t >>          bucket_timespans;
-    static std::uint64_t find_number_of_buckets(const std::vector<AnalyticsObjects::DeviceTimePoint> &points, bucket_timespans &  buckets) {
+
+    static void find_number_of_buckets(const std::vector<AnalyticsObjects::DeviceTimePoint> &points, bucket_timespans &  buckets) {
         std::map<std::string,uint64_t> counts;
         for(const auto &point:points) {
             auto hint = counts.find(point.serialNumber);
@@ -30,39 +31,39 @@ namespace OpenWifi {
         auto min_timestamp = std::min_element(points.begin(),points.end(),min_point_timestamp);
         auto max_timestamp = std::max_element(points.begin(),points.end(),min_point_timestamp);
 
+        float interval =  (float) ((max_timestamp->timestamp-min_timestamp->timestamp) / max_buckets->second);
+
         std::cout << "Max-buckets: " << max_buckets->second << " min timestamp:" << min_timestamp->timestamp <<
         " max timestamp:" << max_timestamp->timestamp << " interval: " <<
-        ((max_timestamp->timestamp-min_timestamp->timestamp) / max_buckets->second) << std::endl;
+        interval << std::endl;
 
-
-        return max_buckets->second;
+        auto buckets_left = max_buckets->second;
+        float min,max;
+        min = (float) min_timestamp->timestamp;
+        max = min + interval;
+        for(;buckets_left;buckets_left--) {
+            std::pair<std::uint64_t,std::uint64_t>  e;
+            e.first = (std::uint64_t) min;
+            e.second = (std::uint64_t) max;
+            min = (float)e.second+1;
+            max = min + interval;
+            buckets.emplace_back(e);
+        }
     }
 
     typedef std::vector< std::vector<AnalyticsObjects::DeviceTimePoint>>    split_points;
 
-    static void split_in_buckets([[maybe_unused]] uint32_t buckets,std::vector<AnalyticsObjects::DeviceTimePoint> &p,split_points &sp) {
+    static void split_in_buckets(const bucket_timespans & buckets, std::vector<AnalyticsObjects::DeviceTimePoint> &points,split_points &sp) {
+        sp.reserve(buckets.size());
         std::string cur_sn;
-        uint32_t cur_bucket=0;
-        for(const auto &i:p) {
-            if(cur_sn.empty()) {
-                cur_bucket=1;
-                cur_sn=i.device_info.serialNumber;
-            }
-            if(cur_sn==i.device_info.serialNumber) {
-                if (cur_bucket>sp.size()) {
-                    std::vector<AnalyticsObjects::DeviceTimePoint>  tmp_p;
-                    tmp_p.push_back(i);
-                    sp.push_back(tmp_p);
-                    cur_bucket++;
-                } else {
-                    sp[cur_bucket-1].push_back(i);
-                    cur_bucket++;
+        for(const auto &point:points) {
+            uint64_t index=0;
+            for(const auto &[lower,upper]:buckets) {
+                if(point.timestamp>=lower && point.timestamp<=upper) {
+                    sp[index].emplace_back(point);
+                    break;
                 }
-            } else {
-                cur_bucket=1;
-                sp[cur_bucket-1].push_back(i);
-                cur_bucket++;
-                cur_sn=i.device_info.serialNumber;
+                index++;
             }
         }
     }
@@ -164,10 +165,10 @@ namespace OpenWifi {
         std::sort( Points->points.begin(), Points->points.end(), DeviceTimePoint_sort);
         std::cout << "2 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
         bucket_timespans buckets;
-        auto BucketsNeeded = find_number_of_buckets(Points->points,buckets);
+        find_number_of_buckets(Points->points,buckets);
 
         split_points sp;
-        split_in_buckets(BucketsNeeded,Points->points, sp);
+        split_in_buckets(buckets,Points->points, sp);
         // must sort each bucket according to serial number.
         for(auto &i: sp) {
             std::sort(i.begin(),i.end(),DeviceTimePoint_sort);
