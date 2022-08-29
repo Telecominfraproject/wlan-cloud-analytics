@@ -120,10 +120,15 @@ namespace OpenWifi {
 
         // sort by timestamp & serial number.
         struct {
-            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
+/*            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
                 if(lhs.device_info.serialNumber < rhs.device_info.serialNumber) return true;
                 if(lhs.device_info.serialNumber > rhs.device_info.serialNumber) return false;
                 return lhs.timestamp < rhs.timestamp;
+*/
+            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
+                if(lhs.timestamp < rhs.timestamp) return true;
+                if(lhs.timestamp > rhs.timestamp) return false;
+                return lhs.device_info.serialNumber < rhs.device_info.serialNumber;
             }
         } DeviceTimePoint_sort;
 
