@@ -168,12 +168,16 @@ namespace OpenWifi {
 
         std::sort( Points->points.begin(), Points->points.end(), DeviceTimePoint_sort);
         std::cout << "2 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
+        std::cout << __LINE__ << std::endl;
         bucket_timespans buckets;
+        std::cout << __LINE__ << std::endl;
         find_number_of_buckets(Points->points,buckets);
-
+        std::cout << __LINE__ << std::endl;
         split_points sp;
+        std::cout << __LINE__ << std::endl;
         split_in_buckets(buckets,Points->points, sp);
         // must sort each bucket according to serial number.
+        std::cout << __LINE__ << std::endl;
         for(auto &i: sp) {
             std::sort(i.begin(),i.end(),DeviceTimePoint_sort);
             // now sort according to UEs within a block
@@ -184,6 +188,9 @@ namespace OpenWifi {
                 }
             }
         }
+
+        std::cout << __LINE__ << std::endl;
+
 
         Poco::JSON::Object  Answer;
         if(!pointsStatsOnly) {
@@ -200,11 +207,14 @@ namespace OpenWifi {
             Answer.set("points",Points_OuterArray);
         }
 
+        std::cout << __LINE__ << std::endl;
         //  calculate the stats for each time slot
         if(!pointsOnly) {
             Poco::JSON::Array   Stats_Array;
             for (const auto &point_list:sp) {
                 AnalyticsObjects::DeviceTimePointAnalysis DTPA;
+
+                std::cout << __LINE__ << std::endl;
 
                 DTPA.timestamp = point_list[0].timestamp;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_bytes_bw, point_list, DTPA.tx_bytes_bw);
@@ -228,8 +238,10 @@ namespace OpenWifi {
                 DTPA.to_json(Stats_point);
                 Stats_Array.add(Stats_point);
             }
+            std::cout << __LINE__ << std::endl;
             Answer.set("stats", Stats_Array);
         }
+        std::cout << __LINE__ << std::endl;
 
         return ReturnObject(Answer);
     }
