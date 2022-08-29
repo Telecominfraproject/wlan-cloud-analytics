@@ -5,27 +5,37 @@
 #include "RESTAPI_board_timepoint_handler.h"
 #include "StorageService.h"
 
+#include <algorithm>
+
 namespace OpenWifi {
-    static auto find_number_of_buckets(std::vector<AnalyticsObjects::DeviceTimePoint> &p) {
-        uint32_t buckets=0,cur_buckets=0;
-        std::string current_serialNumber;
-        for(const auto &i:p) {
-            if(current_serialNumber.empty()) {
-                current_serialNumber = i.device_info.serialNumber;
-                cur_buckets=0;
-            }
-            if(current_serialNumber==i.device_info.serialNumber) {
-                cur_buckets++;
-            } else {
-                buckets = std::max(buckets,cur_buckets);
-                current_serialNumber=i.device_info.serialNumber;
-                cur_buckets=1;
-            }
-        }
-        return std::max(buckets,cur_buckets);
+    static bool count_compare(const std::pair<std::string,std::uint64_t> &lhs, const std::pair<std::string,std::uint64_t> &rhs) {
+        return lhs.second < rhs.second;
     }
 
-    typedef std::vector< std::vector<AnalyticsObjects::DeviceTimePoint>> split_points;
+    static bool min_point_timestamp(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) {
+        return lhs.timestamp < rhs.timestamp;
+    }
+
+    typedef std::vector<std::pair<std::uint64_t , std::uint64_t >>          bucket_timespans;
+    static std::uint64_t find_number_of_buckets(const std::vector<AnalyticsObjects::DeviceTimePoint> &points, bucket_timespans &  buckets) {
+        std::map<std::string,uint64_t> counts;
+        for(const auto &point:points) {
+            auto hint = counts.find(point.serialNumber);
+            if(hint == end(counts))
+                counts[point.serialNumber]=1;
+            else
+                hint->second++;
+        }
+        auto max_buckets = std::max_element(counts.begin(),counts.end(), count_compare);
+        auto min_timestamp = std::min_element(points.begin(),points.end(),min_point_timestamp);
+        auto max_timestamp = std::max_element(points.begin(),points.end(),min_point_timestamp);
+
+        std::cout << "Max-buckets: " << max_buckets->second << " min timestamp:" << min_timestamp->timestamp << " max timestamp:" << max_timestamp->timestamp << std::endl;
+
+        return max_buckets->second;
+    }
+
+    typedef std::vector< std::vector<AnalyticsObjects::DeviceTimePoint>>    split_points;
 
     static void split_in_buckets([[maybe_unused]] uint32_t buckets,std::vector<AnalyticsObjects::DeviceTimePoint> &p,split_points &sp) {
         std::string cur_sn;
@@ -150,7 +160,8 @@ namespace OpenWifi {
 
         std::sort( Points->points.begin(), Points->points.end(), DeviceTimePoint_sort);
         std::cout << "2 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
-        auto BucketsNeeded = find_number_of_buckets(Points->points);
+        bucket_timespans buckets;
+        auto BucketsNeeded = find_number_of_buckets(Points->points,buckets);
 
         split_points sp;
         split_in_buckets(BucketsNeeded,Points->points, sp);
