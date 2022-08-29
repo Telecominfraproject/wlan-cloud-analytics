@@ -54,8 +54,12 @@ namespace OpenWifi {
     typedef std::vector< std::vector<AnalyticsObjects::DeviceTimePoint>>    split_points;
 
     static void split_in_buckets(const bucket_timespans & buckets, std::vector<AnalyticsObjects::DeviceTimePoint> &points,split_points &sp) {
-        sp.resize(buckets.size());
-        std::string cur_sn;
+        for(auto i = buckets.size();i;--i)
+        {
+            std::vector<AnalyticsObjects::DeviceTimePoint> v;
+            sp.emplace_back(v);
+        }
+
         for(const auto &point:points) {
             uint64_t index=0;
             for(const auto &[lower,upper]:buckets) {
