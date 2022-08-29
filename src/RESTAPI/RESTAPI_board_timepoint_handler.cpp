@@ -30,7 +30,8 @@ namespace OpenWifi {
         auto min_timestamp = std::min_element(points.begin(),points.end(),min_point_timestamp);
         auto max_timestamp = std::max_element(points.begin(),points.end(),min_point_timestamp);
 
-        std::cout << "Max-buckets: " << max_buckets->second << " min timestamp:" << min_timestamp->timestamp << " max timestamp:" << max_timestamp->timestamp << std::endl;
+        std::cout << "Max-buckets: " << max_buckets->second << " min timestamp:" << min_timestamp->timestamp << " max timestamp:" << max_timestamp->timestamp << " interval: " << ((max_timestamp-min_timestamp) / max_buckets->second) << std::endl;
+
 
         return max_buckets->second;
     }
