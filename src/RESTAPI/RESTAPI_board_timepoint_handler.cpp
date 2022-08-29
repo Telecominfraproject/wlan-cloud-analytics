@@ -215,7 +215,7 @@ namespace OpenWifi {
                 AnalyticsObjects::DeviceTimePointAnalysis DTPA;
 
                 std::cout << __LINE__ << std::endl;
-                if(sp.empty())
+                if(point_list.empty())
                     continue;
 
                 DTPA.timestamp = point_list[0].timestamp;
