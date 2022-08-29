@@ -218,25 +218,40 @@ namespace OpenWifi {
 
                 DTPA.timestamp = point_list[0].timestamp;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_bytes_bw, point_list, DTPA.tx_bytes_bw);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_bytes_bw, point_list, DTPA.rx_bytes_bw);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_dropped_pct, point_list, DTPA.rx_dropped_pct);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_dropped_pct, point_list, DTPA.tx_dropped_pct);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_packets_bw, point_list, DTPA.rx_packets_bw);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_packets_bw, point_list, DTPA.tx_packets_bw);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_errors_pct, point_list, DTPA.rx_errors_pct);
+                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_errors_pct, point_list, DTPA.tx_errors_pct);
+                std::cout << __LINE__ << std::endl;
 
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::noise, point_list, DTPA.noise);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::temperature, point_list, DTPA.temperature);
+                std::cout << __LINE__ << std::endl;
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::tx_power, point_list, DTPA.tx_power);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::active_pct, point_list, DTPA.active_pct);
+                std::cout << __LINE__ << std::endl;
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::busy_pct, point_list, DTPA.busy_pct);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::receive_pct, point_list, DTPA.receive_pct);
+                std::cout << __LINE__ << std::endl;
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::transmit_pct, point_list, DTPA.transmit_pct);
 
+                std::cout << __LINE__ << std::endl;
                 Poco::JSON::Object Stats_point;
+                std::cout << __LINE__ << std::endl;
                 DTPA.to_json(Stats_point);
+                std::cout << __LINE__ << std::endl;
                 Stats_Array.add(Stats_point);
+                std::cout << __LINE__ << std::endl;
             }
             std::cout << __LINE__ << std::endl;
             Answer.set("stats", Stats_Array);
