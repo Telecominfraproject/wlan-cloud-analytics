@@ -107,6 +107,88 @@ namespace OpenWifi {
             P.avg = 0.0;
     }
 
+    static void NewSort(const AnalyticsObjects::DeviceTimePointList &l,split_points &sp) {
+        struct {
+            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
+                if (lhs.timestamp < rhs.timestamp) return true;
+                if (lhs.timestamp > rhs.timestamp) return false;
+                return lhs.device_info.serialNumber < rhs.device_info.serialNumber;
+            }
+        } sort_ts_serial;
+
+        struct {
+            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
+                if (lhs.device_info.serialNumber < rhs.device_info.serialNumber) return true;
+                if (lhs.device_info.serialNumber > rhs.device_info.serialNumber) return false;
+                return lhs.timestamp < rhs.timestamp;
+            }
+        } sort_serial_ts;
+
+        // attempt at finding an interval
+        AnalyticsObjects::DeviceTimePointList tmp{l};
+        std::sort(tmp.points.begin(),tmp.points.end(),sort_serial_ts);
+
+        std::string     cur_ser;
+        std::uint64_t   cur_int=0,start_val, last_val, first_val = 0;
+        for(const auto &point:tmp.points) {
+            if(cur_ser.empty()) {
+                start_val = point.timestamp;
+                cur_ser = point.serialNumber;
+                first_val = point.timestamp;
+                continue;
+            }
+
+            if(cur_ser==point.serialNumber) {
+                auto this_int = start_val - point.timestamp;
+                if(cur_int) {
+                    if(this_int<cur_int) {
+                        cur_int = this_int;
+                    }
+                } else {
+                    cur_int = this_int;
+                }
+                start_val = point.timestamp;
+            } else {
+                cur_ser = point.serialNumber;
+                start_val = point.timestamp;
+            }
+            last_val = point.timestamp;
+        }
+
+        std::cout << "Intervals: " << cur_int << std::endl;
+
+        std::vector<std::pair<std::uint64_t,std::uint64_t>>     time_slots;         //  timeslot 0 has <t1,t2>
+        std::vector<std::set<std::string>>                      serial_numbers;     //  serial number already in a timeslot.
+
+
+        std::uint64_t cur_first=first_val,cur_end=0;
+        sp.clear();
+        while(cur_end<last_val) {
+            std::pair<std::uint64_t,std::uint64_t>  e;
+            e.first = cur_first;
+            e.second = e.first + cur_int-1;
+            cur_first = e.second+1;
+            cur_end = e.second;
+            time_slots.emplace_back(e);
+            std::set<std::string> q;
+            serial_numbers.emplace_back(q);
+            std::vector<AnalyticsObjects::DeviceTimePoint>  qq;
+            sp.emplace_back(qq);
+        }
+
+        for(const auto &point:tmp.points) {
+            std::uint64_t slot_index=0;
+            for(const auto &slot:time_slots) {
+                if(point.timestamp >= slot.first && point.timestamp <= slot.second) {
+                    serial_numbers[slot_index].insert(point.serialNumber);
+                    sp[slot_index].emplace_back(point);
+                }
+                slot_index++;
+            }
+        }
+
+    }
+
     void RESTAPI_board_timepoint_handler::DoGet() {
         auto id = GetBinding("id","");
         if(id.empty() || !Utils::ValidUUID(id)) {
@@ -166,6 +248,12 @@ namespace OpenWifi {
         } Association_sort;
 
 
+        split_points sp;
+
+        NewSort(*Points,sp);
+
+        /*
+
         std::sort( Points->points.begin(), Points->points.end(), DeviceTimePoint_sort);
         std::cout << "2 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
         std::cout << __LINE__ << std::endl;
@@ -173,7 +261,6 @@ namespace OpenWifi {
         std::cout << __LINE__ << std::endl;
         find_number_of_buckets(Points->points,buckets);
         std::cout << __LINE__ << std::endl;
-        split_points sp;
         std::cout << __LINE__ << std::endl;
         split_in_buckets(buckets,Points->points, sp);
         // must sort each bucket according to serial number.
@@ -188,6 +275,7 @@ namespace OpenWifi {
                 }
             }
         }
+        */
 
         std::cout << __LINE__ << std::endl;
 
