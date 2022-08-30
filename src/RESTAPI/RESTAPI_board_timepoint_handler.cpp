@@ -139,7 +139,7 @@ namespace OpenWifi {
             }
 
             if(cur_ser==point.serialNumber) {
-                auto this_int = start_val - point.timestamp;
+                auto this_int = point.timestamp - start_val;
                 if(cur_int) {
                     if(this_int<cur_int) {
                         cur_int = this_int;
