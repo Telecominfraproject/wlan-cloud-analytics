@@ -28,7 +28,7 @@ namespace OpenWifi {
 
         Logger().information("Starting to reconcile board information.");
         for(const auto &[board_id, watcher]:Watchers_) {
-            std::cout << "Updating: " << board_id << std::endl;
+            Logger().information(fmt::format("Updating: {}", board_id));
             UpdateBoard(board_id);
         }
         Logger().information("Finished reconciling board information.");
