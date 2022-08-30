@@ -8,69 +8,8 @@
 #include <algorithm>
 
 namespace OpenWifi {
-    static bool count_compare(const std::pair<std::string,std::uint64_t> &lhs, const std::pair<std::string,std::uint64_t> &rhs) {
-        return lhs.second < rhs.second;
-    }
-
-    static bool min_point_timestamp(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) {
-        return lhs.timestamp < rhs.timestamp;
-    }
-
     typedef std::vector<std::pair<std::uint64_t , std::uint64_t >>          bucket_timespans;
-
-    static void find_number_of_buckets(const std::vector<AnalyticsObjects::DeviceTimePoint> &points, bucket_timespans &  buckets) {
-        std::map<std::string,uint64_t> counts;
-        for(const auto &point:points) {
-            auto hint = counts.find(point.serialNumber);
-            if(hint == end(counts))
-                counts[point.serialNumber]=1;
-            else
-                hint->second++;
-        }
-        auto max_buckets = std::max_element(counts.begin(),counts.end(), count_compare);
-        auto min_timestamp = std::min_element(points.begin(),points.end(),min_point_timestamp);
-        auto max_timestamp = std::max_element(points.begin(),points.end(),min_point_timestamp);
-
-        float interval =  (float) ((max_timestamp->timestamp-min_timestamp->timestamp) / max_buckets->second);
-
-        std::cout << "Max-buckets: " << max_buckets->second << " min timestamp:" << min_timestamp->timestamp <<
-        " max timestamp:" << max_timestamp->timestamp << " interval: " <<
-        interval << std::endl;
-
-        auto buckets_left = max_buckets->second;
-        float min,max;
-        min = (float) min_timestamp->timestamp;
-        max = min + interval;
-        for(;buckets_left;buckets_left--) {
-            std::pair<std::uint64_t,std::uint64_t>  e;
-            e.first = (std::uint64_t) min;
-            e.second = (std::uint64_t) max;
-            min = (float)e.second+1;
-            max = min + interval;
-            buckets.emplace_back(e);
-        }
-    }
-
     typedef std::vector< std::vector<AnalyticsObjects::DeviceTimePoint>>    split_points;
-
-    static void split_in_buckets(const bucket_timespans & buckets, std::vector<AnalyticsObjects::DeviceTimePoint> &points,split_points &sp) {
-        for(auto i = buckets.size();i;--i)
-        {
-            std::vector<AnalyticsObjects::DeviceTimePoint> v;
-            sp.emplace_back(v);
-        }
-
-        for(const auto &point:points) {
-            uint64_t index=0;
-            for(const auto &[lower,upper]:buckets) {
-                if(point.timestamp>=lower && point.timestamp<=upper) {
-                    sp[index].emplace_back(point);
-                    break;
-                }
-                index++;
-            }
-        }
-    }
 
     template <typename X, typename M> void AverageAPData( X T, const std::vector<M> &Values, AnalyticsObjects::AveragePoint &P) {
         if(Values.empty())
@@ -108,13 +47,6 @@ namespace OpenWifi {
     }
 
     static void NewSort(const AnalyticsObjects::DeviceTimePointList &l,split_points &sp) {
-        struct {
-            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
-                if (lhs.timestamp < rhs.timestamp) return true;
-                if (lhs.timestamp > rhs.timestamp) return false;
-                return lhs.device_info.serialNumber < rhs.device_info.serialNumber;
-            }
-        } sort_ts_serial;
 
         struct {
             bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
@@ -155,7 +87,7 @@ namespace OpenWifi {
             last_val = point.timestamp;
         }
 
-        std::cout << "Intervals: " << cur_int << std::endl;
+        // std::cout << "Intervals: " << cur_int << std::endl;
 
         std::vector<std::pair<std::uint64_t,std::uint64_t>>     time_slots;         //  timeslot 0 has <t1,t2>
         std::vector<std::set<std::string>>                      serial_numbers;     //  serial number already in a timeslot.
@@ -220,65 +152,14 @@ namespace OpenWifi {
             return ReturnObject(Answer);
         }
 
-        auto Points = std::make_unique<AnalyticsObjects::DeviceTimePointList>();
-        StorageService()->TimePointsDB().SelectRecords(id,fromDate, endDate, maxRecords, Points->points);
-        std::cout << "1 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
-
-        // sort by timestamp & serial number.
-        struct {
-            bool operator()(const AnalyticsObjects::DeviceTimePoint &lhs, const AnalyticsObjects::DeviceTimePoint &rhs) const {
-                if (lhs.device_info.serialNumber < rhs.device_info.serialNumber) return true;
-                if (lhs.device_info.serialNumber > rhs.device_info.serialNumber) return false;
-                return lhs.timestamp < rhs.timestamp;
-            }
-        } DeviceTimePoint_sort;
-
-        struct {
-            bool operator()(const AnalyticsObjects::SSIDTimePoint &lhs, const AnalyticsObjects::SSIDTimePoint &rhs) const {
-                if(lhs.ssid < rhs.ssid) return true;
-                if(lhs.ssid > rhs.ssid) return false;
-                return lhs.bssid < rhs.bssid;
-            }
-        } SSID_sort;
-
-        struct {
-            bool operator()(const AnalyticsObjects::UETimePoint &lhs, const AnalyticsObjects::UETimePoint &rhs) const {
-                return (lhs.station < rhs.station);
-            }
-        } Association_sort;
-
+        AnalyticsObjects::DeviceTimePointList Points;
+        StorageService()->TimePointsDB().SelectRecords(id,fromDate, endDate, maxRecords, Points.points);
+        std::cout << "1 MaxRecords=" << maxRecords << " retrieved=" << Points.points.size() << std::endl;
 
         split_points sp;
 
-        NewSort(*Points,sp);
-
-        /*
-
-        std::sort( Points->points.begin(), Points->points.end(), DeviceTimePoint_sort);
-        std::cout << "2 MaxRecords=" << maxRecords << " retrieved=" << Points->points.size() << std::endl;
+        NewSort(Points,sp);
         std::cout << __LINE__ << std::endl;
-        bucket_timespans buckets;
-        std::cout << __LINE__ << std::endl;
-        find_number_of_buckets(Points->points,buckets);
-        std::cout << __LINE__ << std::endl;
-        std::cout << __LINE__ << std::endl;
-        split_in_buckets(buckets,Points->points, sp);
-        // must sort each bucket according to serial number.
-        std::cout << __LINE__ << std::endl;
-        for(auto &i: sp) {
-            std::sort(i.begin(),i.end(),DeviceTimePoint_sort);
-            // now sort according to UEs within a block
-            for(auto &j:i) {
-                std::sort(j.ssid_data.begin(),j.ssid_data.end(),SSID_sort);
-                for(auto &k:j.ssid_data) {
-                    std::sort(k.associations.begin(),k.associations.end(),Association_sort);
-                }
-            }
-        }
-        */
-
-        std::cout << __LINE__ << std::endl;
-
 
         Poco::JSON::Object  Answer;
         if(!pointsStatsOnly) {
@@ -295,58 +176,39 @@ namespace OpenWifi {
             Answer.set("points",Points_OuterArray);
         }
 
-        std::cout << __LINE__ << std::endl;
         //  calculate the stats for each time slot
         if(!pointsOnly) {
             Poco::JSON::Array   Stats_Array;
             for (const auto &point_list:sp) {
                 AnalyticsObjects::DeviceTimePointAnalysis DTPA;
 
-                std::cout << __LINE__ << std::endl;
                 if(point_list.empty())
                     continue;
 
                 DTPA.timestamp = point_list[0].timestamp;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_bytes_bw, point_list, DTPA.tx_bytes_bw);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_bytes_bw, point_list, DTPA.rx_bytes_bw);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_dropped_pct, point_list, DTPA.rx_dropped_pct);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_dropped_pct, point_list, DTPA.tx_dropped_pct);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_packets_bw, point_list, DTPA.rx_packets_bw);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_packets_bw, point_list, DTPA.tx_packets_bw);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::rx_errors_pct, point_list, DTPA.rx_errors_pct);
-                std::cout << __LINE__ << std::endl;
                 AverageAPData(&AnalyticsObjects::APTimePoint::tx_errors_pct, point_list, DTPA.tx_errors_pct);
-                std::cout << __LINE__ << std::endl;
 
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::noise, point_list, DTPA.noise);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::temperature, point_list, DTPA.temperature);
-                std::cout << __LINE__ << std::endl;
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::tx_power, point_list, DTPA.tx_power);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::active_pct, point_list, DTPA.active_pct);
-                std::cout << __LINE__ << std::endl;
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::busy_pct, point_list, DTPA.busy_pct);
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::receive_pct, point_list, DTPA.receive_pct);
-                std::cout << __LINE__ << std::endl;
                 AverageRadioData(&AnalyticsObjects::RadioTimePoint::transmit_pct, point_list, DTPA.transmit_pct);
 
-                std::cout << __LINE__ << std::endl;
                 Poco::JSON::Object Stats_point;
-                std::cout << __LINE__ << std::endl;
                 DTPA.to_json(Stats_point);
-                std::cout << __LINE__ << std::endl;
                 Stats_Array.add(Stats_point);
-                std::cout << __LINE__ << std::endl;
             }
-            std::cout << __LINE__ << std::endl;
             Answer.set("stats", Stats_Array);
         }
-        std::cout << __LINE__ << std::endl;
 
         return ReturnObject(Answer);
     }
