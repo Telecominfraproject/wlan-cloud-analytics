@@ -181,13 +181,11 @@ namespace OpenWifi {
                                 InterfaceClientEntry E;
                                 if(client.contains("ipv4_addresses") && client["ipv4_addresses"].is_array()) {
                                     for(const auto &ip:client["ipv4_addresses"]) {
-                                        std::cout << __LINE__ << ": " << ip << std::endl;
                                         E.ipv4_addresses.push_back(ip);
                                     }
                                 }
                                 if(client.contains("ipv6_addresses") && client["ipv6_addresses"].is_array()) {
                                     for(const auto &ip:client["ipv6_addresses"]) {
-                                        std::cout << __LINE__ << ": " << ip << std::endl;
                                         E.ipv6_addresses.push_back(ip);
                                     }
                                 }
@@ -195,7 +193,6 @@ namespace OpenWifi {
                                 ICEM[M] = E;
                             }
                         }
-                        std::cout << "Interface has " << ICEM.size() << " clients" << std::endl;
                     } catch(...) {
                         std::cout << "Exception will parsing clients" << std::endl;
                     }
@@ -283,6 +280,7 @@ namespace OpenWifi {
                                     if(!ClientInfo->second.ipv6_addresses.empty()) {
                                         WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
                                     }
+                                    std::cout << __LINE__ << ": Mac Found: " << ICEM.size() << " entries." << WFH.station_id << std::endl;
                                 } else {
                                     std::cout << __LINE__ << ": Mac not found: " << ICEM.size() << " entries." << WFH.station_id << std::endl;
                                 }
