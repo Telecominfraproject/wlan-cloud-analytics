@@ -288,7 +288,7 @@ namespace OpenWifi {
                                         WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
                                     }
                                 } else {
-                                    std::cout << __LINE__ << std::endl;
+                                    std::cout << __LINE__ << ": Mac not found: " << WFH.station_id << std::endl;
                                 }
 
                                 for(const auto &rd:DTP.radio_data) {
