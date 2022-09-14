@@ -172,6 +172,29 @@ namespace OpenWifi {
                     GetJSON("tx_packets", counters, DTP.ap_data.tx_packets, (uint64_t) 0);
                 }
 
+                InterfaceClientEntryMap_t ICEM;
+                if(interface.contains("clients") && interface["clients"].is_array()) {
+                    try {
+                        auto Clients = interface["clients"];
+                        for(const auto & client: Clients) {
+                            if(client.contains("mac") && client["mac"].is_string()) {
+                                InterfaceClientEntry E;
+                                if(client.contains("ipv4_addresses") && client["ipv4_addresses"].is_array()) {
+                                    for(const auto &ip:client["ipv4_addresses"])
+                                        E.ipv4_addresses.push_back(ip);
+                                }
+                                if(client.contains("ipv6_addresses") && client["ipv6_addresses"].is_array()) {
+                                    for(const auto &ip:client["ipv6_addresses"])
+                                        E.ipv6_addresses.push_back(ip);
+                                }
+                                ICEM[client["mac"]] = E;
+                            }
+                        }
+                    } catch(...) {
+
+                    }
+                }
+
                 if(interface.contains("ssids")) {
                     auto ssids = interface["ssids"];
                     for (const auto &ssid: ssids) {
@@ -243,8 +266,14 @@ namespace OpenWifi {
                                 GetJSON("rx_packets",association,WFH.rx_packets,(uint64_t)0);
                                 GetJSON("tx_packets",association,WFH.tx_packets,(uint64_t)0);
 
-                                WFH.ipv4 = "---";
-                                WFH.ipv6 = "----";
+                                // try to locate the IP addresses
+                                auto ClientInfo = ICEM.find(WFH.station_id);
+                                if(ClientInfo!=end(ICEM)) {
+                                    if(!ClientInfo->second.ipv4_addresses.empty())
+                                        WFH.ipv4 = ClientInfo->second.ipv4_addresses[0];
+                                    if(!ClientInfo->second.ipv6_addresses.empty())
+                                        WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
+                                }
 
                                 for(const auto &rd:DTP.radio_data) {
                                     if(rd.band == SSIDTP.band) {
