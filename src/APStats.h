@@ -11,6 +11,13 @@
 
 namespace OpenWifi {
 
+    struct InterfaceClientEntry {
+        std::vector<std::string>        ipv4_addresses;
+        std::vector<std::string>        ipv6_addresses;
+    };
+
+    using InterfaceClientEntryMap_t = std::map<std::string,InterfaceClientEntry>;
+
     class AP {
     public:
         explicit AP(uint64_t mac, const std::string &venue_id, const std::string &BoardId, Poco::Logger &L) :
