@@ -158,6 +158,7 @@ namespace OpenWifi {
             auto interfaces = (*State)["interfaces"];
             DI_.associations_2g = DI_.associations_5g = DI_.associations_6g = 0;
             for(const auto &interface:interfaces) {
+                std::string InterfaceName = interface.contains("name") ? to_string(interface["name"]) : "unknown";
                 if(interface.contains("counters")) {
                     auto counters = interface["counters"];
                     GetJSON("collisions", counters, DTP.ap_data.collisions, (uint64_t) 0);
@@ -194,10 +195,10 @@ namespace OpenWifi {
                             }
                         }
                     } catch(...) {
-                        std::cout << "Exception will parsing clients" << std::endl;
+                        std::cout << "Exception will parsing clients: " << InterfaceName << std::endl;
                     }
                 } else {
-                    std::cout <<"Interface: No clients" << std::endl;
+                    std::cout <<"Interface: No clients: " << InterfaceName << std::endl;
                 }
 
                 if(interface.contains("ssids")) {
@@ -280,9 +281,9 @@ namespace OpenWifi {
                                     if(!ClientInfo->second.ipv6_addresses.empty()) {
                                         WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
                                     }
-                                    std::cout << __LINE__ << ": Mac Found: " << ICEM.size() << " entries." << WFH.station_id << std::endl;
+                                    std::cout << __LINE__ << ": " << InterfaceName << "   Mac Found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
                                 } else {
-                                    std::cout << __LINE__ << ": Mac not found: " << ICEM.size() << " entries." << WFH.station_id << std::endl;
+                                    std::cout << __LINE__ << ": " << InterfaceName << "   Mac NOT found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
                                 }
 
                                 for(const auto &rd:DTP.radio_data) {
