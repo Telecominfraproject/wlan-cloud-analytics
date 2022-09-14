@@ -200,10 +200,10 @@ namespace OpenWifi {
                             }
                         }
                     } catch(...) {
-
+                        std::cout << "Exception will parsing clients" << std::endl;
                     }
                 } else {
-                    std::cout << __LINE__ << std::endl;
+                    std::cout << __LINE__ << ": No clients" << std::endl;
                 }
 
                 if(interface.contains("ssids")) {
