@@ -124,32 +124,36 @@ namespace OpenWifi {
 		}
 	}
 
-	void WifiClientCache::FindNumbers(const std::string &venue_id, const std::string &S, uint HowMany, std::vector<uint64_t> &A) {
+	void WifiClientCache::FindNumbers(const std::string &venueId, const std::string &SerialNumber, std::uint64_t StartingOffset, std::uint64_t HowMany, std::vector<uint64_t> &A) {
         std::lock_guard G(Mutex_);
 
         A.clear();
-        auto VenueIt = Cache_.find(venue_id);
+        auto VenueIt = Cache_.find(venueId);
         if(VenueIt==Cache_.end())
             return;
 
-		if(S.empty()) {
+		if(SerialNumber.empty()) {
             auto Start = VenueIt->second.SNs_.begin();
+            std::uint64_t Offset=0;
             while(HowMany && Start!=VenueIt->second.SNs_.end()) {
-                A.push_back(*Start);
+                if(Offset>=StartingOffset) {
+                    A.push_back(*Start);
+                    HowMany--;
+                }
                 Start++;
-                HowMany--;
+                Offset++;
             }
             return;
         }
 
-		if (S[0] == '*') {
+		if (SerialNumber[0] == '*') {
 			std::string Reversed;
-			std::copy(rbegin(S), rend(S)-1, std::back_inserter(Reversed));
+			std::copy(rbegin(SerialNumber), rend(SerialNumber)-1, std::back_inserter(Reversed));
 			if(Reversed.empty())
 				return;
 			return ReturnNumbers(Reversed, HowMany, VenueIt->second.Reverse_SNs_, A, true);
 		} else {
-			return ReturnNumbers(S, HowMany, VenueIt->second.SNs_, A, false);
+			return ReturnNumbers(SerialNumber, HowMany, VenueIt->second.SNs_, A, false);
 		}
 	}
 }
