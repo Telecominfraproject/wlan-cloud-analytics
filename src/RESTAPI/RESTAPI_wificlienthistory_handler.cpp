@@ -20,10 +20,9 @@ namespace OpenWifi {
         }
 
         if(GetBoolParameter("macsOnly")) {
-
             auto macFilter = GetParameter("macFilter","");
             std::vector<uint64_t>    Macs;
-            WifiClientCache()->FindNumbers(venue,macFilter,500,Macs);
+            WifiClientCache()->FindNumbers(venue,macFilter,QB_.Offset, QB_.Limit, Macs);
             Poco::JSON::Array   Arr;
             for(const auto &mac: Macs)
                 Arr.add(Utils::IntToSerialNumber(mac));

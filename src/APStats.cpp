@@ -158,6 +158,7 @@ namespace OpenWifi {
             auto interfaces = (*State)["interfaces"];
             DI_.associations_2g = DI_.associations_5g = DI_.associations_6g = 0;
             for(const auto &interface:interfaces) {
+                std::string InterfaceName = fmt::format("{}: {}", DI_.serialNumber, interface.contains("name") ? to_string(interface["name"]) : "unknown");
                 if(interface.contains("counters")) {
                     auto counters = interface["counters"];
                     GetJSON("collisions", counters, DTP.ap_data.collisions, (uint64_t) 0);
@@ -180,19 +181,24 @@ namespace OpenWifi {
                             if(client.contains("mac") && client["mac"].is_string()) {
                                 InterfaceClientEntry E;
                                 if(client.contains("ipv4_addresses") && client["ipv4_addresses"].is_array()) {
-                                    for(const auto &ip:client["ipv4_addresses"])
+                                    for(const auto &ip:client["ipv4_addresses"]) {
                                         E.ipv4_addresses.push_back(ip);
+                                    }
                                 }
                                 if(client.contains("ipv6_addresses") && client["ipv6_addresses"].is_array()) {
-                                    for(const auto &ip:client["ipv6_addresses"])
+                                    for(const auto &ip:client["ipv6_addresses"]) {
                                         E.ipv6_addresses.push_back(ip);
+                                    }
                                 }
-                                ICEM[client["mac"]] = E;
+                                auto M = mac_filter(client["mac"]);
+                                ICEM[M] = E;
                             }
                         }
                     } catch(...) {
-
+                        std::cout << "Exception will parsing clients: " << InterfaceName << std::endl;
                     }
+                } else {
+                    // std::cout <<"Interface: No clients: " << InterfaceName << std::endl;
                 }
 
                 if(interface.contains("ssids")) {
@@ -269,10 +275,15 @@ namespace OpenWifi {
                                 // try to locate the IP addresses
                                 auto ClientInfo = ICEM.find(WFH.station_id);
                                 if(ClientInfo!=end(ICEM)) {
-                                    if(!ClientInfo->second.ipv4_addresses.empty())
+                                    if(!ClientInfo->second.ipv4_addresses.empty()) {
                                         WFH.ipv4 = ClientInfo->second.ipv4_addresses[0];
-                                    if(!ClientInfo->second.ipv6_addresses.empty())
+                                    }
+                                    if(!ClientInfo->second.ipv6_addresses.empty()) {
                                         WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
+                                    }
+                                    std::cout << __LINE__ << ": " << InterfaceName << "   Mac Found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
+                                } else {
+                                    std::cout << __LINE__ << ": " << InterfaceName << "   Mac NOT found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
                                 }
 
                                 for(const auto &rd:DTP.radio_data) {
