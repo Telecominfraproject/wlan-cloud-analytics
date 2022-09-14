@@ -174,18 +174,27 @@ namespace OpenWifi {
 
                 InterfaceClientEntryMap_t ICEM;
                 if(interface.contains("clients") && interface["clients"].is_array()) {
+                    std::cout << __LINE__ << std::endl;
                     try {
                         auto Clients = interface["clients"];
                         for(const auto & client: Clients) {
+                            std::cout << __LINE__ << std::endl;
                             if(client.contains("mac") && client["mac"].is_string()) {
                                 InterfaceClientEntry E;
+                                std::cout << __LINE__ << std::endl;
                                 if(client.contains("ipv4_addresses") && client["ipv4_addresses"].is_array()) {
-                                    for(const auto &ip:client["ipv4_addresses"])
+                                    std::cout << __LINE__ << std::endl;
+                                    for(const auto &ip:client["ipv4_addresses"]) {
+                                        std::cout << __LINE__ << ": " << ip << std::endl;
                                         E.ipv4_addresses.push_back(ip);
+                                    }
                                 }
                                 if(client.contains("ipv6_addresses") && client["ipv6_addresses"].is_array()) {
-                                    for(const auto &ip:client["ipv6_addresses"])
+                                    std::cout << __LINE__ << std::endl;
+                                    for(const auto &ip:client["ipv6_addresses"]) {
+                                        std::cout << __LINE__ << ": " << ip << std::endl;
                                         E.ipv6_addresses.push_back(ip);
+                                    }
                                 }
                                 ICEM[client["mac"]] = E;
                             }
@@ -193,6 +202,8 @@ namespace OpenWifi {
                     } catch(...) {
 
                     }
+                } else {
+                    std::cout << __LINE__ << std::endl;
                 }
 
                 if(interface.contains("ssids")) {
@@ -269,10 +280,15 @@ namespace OpenWifi {
                                 // try to locate the IP addresses
                                 auto ClientInfo = ICEM.find(WFH.station_id);
                                 if(ClientInfo!=end(ICEM)) {
-                                    if(!ClientInfo->second.ipv4_addresses.empty())
+                                    std::cout << __LINE__ << std::endl;
+                                    if(!ClientInfo->second.ipv4_addresses.empty()) {
                                         WFH.ipv4 = ClientInfo->second.ipv4_addresses[0];
-                                    if(!ClientInfo->second.ipv6_addresses.empty())
+                                    }
+                                    if(!ClientInfo->second.ipv6_addresses.empty()) {
                                         WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
+                                    }
+                                } else {
+                                    std::cout << __LINE__ << std::endl;
                                 }
 
                                 for(const auto &rd:DTP.radio_data) {
