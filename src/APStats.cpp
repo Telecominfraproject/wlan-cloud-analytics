@@ -158,7 +158,7 @@ namespace OpenWifi {
             auto interfaces = (*State)["interfaces"];
             DI_.associations_2g = DI_.associations_5g = DI_.associations_6g = 0;
             for(const auto &interface:interfaces) {
-                std::string InterfaceName = interface.contains("name") ? to_string(interface["name"]) : "unknown";
+                std::string InterfaceName = fmt::format("{}: {}", DI_.serialNumber, interface.contains("name") ? to_string(interface["name"]) : "unknown");
                 if(interface.contains("counters")) {
                     auto counters = interface["counters"];
                     GetJSON("collisions", counters, DTP.ap_data.collisions, (uint64_t) 0);
