@@ -203,6 +203,10 @@ namespace OpenWifi::GWObjects {
 		field_to_json(Obj,"kafkaClients", kafkaClients);
 		field_to_json(Obj,"kafkaPackets", kafkaPackets);
 		field_to_json(Obj,"locale", locale);
+		field_to_json(Obj,"started", started);
+		field_to_json(Obj,"sessionId", sessionId);
+		field_to_json(Obj,"connectionCompletionTime", connectionCompletionTime);
+		field_to_json(Obj,"totalConnectionTime", OpenWifi::Now() - started);
 
 		switch(VerifiedCertificate) {
 			case NO_CERTIFICATE:
@@ -216,6 +220,21 @@ namespace OpenWifi::GWObjects {
 			default:
 				field_to_json(Obj,"verifiedCertificate", "NO_CERTIFICATE"); break;
 		}
+	}
+
+	void DeviceConnectionStatistics::to_json(Poco::JSON::Object &Obj) const {
+		field_to_json(Obj,"averageConnectionTime", averageConnectionTime);
+		field_to_json(Obj,"connectedDevices", connectedDevices );
+	}
+
+	bool DeviceConnectionStatistics::from_json(const Poco::JSON::Object::Ptr &Obj) {
+		try {
+			field_from_json(Obj,"averageConnectionTime", averageConnectionTime);
+			field_from_json(Obj,"connectedDevices", connectedDevices );
+			return true;
+		} catch (const Poco::Exception &E) {
+		}
+		return false;
 	}
 
 	void RttySessionDetails::to_json(Poco::JSON::Object &Obj) const {
@@ -293,7 +312,6 @@ namespace OpenWifi::GWObjects {
 		} catch (const Poco::Exception &E) {
 		}
 		return false;
-
 	}
 
 	void RadiusProxyPoolList::to_json(Poco::JSON::Object &Obj) const {
@@ -314,6 +332,8 @@ namespace OpenWifi::GWObjects {
 		field_to_json(Obj,"description",description);
 		field_to_json(Obj,"authConfig",authConfig);
 		field_to_json(Obj,"acctConfig",acctConfig);
+		field_to_json(Obj,"coaConfig",coaConfig);
+		field_to_json(Obj,"useByDefault",useByDefault);
 	}
 
 	bool RadiusProxyPool::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -322,6 +342,8 @@ namespace OpenWifi::GWObjects {
 			field_from_json(Obj,"description",description);
 			field_from_json(Obj,"authConfig",authConfig);
 			field_from_json(Obj,"acctConfig",acctConfig);
+			field_from_json(Obj,"coaConfig",coaConfig);
+			field_from_json(Obj,"useByDefault",useByDefault);
 			return true;
 		} catch (const Poco::Exception &E) {
 		}
@@ -329,7 +351,7 @@ namespace OpenWifi::GWObjects {
 	}
 
 	void RadiusProxyServerConfig::to_json(Poco::JSON::Object &Obj) const {
-		field_to_json(Obj,"policy",strategy);
+		field_to_json(Obj,"strategy",strategy);
 		field_to_json(Obj,"monitor",monitor);
 		field_to_json(Obj,"monitorMethod",monitorMethod);
 		field_to_json(Obj,"methodParameters",methodParameters);
@@ -338,7 +360,7 @@ namespace OpenWifi::GWObjects {
 
 	bool RadiusProxyServerConfig::from_json(const Poco::JSON::Object::Ptr &Obj) {
 		try {
-			field_from_json(Obj,"policy",strategy);
+			field_from_json(Obj,"strategy",strategy);
 			field_from_json(Obj,"monitor",monitor);
 			field_from_json(Obj,"monitorMethod",monitorMethod);
 			field_from_json(Obj,"methodParameters",methodParameters);
@@ -354,6 +376,16 @@ namespace OpenWifi::GWObjects {
 		field_to_json(Obj,"ip",ip);
 		field_to_json(Obj,"port",port);
 		field_to_json(Obj,"weight",weight);
+		field_to_json(Obj,"secret",secret);
+		field_to_json(Obj,"certificate",certificate);
+		field_to_json(Obj,"radsec",radsec);
+		field_to_json(Obj,"radsecPort",radsecPort);
+		field_to_json(Obj,"radsecSecret",radsecSecret);
+		field_to_json(Obj,"radsecCacerts",radsecCacerts);
+		field_to_json(Obj,"radsecCert",radsecCert);
+		field_to_json(Obj,"radsecKey",radsecKey);
+		field_to_json(Obj,"radsecRealms",radsecRealms);
+		field_to_json(Obj,"ignore",ignore);
 	}
 
 	bool RadiusProxyServerEntry::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -362,6 +394,16 @@ namespace OpenWifi::GWObjects {
 			field_from_json(Obj,"ip",ip);
 			field_from_json(Obj,"port",port);
 			field_from_json(Obj,"weight",weight);
+			field_from_json(Obj,"secret",secret);
+			field_from_json(Obj,"certificate",certificate);
+			field_from_json(Obj,"radsec",radsec);
+			field_from_json(Obj,"radsecSecret",radsecSecret);
+			field_from_json(Obj,"radsecPort",radsecPort);
+			field_from_json(Obj,"radsecCacerts",radsecCacerts);
+			field_from_json(Obj,"radsecCert",radsecCert);
+			field_from_json(Obj,"radsecKey",radsecKey);
+			field_from_json(Obj,"radsecRealms",radsecRealms);
+			field_from_json(Obj,"ignore",ignore);
 			return true;
 		} catch (const Poco::Exception &E) {
 		}
