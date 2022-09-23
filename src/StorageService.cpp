@@ -12,6 +12,7 @@
 namespace OpenWifi {
 
     int Storage::Start() {
+        poco_notice(Logger(),"Starting...");
 		std::lock_guard		Guard(Mutex_);
 
 		StorageClass::Start();
@@ -43,14 +44,14 @@ namespace OpenWifi {
         uint64_t start = 0 ;
         bool done = false;
         const uint64_t batch=100;
-        Logger().information("Starting cleanup of TimePoint Database");
+        poco_information(Logger(),"Starting cleanup of TimePoint Database");
         while(!done) {
             if(!BoardsDB().GetRecords(start,batch,BoardList)) {
                 for(const auto &board:BoardList) {
                     for(const auto &venue:board.venueList) {
                         auto now = OpenWifi::Now();
                         auto lower_bound = now - venue.retention;
-                        Logger().information(fmt::format("Removing old records for board '{}'",board.info.name));
+                        poco_information(Logger(),fmt::format("Removing old records for board '{}'",board.info.name));
                         BoardsDB().DeleteRecords(fmt::format(" boardId='{}' and timestamp<{}", board.info.id, lower_bound));
                     }
                 }
@@ -60,9 +61,9 @@ namespace OpenWifi {
 
         auto MaxDays = MicroService::instance().ConfigGetInt("wificlient.age.limit",14);
         auto LowerDate = OpenWifi::Now() - (MaxDays*60*60*24);
-        Logger().information(fmt::format("Removing WiFi Clients history older than {} days.", MaxDays));
+        poco_information(Logger(),fmt::format("Removing WiFi Clients history older than {} days.", MaxDays));
         StorageService()->WifiClientHistoryDB().DeleteRecords(fmt::format(" timestamp<{} ", LowerDate));
-        Logger().information(fmt::format("Done cleanup of databases. Next run in {} seconds.", PeriodicCleanup_));
+        poco_information(Logger(),fmt::format("Done cleanup of databases. Next run in {} seconds.", PeriodicCleanup_));
     }
 
     void Storage::run() {
@@ -81,11 +82,12 @@ namespace OpenWifi {
 	}
 
     void Storage::Stop() {
+        poco_notice(Logger(),"Stopping...");
 	    Running_=false;
         Timer_.stop();
 	    Updater_.wakeUp();
 	    Updater_.join();
-        Logger().notice("Stopping.");
+        poco_notice(Logger(),"Stopped...");
     }
 }
 

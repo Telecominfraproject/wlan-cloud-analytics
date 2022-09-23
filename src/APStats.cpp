@@ -93,7 +93,7 @@ namespace OpenWifi {
         DI_.connected =true;
 
         AnalyticsObjects::DeviceTimePoint DTP;
-        Logger().information(fmt::format("{}: stats message.", DI_.serialNumber));
+        poco_information(Logger(),fmt::format("{}: stats message.", DI_.serialNumber));
 
         // find radios first to get associations.
         try {
@@ -351,7 +351,7 @@ namespace OpenWifi {
             }
             DTP.device_info = DI_;
         } catch (...) {
-            Logger().information(fmt::format("{}: stats failed parsing.", DI_.serialNumber));
+            poco_information(Logger(),fmt::format("{}: stats failed parsing.", DI_.serialNumber));
         }
 
         if(got_base) {
@@ -517,7 +517,7 @@ namespace OpenWifi {
                 GetJSON("locale", ConnectionData, DI_.locale, std::string{} );
             }
         } catch (...) {
-            Logger().information(fmt::format("{}: error parsing connection message.", DI_.serialNumber));
+            poco_information(Logger(),fmt::format("{}: error parsing connection message.", DI_.serialNumber));
         }
     }
 
@@ -528,7 +528,7 @@ namespace OpenWifi {
             GetJSON("sanity", *Health, DI_.health, (uint64_t)0 );
             poco_debug(Logger(),fmt::format("{}: health message.", DI_.serialNumber));
         } catch(...) {
-            Logger().information(fmt::format("{}: error parsing health message.", DI_.serialNumber));
+            poco_information(Logger(),fmt::format("{}: error parsing health message.", DI_.serialNumber));
         }
     }
 }
