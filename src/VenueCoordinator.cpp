@@ -11,6 +11,7 @@
 namespace OpenWifi {
 
     int VenueCoordinator::Start() {
+        poco_notice(Logger(),"Starting...");
         GetBoardList();
         Worker_.start(*this);
 
@@ -26,29 +27,31 @@ namespace OpenWifi {
         std::lock_guard     G(Mutex_);
         Utils::SetThreadName("brd-refresh");
 
-        Logger().information("Starting to reconcile board information.");
+        poco_information(Logger(),"Starting to reconcile board information.");
         for(const auto &[board_id, watcher]:Watchers_) {
-            Logger().information(fmt::format("Updating: {}", board_id));
+            poco_information(Logger(),fmt::format("Updating: {}", board_id));
             UpdateBoard(board_id);
         }
-        Logger().information("Finished reconciling board information.");
+        poco_information(Logger(),"Finished reconciling board information.");
     }
 
     void VenueCoordinator::GetBoardList() {
         BoardsToWatch_.clear();
         auto F = [&](const AnalyticsObjects::BoardInfo &B) ->bool {
             BoardsToWatch_.insert(B);
-            // Logger().information(fmt::format("Starting watch for {}.", B.info.name));
+            // poco_information(Logger(),fmt::format("Starting watch for {}.", B.info.name));
             return true;
         };
         StorageService()->BoardsDB().Iterate(F);
     }
 
     void VenueCoordinator::Stop() {
+        poco_notice(Logger(),"Stopping...");
         Running_=false;
         Worker_.wakeUp();
         Worker_.wakeUp();
         Worker_.join();
+        poco_notice(Logger(),"Stopped...");
     }
 
     void VenueCoordinator::run() {
@@ -116,7 +119,7 @@ namespace OpenWifi {
             ExistingBoards_[B.info.id] = Devices;
             Watchers_[B.info.id] = std::make_shared<VenueWatcher>(B.info.id, B.venueList[0].id, Logger(), Devices);
             Watchers_[B.info.id]->Start();
-            Logger().information(fmt::format("Started board {} for venue {}", B.info.name,B.venueList[0].id ));
+            poco_information(Logger(),fmt::format("Started board {} for venue {}", B.info.name,B.venueList[0].id ));
             return true;
         }
 
@@ -125,7 +128,7 @@ namespace OpenWifi {
             return false;
         }
 
-        Logger().information(fmt::format("Could not start board {}",B.info.name));
+        poco_information(Logger(),fmt::format("Could not start board {}",B.info.name));
         return false;
     }
 
@@ -154,9 +157,9 @@ namespace OpenWifi {
                             it2->second->ModifySerialNumbers(Devices);
                         }
                         ExistingBoards_[id] = Devices;
-                        Logger().information(fmt::format("Modified board {}",B.info.name));
+                        poco_information(Logger(),fmt::format("Modified board {}",B.info.name));
                     } else {
-                        Logger().information(fmt::format("No device changes in board {}",B.info.name));
+                        poco_information(Logger(),fmt::format("No device changes in board {}",B.info.name));
                     }
                 }
                 return;
@@ -167,7 +170,7 @@ namespace OpenWifi {
                 return;
             }
 
-            Logger().information(fmt::format("Could not modify board {}",B.info.name));
+            poco_information(Logger(),fmt::format("Could not modify board {}",B.info.name));
         }
     }
 
@@ -183,7 +186,7 @@ namespace OpenWifi {
         if(StorageService()->BoardsDB().GetRecord("id",id,B))
             BoardsToWatch_.insert(B);
         else
-            Logger().information(fmt::format("Board {} does not seem to exist",id));
+            poco_information(Logger(),fmt::format("Board {} does not seem to exist",id));
     }
 
     void VenueCoordinator::GetDevices(std::string &id, AnalyticsObjects::DeviceInfoList &DIL) {

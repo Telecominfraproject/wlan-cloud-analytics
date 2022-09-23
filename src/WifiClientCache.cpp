@@ -10,6 +10,7 @@
 namespace OpenWifi {
 
 	int WifiClientCache::Start() {
+        poco_notice(Logger(),"Starting...");
         TimerCallback_ = std::make_unique<Poco::TimerCallback<WifiClientCache>>(*this,&WifiClientCache::onTimer);
         Timer_.setStartInterval( 30 * 1000);  // first run in 20 seconds
         Timer_.setPeriodicInterval( 60 * 60 * 1000); // 1 hours
@@ -18,7 +19,9 @@ namespace OpenWifi {
 	}
 
 	void WifiClientCache::Stop() {
+        poco_notice(Logger(),"Stopping...");
         Timer_.stop();
+        poco_notice(Logger(),"Stopped...");
 	}
 
     void WifiClientCache::onTimer([[maybe_unused]] Poco::Timer & timer) {
