@@ -10,6 +10,7 @@
 namespace OpenWifi {
 
     void VenueWatcher::Start() {
+        poco_notice(Logger(),"Starting...");
         for(const auto &mac:SerialNumbers_) {
             auto ap = std::make_shared<AP>(mac, venue_id_, boardId_, Logger());
             APs_[mac ] = ap;
@@ -24,6 +25,7 @@ namespace OpenWifi {
     }
 
     void VenueWatcher::Stop() {
+        poco_notice(Logger(),"Stopping...");
         Running_ = false;
         Queue_.wakeUpAll();
         Worker_.join();
@@ -31,6 +33,7 @@ namespace OpenWifi {
             StateReceiver()->DeRegister(i,this);
         DeviceStatusReceiver()->DeRegister(this);
         HealthReceiver()->DeRegister(this);
+        poco_notice(Logger(),"Stopped...");
     }
 
     void VenueWatcher::run() {

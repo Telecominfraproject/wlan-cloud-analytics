@@ -196,6 +196,8 @@ namespace OpenWifi::RESTAPI::Errors {
 	static const struct msg InvalidRadiusServerEntry{1142,"RADIUS Server IP address invalid or port missing."};
 	static const struct msg InvalidRadiusServerWeigth{1143,"RADIUS Server IP weight cannot be 0."};
 
+	static const struct msg MaximumRTTYSessionsReached{1144,"Too many RTTY sessions currently active"};
+	static const struct msg DeviceIsAlreadyBusy{1145,"Device is already executing a command. Please try later."};
 }
 
 
@@ -428,6 +430,7 @@ namespace OpenWifi::uCentralProtocol {
 	static const char *RADIUSDATA = "data";
 	static const char *RADIUSACCT = "acct";
 	static const char *RADIUSAUTH = "auth";
+	static const char *RADIUSCOA = "coa";
 	static const char *RADIUSDST = "dst";
 	static const char *IES = "ies";
 	}
@@ -444,6 +447,7 @@ namespace OpenWifi::uCentralProtocol::Events {
     static const char *RECOVERY = "recovery";
     static const char *TELEMETRY = "telemetry";
     static const char *DEVICEUPDATE = "deviceupdate";
+	static const char *VENUE_BROADCAST = "venue_broadcast";
 
     enum EVENT_MSG {
 		ET_UNKNOWN,
@@ -456,7 +460,8 @@ namespace OpenWifi::uCentralProtocol::Events {
 		ET_CFGPENDING,
 		ET_RECOVERY,
 		ET_DEVICEUPDATE,
-		ET_TELEMETRY
+		ET_TELEMETRY,
+		ET_VENUEBROADCAST
 	};
 
 	inline EVENT_MSG EventFromString(const std::string & Method) {
@@ -480,6 +485,8 @@ namespace OpenWifi::uCentralProtocol::Events {
 			return ET_RECOVERY;
 		else if(strcmp(TELEMETRY,Method.c_str())==0)
 			return ET_TELEMETRY;
+		else if(strcmp(VENUE_BROADCAST,Method.c_str())==0)
+			return ET_VENUEBROADCAST;
 		return ET_UNKNOWN;
 	};
 }

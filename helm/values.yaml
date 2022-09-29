@@ -71,7 +71,7 @@ volumes:
       mountPath: /owanalytics-data/certs
       volumeDefinition: |
         secret:
-          secretName: {{ include "owanalytics.fullname" . }}-certs
+          secretName: {{ if .Values.existingCertsSecret }}{{ .Values.existingCertsSecret }}{{ else }}{{ include "owanalytics.fullname" . }}-certs{{ end }}
     # Change this if you want to use another volume type
     - name: persist
       mountPath: /owanalytics-data/persist
@@ -197,6 +197,9 @@ configProperties:
   ## MySQL
   storage.type.mysql.username: stephb
   storage.type.mysql.password: snoopy99
+
+# NOTE: List of required certificates may be found in "certs" key. Alternative way to pass required certificates is to create external secret with all required certificates and set secret name in "existingCertsSecret" key. Details may be found in https://github.com/Telecominfraproject/wlan-cloud-ucentral-deploy/tree/main/chart#tldr
+existingCertsSecret: ""
 
 certs:
   # restapi-ca.pem: ""

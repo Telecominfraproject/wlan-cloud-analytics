@@ -70,8 +70,8 @@ The following table lists the configurable parameters of the chart and their def
 | persistence.size | string | Defines PV size | `'10Gi'` |
 | public_env_variables | hash | Defines list of environment variables to be passed to the Analytics | |
 | configProperties | hash | Configuration properties that should be passed to the application in `owanalytics.properties`. May be passed by key in set (i.e. `configProperties."rtty\.token"`) | |
-| certs | hash | Defines files (keys and certificates) that should be passed to the Analytics (PEM format is adviced to be used) (see `volumes.owanalytics` on where it is mounted) |  |
-
+| existingCertsSecret | string | Existing Kubernetes secret containing all required certificates and private keys for microservice operation. If set, certificates from `certs` key are ignored | `""` |
+| certs | hash | Defines files (keys and certificates) that should be passed to the Gateway (PEM format is adviced to be used) (see `volumes.owanalytics` on where it is mounted). If `existingCertsSecret` is set, certificates passed this way will not be used. |  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

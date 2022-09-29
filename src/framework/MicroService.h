@@ -23,6 +23,13 @@
 #include <queue>
 #include <variant>
 
+
+// This must be defined for poco_debug and poco_trace macros to function.
+
+#ifndef POCO_LOG_DEBUG
+#define POCO_LOG_DEBUG true
+#endif
+
 namespace OpenWifi {
     inline uint64_t Now() { return std::time(nullptr); };
 }
@@ -1345,17 +1352,17 @@ namespace OpenWifi {
 		inline void exception(const Poco::Exception & E) {
 		    Poco::Thread * CurrentThread = Poco::Thread::current();
 		    App_.logger().log(E);
-		    App_.logger().error(fmt::format("Exception occurred in {}",CurrentThread->getName()));
+		    poco_error(App_.logger(), fmt::format("Exception occurred in {}",CurrentThread->getName()));
 		}
 
 		inline void exception(const std::exception & E) {
 		    Poco::Thread * CurrentThread = Poco::Thread::current();
-		    App_.logger().warning(fmt::format("std::exception in {}: {}",CurrentThread->getName(),E.what()));
+			poco_warning(App_.logger(), fmt::format("std::exception in {}: {}",CurrentThread->getName(),E.what()));
 		}
 
 		inline void exception() {
 		    Poco::Thread * CurrentThread = Poco::Thread::current();
-		    App_.logger().warning(fmt::format("exception in {}",CurrentThread->getName()));
+			poco_warning(App_.logger(), fmt::format("exception in {}",CurrentThread->getName()));
 		}
 	  private:
 		Poco::Util::Application	&App_;
@@ -1363,12 +1370,17 @@ namespace OpenWifi {
 
 	class BusEventManager : public Poco::Runnable {
 	  public:
+		explicit BusEventManager(Poco::Logger &L) : Logger_(L) {
+
+		}
 		inline void run() final;
 		inline void Start();
 		inline void Stop();
+		inline Poco::Logger & Logger() { return Logger_; }
 	  private:
 		mutable std::atomic_bool 	Running_ = false;
 		Poco::Thread		Thread_;
+		Poco::Logger		&Logger_;
 	};
 
 	class MyPrivateKeyPassphraseHandler : public Poco::Net::PrivateKeyPassphraseHandler {
@@ -1382,6 +1394,7 @@ namespace OpenWifi {
 	        Logger_.information("Returning key passphrase.");
 	        privateKey = Password_;
 	    };
+		inline Poco::Logger & Logger() { return Logger_; }
 	private:
 	    std::string Password_;
 	    Poco::Logger & Logger_;
@@ -1650,14 +1663,14 @@ namespace OpenWifi {
 
 	class SubSystemServer : public Poco::Util::Application::Subsystem {
 	public:
-	    SubSystemServer(std::string Name, const std::string &LoggingPrefix,
-                        std::string SubSystemConfigPrefix);
+	    SubSystemServer(const std::string & Name, const std::string &LoggingPrefix,
+                        const std::string & SubSystemConfigPrefix);
 
 	    inline void initialize(Poco::Util::Application &self) override;
 	    inline void uninitialize() override {
 	    }
 	    inline void reinitialize([[maybe_unused]] Poco::Util::Application &self) override {
-	        Logger().information("Reloading of this subsystem is not supported.");
+	        Logger_->L_.information("Reloading of this subsystem is not supported.");
 	    }
 	    inline void defineOptions([[maybe_unused]] Poco::Util::OptionSet &options) override {
 	    }
@@ -1666,30 +1679,30 @@ namespace OpenWifi {
 
 	    inline const PropertiesFileServerEntry & Host(uint64_t index) { return ConfigServersList_[index]; };
 	    inline uint64_t HostSize() const { return ConfigServersList_.size(); }
-	    inline Poco::Logger &Logger() { if(Log_)
-                                            return Log_->L;
-                                        return Poco::Logger::get("tmp");
-                                        };
-	    inline void SetLoggingLevel(Poco::Message::Priority NewPriority) { Logger().setLevel(NewPriority); }
-	    inline int GetLoggingLevel() { return Logger().getLevel(); }
+		inline Poco::Logger & Logger() const { return Logger_->L_; }
+	    inline void SetLoggingLevel(const std::string & levelName) {
+			Logger_->L_.setLevel(Poco::Logger::parseLevel(levelName));
+		}
+	    inline int GetLoggingLevel() { return Logger_->L_.getLevel(); }
 
 	    virtual int Start() = 0;
 	    virtual void Stop() = 0;
 
-        struct LoggerWrapper {
-            Poco::Logger &L;
-            explicit inline LoggerWrapper(Poco::Logger &Logger) : L(Logger) {}
-        };
+		struct LoggerWrapper {
+			Poco::Logger & L_;
+			LoggerWrapper(Poco::Logger &L) :
+				L_(L) {}
+		};
 
 	protected:
 	    std::recursive_mutex Mutex_;
         std::vector<PropertiesFileServerEntry> ConfigServersList_;
+
     private:
-        std::unique_ptr<LoggerWrapper>  Log_;
-	    // Poco::Logger 		&Logger_;
-	    std::string 		Name_;
-        std::string         LoggerPrefix_;
-	    std::string 		SubSystemConfigPrefix_;
+        std::unique_ptr<LoggerWrapper>  Logger_;
+	    std::string 					Name_;
+        std::string         			LoggerPrefix_;
+	    std::string 					SubSystemConfigPrefix_;
 	};
 
 	class RESTAPI_GenericServer {
@@ -1823,7 +1836,7 @@ namespace OpenWifi {
 	            E->Count++;
 	            Cache_.update(H,E);
 	            if(E->Count > MaxCalls) {
-	                Logger().warning(fmt::format("RATE-LIMIT-EXCEEDED: from '{}'", R.clientAddress().toString()));
+	                poco_warning(Logger(),fmt::format("RATE-LIMIT-EXCEEDED: from '{}'", R.clientAddress().toString()));
 	                return true;
 	            }
 	            return false;
@@ -2165,12 +2178,16 @@ namespace OpenWifi {
 	        SetCommonHeaders(CloseConnection);
 	    }
 
-	    inline void BadRequest(const OpenWifi::RESTAPI::Errors::msg &E) {
+	    inline void BadRequest(const OpenWifi::RESTAPI::Errors::msg &E, const std::string & Extra="") {
 	        PrepareResponse(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
 	        Poco::JSON::Object	ErrorObject;
 	        ErrorObject.set("ErrorCode",400);
 	        ErrorObject.set("ErrorDetails",Request->getMethod());
-	        ErrorObject.set("ErrorDescription",fmt::format("{}: {}",E.err_num,E.err_txt)) ;
+			if(Extra.empty())
+	        	ErrorObject.set("ErrorDescription",fmt::format("{}: {}",E.err_num,E.err_txt)) ;
+			else
+				ErrorObject.set("ErrorDescription",fmt::format("{}: {} ({})",E.err_num,E.err_txt, Extra)) ;
+
 	        std::ostream &Answer = Response->send();
 	        Poco::JSON::Stringifier::stringify(ErrorObject, Answer);
 	    }
@@ -2214,7 +2231,7 @@ namespace OpenWifi {
             ErrorObject.set("ErrorDescription",fmt::format("{}: {}",E.err_num,E.err_txt)) ;
 	        std::ostream &Answer = Response->send();
 	        Poco::JSON::Stringifier::stringify(ErrorObject, Answer);
-	        Logger_.debug(fmt::format("RES-NOTFOUND: User='{}@{}' Method='{}' Path='{}",
+			poco_debug(Logger_,fmt::format("RES-NOTFOUND: User='{}@{}' Method='{}' Path='{}",
                                        UserInfo_.userinfo.email,
                                        Utils::FormatIPv6(Request->clientAddress().toString()),
                                        Request->getMethod(),
@@ -2783,9 +2800,11 @@ namespace OpenWifi {
 
 	    inline void Stop() override {
 	        if(KafkaEnabled_) {
+				poco_information(Logger(),"Stopping...");
 				Dispatcher_.Stop();
 	            ProducerThr_.Stop();
 	            ConsumerThr_.Stop();
+				poco_information(Logger(),"Stopped...");
 	            return;
 	        }
 	    }
@@ -2863,12 +2882,13 @@ namespace OpenWifi {
 	    }
 
 	    inline void Stop() override {
+			poco_information(Logger(),"Stopping...");
             std::lock_guard	G(Mutex_);
 	        Cache_.clear();
+			poco_information(Logger(),"Stopped...");
 	    }
 
 	    inline void RemovedCachedToken(const std::string &Token) {
-	        std::lock_guard	G(Mutex_);
 	        Cache_.remove(Token);
 	    }
 
@@ -2878,6 +2898,7 @@ namespace OpenWifi {
 
 	    inline bool RetrieveTokenInformation(const std::string & SessionToken,
 											 SecurityObjects::UserInfoAndPolicy & UInfo,
+											 std::uint64_t TID,
 											 bool & Expired, bool & Contacted, bool Sub=false) {
 	        try {
 	            Types::StringPairVec QueryData;
@@ -2903,7 +2924,6 @@ namespace OpenWifi {
 	                        return false;
 	                    }
 	                    Expired = false;
-                        std::lock_guard	G(Mutex_);
 	                    Cache_.update(SessionToken, UInfo);
 	                    return true;
 	                } else {
@@ -2911,14 +2931,15 @@ namespace OpenWifi {
                     }
 	            }
 	        } catch (...) {
+				poco_error(Logger(),fmt::format("Failed to retrieve token={} for TID={}", SessionToken, TID));
 	        }
 	        Expired = false;
 	        return false;
 	    }
 
         inline bool IsAuthorized(const std::string &SessionToken, SecurityObjects::UserInfoAndPolicy & UInfo,
+								 std::uint64_t TID,
 								 bool & Expired, bool & Contacted, bool Sub = false) {
-            std::lock_guard	G(Mutex_);
 	        auto User = Cache_.get(SessionToken);
 	        if(!User.isNull()) {
 	            if(IsTokenExpired(User->webtoken)) {
@@ -2929,7 +2950,7 @@ namespace OpenWifi {
                 UInfo = *User;
                 return true;
 	        }
-	        return RetrieveTokenInformation(SessionToken, UInfo, Expired, Contacted, Sub);
+	        return RetrieveTokenInformation(SessionToken, UInfo, TID, Expired, Contacted, Sub);
 	    }
 
 	private:
@@ -2947,12 +2968,12 @@ namespace OpenWifi {
 	            {
 	            }
 
-	            void handleRequest(Poco::Net::HTTPServerRequest& Request, Poco::Net::HTTPServerResponse& Response) override
+	            void handleRequest([[maybe_unused]] Poco::Net::HTTPServerRequest& Request, Poco::Net::HTTPServerResponse& Response) override
 	            {
 					Utils::SetThreadName("alb-request");
 					try {
 						if((id_ % 100) == 0) {
-							Logger_.debug(fmt::format("ALB-REQUEST({}): ALB Request {}.",
+							poco_debug(Logger_,fmt::format("ALB-REQUEST({}): ALB Request {}.",
 															Request.clientAddress().toString(), id_));
 						}
 						Response.setChunkedTransferEncoding(true);
@@ -3010,8 +3031,10 @@ namespace OpenWifi {
 	    inline int Start() override;
 
 	    inline void Stop() override {
+			poco_information(Logger(),"Stopping...");
 	        if(Running_)
-	            Server_->stop();
+	            Server_->stopAll(true);
+			poco_information(Logger(),"Stopped...");
 	    }
 
 	private:
@@ -3040,10 +3063,11 @@ namespace OpenWifi {
 	    inline void Stop() override {
 	        Logger().information("Stopping...");
 	        for( const auto & svr : RESTServers_ )
-	            svr->stop();
+	            svr->stopAll(true);
 			Pool_.stopAll();
 	        Pool_.joinAll();
 	        RESTServers_.clear();
+			Logger().information("Stopped...");
 	    }
 
 
@@ -3058,7 +3082,7 @@ namespace OpenWifi {
 
 	private:
 	    std::vector<std::unique_ptr<Poco::Net::HTTPServer>>   RESTServers_;
-	    Poco::ThreadPool	    Pool_{"x-rest",2,32};
+	    Poco::ThreadPool	    Pool_{"x-rest",4,128};
 	    RESTAPI_GenericServer   Server_;
 
         RESTAPI_ExtServer() noexcept:
@@ -3175,9 +3199,10 @@ namespace OpenWifi {
 	    inline void Stop() override {
 	        Logger().information("Stopping...");
 	        for( const auto & svr : RESTServers_ )
-	            svr->stop();
+	            svr->stopAll(true);
 			Pool_.stopAll();
 			Pool_.joinAll();
+			Logger().information("Stopped...");
 	    }
 
 	    inline void reinitialize(Poco::Util::Application &self) override;
@@ -3187,11 +3212,10 @@ namespace OpenWifi {
 			Utils::SetThreadName(fmt::format("i-rest:{}",Id).c_str());
 	        return RESTAPI_IntRouter(Path, Bindings, Logger(), Server_, Id);
 	    }
-
         const Poco::ThreadPool & Pool() { return Pool_; }
 	private:
 	    std::vector<std::unique_ptr<Poco::Net::HTTPServer>>   RESTServers_;
-	    Poco::ThreadPool	    Pool_{"i-rest",2,16};
+	    Poco::ThreadPool	    Pool_{"i-rest",4,96};
 	    RESTAPI_GenericServer   Server_;
 
         RESTAPI_IntServer() noexcept:
@@ -3272,7 +3296,7 @@ namespace OpenWifi {
 		    return ((RandomEngine_() % (max-min)) + min);
 		}
 
-        inline Poco::Logger & GetLogger(const std::string &Name) {
+/*        inline Poco::Logger & GetLogger(const std::string &Name) {
             static auto initialized = false;
 
             if(!initialized) {
@@ -3281,7 +3305,7 @@ namespace OpenWifi {
             }
             return Poco::Logger::get(Name);
         }
-
+*/
         virtual void GetExtraConfiguration(Poco::JSON::Object & Cfg) {
             Cfg.set("additionalConfiguration",false);
         }
@@ -3374,7 +3398,6 @@ namespace OpenWifi {
 		std::string 				MyPublicEndPoint_;
 		std::string                 UIURI_;
 		std::string 				Version_{ OW_VERSION::VERSION + "("+ OW_VERSION::BUILD + ")" + " - " + OW_VERSION::HASH };
-		BusEventManager				BusEventManager_;
 		std::recursive_mutex		InfraMutex_;
 		std::default_random_engine  RandomEngine_;
         Poco::Util::PropertyFileConfiguration   * PropConfigurationFile_ = nullptr;
@@ -3388,7 +3411,8 @@ namespace OpenWifi {
         bool                        NoBuiltInCrypto_=false;
         Poco::JWT::Signer	        Signer_;
 		Poco::Logger				&Logger_;
-		Poco::ThreadPool			TimerPool_{"timer:pool",2,16};
+		Poco::ThreadPool				TimerPool_{"timer:pool",2,16};
+		std::unique_ptr<BusEventManager>	BusEventManager_;
     };
 
 	inline void MicroService::Exit(int Reason) {
@@ -3469,7 +3493,7 @@ namespace OpenWifi {
 	        }
 
 	    } catch (const Poco::Exception &E) {
-	        Logger_.log(E);
+	        logger().log(E);
 	    }
 	}
 
@@ -3609,7 +3633,9 @@ namespace OpenWifi {
 	    SubSystems_.push_back(ALBHealthCheckServer());
 	    SubSystems_.push_back(RESTAPI_ExtServer());
 	    SubSystems_.push_back(RESTAPI_IntServer());
-
+#ifndef TIP_SECURITY_SERVICE
+		SubSystems_.push_back(AuthClient());
+#endif
 	    Poco::Net::initializeSSL();
 	    Poco::Net::HTTPStreamFactory::registerFactory();
 	    Poco::Net::HTTPSStreamFactory::registerFactory();
@@ -3720,8 +3746,9 @@ namespace OpenWifi {
 	}
 
 	inline void MicroService::InitializeSubSystemServers() {
-	    for(auto i:SubSystems_)
-	        addSubsystem(i);
+	    for(auto i:SubSystems_) {
+			addSubsystem(i);
+		}
 	}
 
 	inline void MicroService::StartSubSystemServers() {
@@ -3729,12 +3756,13 @@ namespace OpenWifi {
 	    for(auto i:SubSystems_) {
 	        i->Start();
 	    }
-	    BusEventManager_.Start();
+		BusEventManager_ = std::make_unique<BusEventManager>(Poco::Logger::create("BusEventManager",Poco::Logger::root().getChannel(),Poco::Logger::root().getLevel()));
+	    BusEventManager_->Start();
 	}
 
 	inline void MicroService::StopSubSystemServers() {
         AddActivity("Stopping");
-	    BusEventManager_.Stop();
+	    BusEventManager_->Stop();
 	    for(auto i=SubSystems_.rbegin(); i!=SubSystems_.rend(); ++i) {
 			(*i)->Stop();
 		}
@@ -3911,14 +3939,15 @@ namespace OpenWifi {
 	    }
 	}
 
-    inline SubSystemServer::SubSystemServer(std::string Name, const std::string &LoggingPrefix,
-            std::string SubSystemConfigPrefix):
-        Name_(std::move(Name)),
-        LoggerPrefix_(LoggingPrefix),
-        SubSystemConfigPrefix_(std::move(SubSystemConfigPrefix)) {
+    inline SubSystemServer::SubSystemServer(const std::string &Name, const std::string &LoggingPrefix,
+            const std::string &SubSystemConfigPrefix):
+		Name_(Name),
+		LoggerPrefix_(LoggingPrefix),
+		SubSystemConfigPrefix_(SubSystemConfigPrefix) {
     }
 
     inline int RESTAPI_ExtServer::Start() {
+		Logger().information("Starting.");
         Server_.InitLogging();
 
         for(const auto & Svr: ConfigServersList_) {
@@ -3950,7 +3979,6 @@ namespace OpenWifi {
             NewServer->start();
             RESTServers_.push_back(std::move(NewServer));
         }
-
         return 0;
     }
 
@@ -4040,7 +4068,11 @@ namespace OpenWifi {
 	    auto i = 0;
 	    bool good = true;
 
-        Log_ = std::make_unique<LoggerWrapper>(Poco::Logger::get(LoggerPrefix_));
+		auto NewLevel = MicroService::instance().ConfigGetString("logging.level." + Name_, "");
+		if(NewLevel.empty())
+        	Logger_ = std::make_unique<LoggerWrapper>(Poco::Logger::create(LoggerPrefix_, Poco::Logger::root().getChannel(), Poco::Logger::root().getLevel()));
+		else
+			Logger_ = std::make_unique<LoggerWrapper>(Poco::Logger::create(LoggerPrefix_, Poco::Logger::root().getChannel(), Poco::Logger::parseLevel(NewLevel)));
 
 	    ConfigServersList_.clear();
 	    while (good) {
@@ -4130,9 +4162,11 @@ namespace OpenWifi {
 
     inline void BusEventManager::Stop() {
         if(KafkaManager()->Enabled()) {
+			poco_information(Logger(),"Stopping...");
             Running_ = false;
             Thread_.wakeUp();
             Thread_.join();
+			poco_information(Logger(),"Stopped...");
         }
     }
 
@@ -4144,37 +4178,37 @@ namespace OpenWifi {
 	inline void KafkaLoggerFun([[maybe_unused]] cppkafka::KafkaHandleBase & handle, int level, const std::string & facility, const std::string &message) {
 		switch ((cppkafka::LogLevel) level) {
 			case cppkafka::LogLevel::LogNotice: {
-					KafkaManager()->Logger().notice(fmt::format("kafka-log: facility: {} message: {}",facility, message));
+					poco_notice(KafkaManager()->Logger(),fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogDebug: {
-					KafkaManager()->Logger().debug(fmt::format("kafka-log: facility: {} message: {}",facility, message));
+					poco_debug(KafkaManager()->Logger(),fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogInfo: {
-					KafkaManager()->Logger().information(fmt::format("kafka-log: facility: {} message: {}",facility, message));
+					poco_information(KafkaManager()->Logger(),fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
-				case cppkafka::LogLevel::LogWarning: {
-					KafkaManager()->Logger().warning(fmt::format("kafka-log: facility: {} message: {}",facility, message));
+			case cppkafka::LogLevel::LogWarning: {
+					poco_warning(KafkaManager()->Logger(), fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogAlert:
 			case cppkafka::LogLevel::LogCrit: {
-					KafkaManager()->Logger().critical(fmt::format("kafka-log: facility: {} message: {}",facility, message));
+					poco_critical(KafkaManager()->Logger(),fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 			case cppkafka::LogLevel::LogErr:
 			case cppkafka::LogLevel::LogEmerg:
 			default: {
-				KafkaManager()->Logger().error(fmt::format("kafka-log: facility: {} message: {}",facility, message));
+					poco_error(KafkaManager()->Logger(),fmt::format("kafka-log: facility: {} message: {}",facility, message));
 				}
 				break;
 		}
 	}
 
 	inline void KafkaErrorFun([[maybe_unused]] cppkafka::KafkaHandleBase & handle, int error, const std::string &reason) {
-		KafkaManager()->Logger().error(fmt::format("kafka-error: {}, reason: {}", error, reason));
+		poco_error(KafkaManager()->Logger(),fmt::format("kafka-error: {}, reason: {}", error, reason));
 	}
 
 	inline void AddKafkaSecurity(cppkafka::Configuration & Config) {
@@ -4223,11 +4257,11 @@ namespace OpenWifi {
                             cppkafka::MessageBuilder(Msg->Topic()).key(Msg->Key()).payload(Msg->Payload()));
                 }
             } catch (const cppkafka::HandleException &E) {
-                KafkaManager()->Logger().warning(fmt::format("Caught a Kafka exception (producer): {}", E.what()));
+				poco_warning(KafkaManager()->Logger(),fmt::format("Caught a Kafka exception (producer): {}", E.what()));
             } catch( const Poco::Exception &E) {
                 KafkaManager()->Logger().log(E);
             } catch (...) {
-                KafkaManager()->Logger().error("std::exception");
+				poco_error(KafkaManager()->Logger(),"std::exception");
             }
 			Note = Queue_.waitDequeueNotification();
 		}
@@ -4287,7 +4321,7 @@ namespace OpenWifi {
 	                    continue;
 	                if (Msg.get_error()) {
 	                    if (!Msg.is_eof()) {
-	                        KafkaManager()->Logger().error(fmt::format("Error: {}", Msg.get_error().to_string()));
+							poco_error(KafkaManager()->Logger(),fmt::format("Error: {}", Msg.get_error().to_string()));
 	                    }
                         if(!AutoCommit)
 	                        Consumer.async_commit(Msg);
@@ -4298,11 +4332,11 @@ namespace OpenWifi {
 	                    Consumer.async_commit(Msg);
 	            }
 	        } catch (const cppkafka::HandleException &E) {
-	            KafkaManager()->Logger().warning(fmt::format("Caught a Kafka exception (consumer): {}", E.what()));
+				poco_warning(KafkaManager()->Logger(),fmt::format("Caught a Kafka exception (consumer): {}", E.what()));
 	        } catch (const Poco::Exception &E) {
 	            KafkaManager()->Logger().log(E);
             } catch (...) {
-                KafkaManager()->Logger().error("std::exception");
+				poco_error(KafkaManager()->Logger(),"std::exception");
             }
 	    }
 	    Consumer.unsubscribe();
@@ -4746,7 +4780,7 @@ namespace OpenWifi {
     }
 
 #ifdef    TIP_SECURITY_SERVICE
-    [[nodiscard]] bool AuthServiceIsAuthorized(Poco::Net::HTTPServerRequest & Request,std::string &SessionToken, SecurityObjects::UserInfoAndPolicy & UInfo, bool & Expired , bool Sub );
+    [[nodiscard]] bool AuthServiceIsAuthorized(Poco::Net::HTTPServerRequest & Request,std::string &SessionToken, SecurityObjects::UserInfoAndPolicy & UInfo, std::uint64_t TID, bool & Expired , bool Sub );
 #endif
     inline bool RESTAPIHandler::IsAuthorized( bool & Expired , [[maybe_unused]] bool & Contacted , bool Sub ) {
         if(Internal_ && Request->has("X-INTERNAL-NAME")) {
@@ -4754,17 +4788,20 @@ namespace OpenWifi {
 			Contacted = true;
             if(!Allowed) {
                 if(Server_.LogBadTokens(false)) {
-                    Logger_.debug(fmt::format("I-REQ-DENIED({}): Method={} Path={}",
-                                               Utils::FormatIPv6(Request->clientAddress().toString()),
-                                               Request->getMethod(), Request->getURI()));
+                    poco_debug(Logger_,fmt::format("I-REQ-DENIED({}): TID={} Method={} Path={}",
+						Utils::FormatIPv6(Request->clientAddress().toString()),
+						TransactionId_,
+						Request->getMethod(), Request->getURI()));
                 }
             } else {
                 auto Id = Request->get("X-INTERNAL-NAME", "unknown");
 				REST_Requester_ = Id;
                 if(Server_.LogIt(Request->getMethod(),true)) {
-                    Logger_.debug(fmt::format("I-REQ-ALLOWED({}): User='{}' Method={} Path={}",
-                                               Utils::FormatIPv6(Request->clientAddress().toString()), Id,
-                                               Request->getMethod(), Request->getURI()));
+					poco_debug(Logger_,fmt::format("I-REQ-ALLOWED({}): TID={} User='{}' Method={} Path={}",
+						Utils::FormatIPv6(Request->clientAddress().toString()),
+						TransactionId_,
+						Id,
+						Request->getMethod(), Request->getURI()));
                 }
             }
             return Allowed;
@@ -4780,25 +4817,28 @@ namespace OpenWifi {
                 }
             }
 #ifdef    TIP_SECURITY_SERVICE
-            if (AuthServiceIsAuthorized(*Request, SessionToken_, UserInfo_, Expired, Sub)) {
+            if (AuthServiceIsAuthorized(*Request, SessionToken_, UserInfo_, TransactionId_, Expired, Sub)) {
 #else
-            if (AuthClient()->IsAuthorized( SessionToken_, UserInfo_, Expired, Contacted, Sub)) {
+            if (AuthClient()->IsAuthorized( SessionToken_, UserInfo_, TransactionId_, Expired, Contacted, Sub)) {
 #endif
 				REST_Requester_ = UserInfo_.userinfo.email;
                 if(Server_.LogIt(Request->getMethod(),true)) {
-                    Logger_.debug(fmt::format("X-REQ-ALLOWED({}): User='{}@{}' Method={} Path={}",
-                                               UserInfo_.userinfo.email,
-                                               Utils::FormatIPv6(Request->clientAddress().toString()),
-                                               Request->clientAddress().toString(),
-                                               Request->getMethod(),
-                                               Request->getURI()));
+					poco_debug(Logger_,fmt::format("X-REQ-ALLOWED({}): TID={} User='{}@{}' Method={} Path={}",
+						UserInfo_.userinfo.email,
+						TransactionId_,
+						Utils::FormatIPv6(Request->clientAddress().toString()),
+						Request->clientAddress().toString(),
+						Request->getMethod(),
+						Request->getURI()));
                 }
                 return true;
             } else {
                 if(Server_.LogBadTokens(true)) {
-                    Logger_.debug(fmt::format("X-REQ-DENIED({}): Method={} Path={}",
-                                               Utils::FormatIPv6(Request->clientAddress().toString()),
-                                               Request->getMethod(), Request->getURI()));
+					poco_debug(Logger_,fmt::format("X-REQ-DENIED({}): TID={} Method={} Path={}",
+						Utils::FormatIPv6(Request->clientAddress().toString()),
+						TransactionId_,
+						Request->getMethod(),
+						Request->getURI()));
                 }
             }
             return false;
@@ -5060,7 +5100,7 @@ namespace OpenWifi {
 			auto Op = flags & Poco::Net::WebSocket::FRAME_OP_BITMASK;
 
 			if (n == 0) {
-				Logger().warning(Poco::format("CLOSE(%s): %s UI Client is closing WS connection.", Id_, UserName_));
+				poco_warning(Logger(),Poco::format("CLOSE(%s): %s UI Client is closing WS connection.", Id_, UserName_));
 				return delete this;
 			}
 
@@ -5073,7 +5113,7 @@ namespace OpenWifi {
 			case Poco::Net::WebSocket::FRAME_OP_PONG: {
 			} break;
 			case Poco::Net::WebSocket::FRAME_OP_CLOSE: {
-				Logger().warning(Poco::format("CLOSE(%s): %s UI Client is closing WS connection.", Id_, UserName_));
+				poco_warning(Logger(),Poco::format("CLOSE(%s): %s UI Client is closing WS connection.", Id_, UserName_));
 				Done = true;
 			} break;
 			case Poco::Net::WebSocket::FRAME_OP_TEXT: {
@@ -5083,10 +5123,10 @@ namespace OpenWifi {
 					auto Tokens = Utils::Split(Frame, ':');
 					bool Expired = false, Contacted = false;
 					if (Tokens.size() == 2 &&
-						AuthClient()->IsAuthorized(Tokens[1], UserInfo_, Expired, Contacted)) {
+						AuthClient()->IsAuthorized(Tokens[1], UserInfo_, 0, Expired, Contacted)) {
 						Authenticated_ = true;
 						UserName_ = UserInfo_.userinfo.email;
-						Logger().warning(Poco::format("START(%s): %s UI Client is starting WS connection.", Id_, UserName_));
+						poco_warning(Logger(),Poco::format("START(%s): %s UI Client is starting WS connection.", Id_, UserName_));
 						std::string S{"Welcome! Bienvenue! Bienvenidos!"};
 						WS_->sendFrame(S.c_str(), S.size());
 						WebSocketClientServer()->SetUser(Id_, UserInfo_.userinfo.email);
@@ -5149,7 +5189,10 @@ namespace OpenWifi {
             Reactor_.addEventHandler(*WS_,
                                      Poco::NObserver<WebSocketClient, Poco::Net::ErrorNotification>(
                                              *this, &WebSocketClient::OnSocketError));
-            // WebSocketClientServer()->Register(this, Id_);
+			WS_->setNoDelay(true);
+			WS_->setKeepAlive(true);
+			WS_->setBlocking(false);
+
         } catch (...) {
             delete this;
         }
