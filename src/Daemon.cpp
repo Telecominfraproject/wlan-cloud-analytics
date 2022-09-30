@@ -46,6 +46,7 @@ namespace OpenWifi {
 
 int main(int argc, char **argv) {
 	try {
+        Poco::Net::SSLManager::instance().initializeServer(nullptr, nullptr, nullptr);
 		auto App = OpenWifi::Daemon::instance();
 		auto ExitCode =  App->run(argc, argv);
 		delete App;
