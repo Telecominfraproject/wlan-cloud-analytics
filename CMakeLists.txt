@@ -77,6 +77,7 @@ add_executable(owanalytics
         src/framework/ConfigurationValidator.cpp
         src/framework/ConfigurationValidator.h
         src/framework/ow_constants.h
+        src/framework/MicroServiceErrorHandler.h
         src/framework/WebSocketClientNotifications.h
         src/framework/MicroServiceErrorHandler.h
         src/RESTObjects/RESTAPI_SecurityObjects.h src/RESTObjects/RESTAPI_SecurityObjects.cpp
