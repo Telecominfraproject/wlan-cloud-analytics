@@ -1,17 +1,16 @@
-ARG ALPINE_VERSION=3.16.2
+ARG DEBIAN_VERSION=11.4-slim
 ARG POCO_VERSION=poco-tip-v1
 ARG FMTLIB_VERSION=9.0.0
 ARG CPPKAFKA_VERSION=tip-v1
 ARG JSON_VALIDATOR_VERSION=2.1.0
 
-FROM alpine:$ALPINE_VERSION AS build-base
+FROM debian:$DEBIAN_VERSION AS build-base
 
-RUN apk add --update --no-cache \
+RUN apt-get update && apt-get install --no-install-recommends -y \
     make cmake g++ git \
-    unixodbc-dev postgresql-dev mariadb-dev \
-    librdkafka-dev boost-dev openssl-dev \
-    zlib-dev nlohmann-json \
-    curl-dev
+    unixodbc-dev libpq-dev libmariadb-dev libmariadbclient-dev-compat \
+    librdkafka-dev libboost-all-dev libssl-dev \
+    zlib1g-dev nlohmann-json3-dev ca-certificates libcurl4-openssl-dev
 
 FROM build-base AS poco-build
 
@@ -91,21 +90,21 @@ WORKDIR /owanalytics/cmake-build
 RUN cmake ..
 RUN cmake --build . --config Release -j8
 
-FROM alpine:$ALPINE_VERSION
+FROM debian:$DEBIAN_VERSION
 
 ENV OWANALYTICS_USER=owanalytics \
     OWANALYTICS_ROOT=/owanalytics-data \
     OWANALYTICS_CONFIG=/owanalytics-data
 
-RUN addgroup -S "$OWANALYTICS_USER" && \
-    adduser -S -G "$OWANALYTICS_USER" "$OWANALYTICS_USER"
+RUN useradd "$OWANALYTICS_USER"
 
 RUN mkdir /openwifi
 RUN mkdir -p "$OWANALYTICS_ROOT" "$OWANALYTICS_CONFIG" && \
     chown "$OWANALYTICS_USER": "$OWANALYTICS_ROOT" "$OWANALYTICS_CONFIG"
 
-RUN apk add --update --no-cache librdkafka su-exec gettext ca-certificates bash jq curl \
-    mariadb-connector-c libpq unixodbc postgresql-client
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    librdkafka++1 gosu gettext ca-certificates bash jq curl wget \
+    libmariadb-dev-compat libpq5 unixodbc
 
 COPY readiness_check /readiness_check
 COPY test_scripts/curl/cli /cli
@@ -114,11 +113,13 @@ COPY owanalytics.properties.tmpl /
 COPY docker-entrypoint.sh /
 COPY wait-for-postgres.sh /
 RUN wget https://raw.githubusercontent.com/Telecominfraproject/wlan-cloud-ucentral-deploy/main/docker-compose/certs/restapi-ca.pem \
-    -O /usr/local/share/ca-certificates/restapi-ca-selfsigned.pem
+    -O /usr/local/share/ca-certificates/restapi-ca-selfsigned.crt
 
 COPY --from=owanalytics-build /owanalytics/cmake-build/owanalytics /openwifi/owanalytics
 COPY --from=cppkafka-build /cppkafka/cmake-build/src/lib/* /usr/local/lib
 COPY --from=poco-build /poco/cmake-build/lib/* /usr/local/lib
+
+RUN ldconfig
 
 EXPOSE 16009 17009 16109
 
