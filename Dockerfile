@@ -87,7 +87,7 @@ RUN mkdir -p "$OWANALYTICS_ROOT" "$OWANALYTICS_CONFIG" && \
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     librdkafka++1 gosu gettext ca-certificates bash jq curl wget \
-    libmariadb-dev-compat libpq5 unixodbc postgresql-client
+    libmariadb-dev-compat libpq5 unixodbc postgresql-client libfmt7
 
 COPY readiness_check /readiness_check
 COPY test_scripts/curl/cli /cli
