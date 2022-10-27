@@ -6,6 +6,7 @@
 #include "dict_ssid.h"
 #include "StorageService.h"
 #include "WifiClientCache.h"
+#include "fmt/format.h"
 
 namespace OpenWifi {
 
@@ -461,7 +462,7 @@ namespace OpenWifi {
             }
 
             if (got_connection && got_health) {
-                db_DTP.id = MicroService::instance().CreateUUID();
+                db_DTP.id = MicroServiceCreateUUID();
                 db_DTP.boardId = boardId_;
                 db_DTP.serialNumber = db_DTP.device_info.serialNumber;
                 StorageService()->TimePointsDB().CreateRecord(db_DTP);

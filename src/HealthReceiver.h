@@ -2,21 +2,11 @@
 // Created by stephane bourque on 2022-03-15.
 //
 
-#ifndef OWANALYTICS_HEALTHRECEIVER_H
-#define OWANALYTICS_HEALTHRECEIVER_H
-
-
-class HealthReceiver {
-
-};
-
-
-#endif //OWANALYTICS_HEALTHRECEIVER_H
-
 #pragma once
 
-#include "framework/MicroService.h"
-// #include "VenueWatcher.h"
+#include "framework/SubSystemServer.h"
+#include "Poco/Notification.h"
+#include "Poco/NotificationQueue.h"
 
 namespace OpenWifi {
     class HealthMessage : public Poco::Notification {

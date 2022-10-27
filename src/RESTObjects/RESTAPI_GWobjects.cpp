@@ -11,12 +11,12 @@
 
 #include "Daemon.h"
 #ifdef	TIP_GATEWAY_SERVICE
-#include "DeviceRegistry.h"
+#include "AP_WS_Server.h"
 #include "CapabilitiesCache.h"
 #endif
 
 #include "RESTAPI_GWobjects.h"
-#include "framework/MicroService.h"
+#include "framework/RESTAPI_utils.h"
 
 using OpenWifi::RESTAPI_utils::field_to_json;
 using OpenWifi::RESTAPI_utils::field_from_json;
@@ -57,7 +57,7 @@ namespace OpenWifi::GWObjects {
 #ifdef TIP_GATEWAY_SERVICE
 		ConnectionState ConState;
 
-		if (DeviceRegistry()->GetState(SerialNumber, ConState)) {
+		if (AP_WS_Server()->GetState(SerialNumber, ConState)) {
 			ConState.to_json(Obj);
 		} else {
 			field_to_json(Obj,"ipAddress", "");
@@ -225,12 +225,14 @@ namespace OpenWifi::GWObjects {
 	void DeviceConnectionStatistics::to_json(Poco::JSON::Object &Obj) const {
 		field_to_json(Obj,"averageConnectionTime", averageConnectionTime);
 		field_to_json(Obj,"connectedDevices", connectedDevices );
+		field_to_json(Obj,"connectingDevices", connectingDevices );
 	}
 
 	bool DeviceConnectionStatistics::from_json(const Poco::JSON::Object::Ptr &Obj) {
 		try {
 			field_from_json(Obj,"averageConnectionTime", averageConnectionTime);
 			field_from_json(Obj,"connectedDevices", connectedDevices );
+			field_from_json(Obj,"connectingDevices", connectingDevices );
 			return true;
 		} catch (const Poco::Exception &E) {
 		}

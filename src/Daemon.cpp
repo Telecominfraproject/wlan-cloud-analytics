@@ -6,11 +6,14 @@
 //	Arilia Wireless Inc.
 //
 
+#include "Daemon.h"
+
 #include "Poco/Util/Application.h"
 #include "Poco/Util/Option.h"
 #include "Poco/Environment.h"
+#include "Poco/Net/SSLManager.h"
+#include "framework/OpenWifiTypes.h"
 
-#include "Daemon.h"
 #include "StorageService.h"
 #include "VenueCoordinator.h"
 #include "StateReceiver.h"
@@ -41,6 +44,10 @@ namespace OpenWifi {
 	}
 
     void Daemon::PostInitialization([[maybe_unused]] Poco::Util::Application &self) {
+    }
+
+    void DaemonPostInitialization(Poco::Util::Application &self) {
+        Daemon()->PostInitialization(self);
     }
 }
 

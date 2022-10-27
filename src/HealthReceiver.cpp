@@ -4,6 +4,8 @@
 
 #include "HealthReceiver.h"
 #include "VenueWatcher.h"
+#include "framework/KafkaManager.h"
+#include "framework/KafkaTopics.h"
 #include "fmt/core.h"
 
 namespace OpenWifi {

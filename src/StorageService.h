@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "framework/MicroService.h"
 #include "framework/StorageClass.h"
 #include "storage/storage_boards.h"
 #include "storage/storage_timepoints.h"

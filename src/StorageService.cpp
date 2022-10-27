@@ -8,6 +8,9 @@
 
 #include "StorageService.h"
 #include "RESTObjects/RESTAPI_ProvObjects.h"
+#include "framework/MicroServiceFuncs.h"
+#include "fmt/format.h"
+#include "framework/utils.h"
 
 namespace OpenWifi {
 
@@ -25,7 +28,7 @@ namespace OpenWifi {
         BoardsDB_->Create();
         WifiClientHistoryDB_->Create();
 
-        PeriodicCleanup_ = MicroService::instance().ConfigGetInt("storage.cleanup.interval", 6*60*60);
+        PeriodicCleanup_ = MicroServiceConfigGetInt("storage.cleanup.interval", 6*60*60);
         if(PeriodicCleanup_<1*60*60)
             PeriodicCleanup_ = 1*60*60;
 
@@ -59,7 +62,7 @@ namespace OpenWifi {
             done = (BoardList.size() < batch);
         }
 
-        auto MaxDays = MicroService::instance().ConfigGetInt("wificlient.age.limit",14);
+        auto MaxDays = MicroServiceConfigGetInt("wificlient.age.limit",14);
         auto LowerDate = OpenWifi::Now() - (MaxDays*60*60*24);
         poco_information(Logger(),fmt::format("Removing WiFi Clients history older than {} days.", MaxDays));
         StorageService()->WifiClientHistoryDB().DeleteRecords(fmt::format(" timestamp<{} ", LowerDate));

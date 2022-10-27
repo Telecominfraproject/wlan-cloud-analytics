@@ -5,6 +5,8 @@
 #include "DeviceStatusReceiver.h"
 #include "VenueWatcher.h"
 #include "fmt/core.h"
+#include "framework/KafkaTopics.h"
+#include "framework/KafkaManager.h"
 
 namespace OpenWifi {
     int DeviceStatusReceiver::Start() {
