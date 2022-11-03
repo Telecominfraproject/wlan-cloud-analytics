@@ -8,6 +8,7 @@
 #include "RESTAPI/RESTAPI_board_timepoint_handler.h"
 #include "RESTAPI/RESTAPI_wificlienthistory_handler.h"
 #include "framework/RESTAPI_SystemCommand.h"
+#include "framework/RESTAPI_WebSocketServer.h"
 
 namespace OpenWifi {
 
@@ -20,7 +21,8 @@ namespace OpenWifi {
                     RESTAPI_board_timepoint_handler,
                     RESTAPI_board_handler,
                     RESTAPI_board_list_handler,
-                    RESTAPI_wificlienthistory_handler
+                    RESTAPI_wificlienthistory_handler,
+                    RESTAPI_webSocketServer
                 >(Path,Bindings,L, S, TransactionId);
     }
 
