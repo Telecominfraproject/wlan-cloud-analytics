@@ -6,17 +6,21 @@
 //	Arilia Wireless Inc.
 //
 
+#include "Daemon.h"
+
 #include "Poco/Util/Application.h"
 #include "Poco/Util/Option.h"
 #include "Poco/Environment.h"
+#include "Poco/Net/SSLManager.h"
+#include "framework/OpenWifiTypes.h"
 
-#include "Daemon.h"
 #include "StorageService.h"
 #include "VenueCoordinator.h"
 #include "StateReceiver.h"
 #include "DeviceStatusReceiver.h"
 #include "HealthReceiver.h"
 #include "WifiClientCache.h"
+#include "framework/UI_WebSocketClientServer.h"
 
 namespace OpenWifi {
 	class Daemon *Daemon::instance_ = nullptr;
@@ -34,13 +38,18 @@ namespace OpenWifi {
                                        DeviceStatusReceiver(),
                                        HealthReceiver(),
                                        VenueCoordinator(),
-                                       WifiClientCache()
+                                       WifiClientCache(),
+                                       UI_WebSocketClientServer()
 								   });
 		}
 		return instance_;
 	}
 
     void Daemon::PostInitialization([[maybe_unused]] Poco::Util::Application &self) {
+    }
+
+    void DaemonPostInitialization(Poco::Util::Application &self) {
+        Daemon()->PostInitialization(self);
     }
 }
 

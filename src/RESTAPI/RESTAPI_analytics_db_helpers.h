@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "framework/MicroService.h"
 #include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 #include "StorageService.h"
 #include "framework/orm.h"

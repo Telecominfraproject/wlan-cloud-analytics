@@ -7,6 +7,7 @@
 #include "StorageService.h"
 #include "sdks/SDK_prov.h"
 #include "fmt/core.h"
+#include "framework/MicroServiceFuncs.h"
 
 namespace OpenWifi {
 
@@ -18,7 +19,7 @@ namespace OpenWifi {
         ReconcileTimerCallback_ = std::make_unique<Poco::TimerCallback<VenueCoordinator>>(*this,&VenueCoordinator::onReconcileTimer);
         ReconcileTimerTimer_.setStartInterval( 3 * 60 * 1000 );
         ReconcileTimerTimer_.setPeriodicInterval(3 * 60 * 1000); // 1 hours
-        ReconcileTimerTimer_.start(*ReconcileTimerCallback_, MicroService::instance().TimerPool());
+        ReconcileTimerTimer_.start(*ReconcileTimerCallback_, MicroServiceTimerPool());
 
         return 0;
     }

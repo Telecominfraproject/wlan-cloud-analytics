@@ -4,9 +4,11 @@
 
 #pragma once
 
-#include "framework/MicroService.h"
+#include "framework/SubSystemServer.h"
 #include "APStats.h"
 #include "RESTObjects/RESTAPI_AnalyticsObjects.h"
+#include "Poco/NotificationQueue.h"
+#include "Poco/Notification.h"
 
 namespace OpenWifi {
 

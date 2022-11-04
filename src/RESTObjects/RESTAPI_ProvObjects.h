@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include <string>
-#include "RESTAPI_SecurityObjects.h"
+#include "RESTObjects/RESTAPI_SecurityObjects.h"
 
 namespace OpenWifi::ProvObjects {
 
@@ -61,6 +60,21 @@ namespace OpenWifi::ProvObjects {
         bool from_json(const Poco::JSON::Object::Ptr &Obj);
     };
     typedef std::vector<ManagementPolicy>      ManagementPolicyVec;
+
+    struct RRMAlgorithmDetails {
+        std::string     name;
+        std::string     parameters;
+        void to_json(Poco::JSON::Object &Obj) const;
+        bool from_json(const Poco::JSON::Object::Ptr &Obj);
+    };
+
+    struct RRMDetails {
+        std::string     vendor;
+        std::string     schedule;
+        std::vector<RRMAlgorithmDetails>    algorithms;
+        void to_json(Poco::JSON::Object &Obj) const;
+        bool from_json(const Poco::JSON::Object::Ptr &Obj);
+    };
 
     struct DeviceRules {
         std::string     rcOnly{"inherit"};
@@ -414,6 +428,7 @@ namespace OpenWifi::ProvObjects {
         std::string     devClass;
         std::string     locale;
         std::string     realMacAddress;
+        bool            doNotAllowOverrides=false;
 
         void to_json(Poco::JSON::Object &Obj) const;
         bool from_json(const Poco::JSON::Object::Ptr &Obj);
@@ -674,6 +689,27 @@ namespace OpenWifi::ProvObjects {
 
     struct SubscriberDeviceList {
         std::vector<SubscriberDevice>       subscriberDevices;
+
+        void to_json(Poco::JSON::Object &Obj) const;
+        bool from_json(const Poco::JSON::Object::Ptr &Obj);
+    };
+
+    struct ConfigurationOverride {
+        std::string     source;
+        std::string     reason;
+        std::string     parameterName;
+        std::string     parameterType;
+        std::string     parameterValue;
+        std::uint64_t   modified;
+
+        void to_json(Poco::JSON::Object &Obj) const;
+        bool from_json(const Poco::JSON::Object::Ptr &Obj);
+    };
+
+    struct ConfigurationOverrideList {
+        std::string     serialNumber;
+        Types::UUID_t   managementPolicy;
+        std::vector<ConfigurationOverride>  overrides;
 
         void to_json(Poco::JSON::Object &Obj) const;
         bool from_json(const Poco::JSON::Object::Ptr &Obj);

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(owanalytics VERSION 2.7.0)
+project(owanalytics VERSION 2.8.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_GENERATOR "Unix Makefiles")
@@ -39,6 +39,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 endif()
 
 find_package(OpenSSL    REQUIRED)
+find_package(ZLIB       REQUIRED)
 find_package(Poco       REQUIRED COMPONENTS Crypto JWT Net Util NetSSL Data DataSQLite)
 find_package(nlohmann_json  REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
@@ -74,16 +75,56 @@ add_executable(owanalytics
         src/framework/OpenWifiTypes.h
         src/framework/orm.h
         src/framework/StorageClass.h
+        src/framework/MicroServiceErrorHandler.h
+        src/framework/UI_WebSocketClientServer.cpp
+        src/framework/UI_WebSocketClientServer.h
+        src/framework/UI_WebSocketClientNotifications.cpp
+        src/framework/UI_WebSocketClientNotifications.h
+        src/framework/utils.h
+        src/framework/utils.cpp
+        src/framework/AppServiceRegistry.h
+        src/framework/SubSystemServer.cpp
+        src/framework/SubSystemServer.h
+        src/framework/RESTAPI_utils.h
+        src/framework/AuthClient.cpp
+        src/framework/AuthClient.h
+        src/framework/MicroServiceNames.h
+        src/framework/MicroServiceFuncs.h
+        src/framework/OpenAPIRequests.cpp
+        src/framework/OpenAPIRequests.h
+        src/framework/MicroServiceFuncs.cpp
+        src/framework/ALBserver.cpp
+        src/framework/ALBserver.h
+        src/framework/KafkaManager.cpp
+        src/framework/KafkaManager.h
+        src/framework/RESTAPI_RateLimiter.h
+        src/framework/WebSocketLogger.h
+        src/framework/RESTAPI_GenericServerAccounting.h
+        src/framework/RESTAPI_SystemConfiguration.h
+        src/framework/CIDR.h
+        src/framework/RESTAPI_Handler.cpp
+        src/framework/RESTAPI_Handler.h
+        src/framework/RESTAPI_ExtServer.h
+        src/framework/RESTAPI_ExtServer.cpp
+        src/framework/RESTAPI_IntServer.cpp
+        src/framework/RESTAPI_IntServer.h
+        src/framework/RESTAPI_SystemCommand.h
+        src/framework/RESTAPI_WebSocketServer.h
+        src/framework/EventBusManager.cpp
+        src/framework/EventBusManager.h
+        src/framework/RESTAPI_PartHandler.h
+        src/framework/MicroService.cpp
+        src/framework/MicroServiceExtra.h
         src/framework/ConfigurationValidator.cpp
         src/framework/ConfigurationValidator.h
-        src/framework/ow_constants.h
-        src/framework/MicroServiceErrorHandler.h
-        src/framework/WebSocketClientNotifications.h
-        src/framework/MicroServiceErrorHandler.h
         src/RESTObjects/RESTAPI_SecurityObjects.h src/RESTObjects/RESTAPI_SecurityObjects.cpp
-        src/RESTObjects/RESTAPI_ProvObjects.cpp src/RESTObjects/RESTAPI_ProvObjects.h
         src/RESTObjects/RESTAPI_GWobjects.h src/RESTObjects/RESTAPI_GWobjects.cpp
         src/RESTObjects/RESTAPI_FMSObjects.h src/RESTObjects/RESTAPI_FMSObjects.cpp
+        src/RESTObjects/RESTAPI_CertObjects.cpp src/RESTObjects/RESTAPI_CertObjects.h
+        src/RESTObjects/RESTAPI_OWLSobjects.cpp src/RESTObjects/RESTAPI_OWLSobjects.h
+        src/RESTObjects/RESTAPI_ProvObjects.cpp src/RESTObjects/RESTAPI_ProvObjects.h
+        src/RESTObjects/RESTAPI_AnalyticsObjects.cpp src/RESTObjects/RESTAPI_AnalyticsObjects.h
+        src/RESTObjects/RESTAPI_SubObjects.cpp src/RESTObjects/RESTAPI_SubObjects.h
         src/RESTAPI/RESTAPI_routers.cpp
         src/Daemon.cpp src/Daemon.h
         src/Dashboard.h src/Dashboard.cpp

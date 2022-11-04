@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "framework/MicroService.h"
-// #include "VenueWatcher.h"
+#include "framework/SubSystemServer.h"
+#include "Poco/NotificationQueue.h"
+#include "Poco/Notification.h"
 
 namespace OpenWifi {
     class DeviceStatusMessage : public Poco::Notification {

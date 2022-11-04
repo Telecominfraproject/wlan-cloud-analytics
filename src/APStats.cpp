@@ -6,6 +6,8 @@
 #include "dict_ssid.h"
 #include "StorageService.h"
 #include "WifiClientCache.h"
+#include "fmt/format.h"
+#include "framework/utils.h"
 
 namespace OpenWifi {
 
@@ -461,7 +463,7 @@ namespace OpenWifi {
             }
 
             if (got_connection && got_health) {
-                db_DTP.id = MicroService::instance().CreateUUID();
+                db_DTP.id = MicroServiceCreateUUID();
                 db_DTP.boardId = boardId_;
                 db_DTP.serialNumber = db_DTP.device_info.serialNumber;
                 StorageService()->TimePointsDB().CreateRecord(db_DTP);
@@ -475,23 +477,23 @@ namespace OpenWifi {
 
     void AP::UpdateConnection(const std::shared_ptr<nlohmann::json> &Connection) {
         DI_.pings++;
-        DI_.lastContact = OpenWifi::Now();
+        DI_.lastContact = Utils::Now();
         try {
             if (Connection->contains("ping")) {
                 got_connection = true;
                 poco_debug(Logger(),fmt::format("{}: ping message.", DI_.serialNumber));
                 DI_.connected = true;
-                DI_.lastPing = OpenWifi::Now();
+                DI_.lastPing = Utils::Now();
                 auto ping = (*Connection)["ping"];
                 GetJSON("compatible", ping, DI_.deviceType, std::string{} );
                 GetJSON("connectionIp", ping, DI_.connectionIp, std::string{} );
                 GetJSON("locale", ping, DI_.locale, std::string{} );
-                GetJSON("timestamp", ping, DI_.lastConnection, (uint64_t) OpenWifi::Now() );
+                GetJSON("timestamp", ping, DI_.lastConnection, (uint64_t) Utils::Now() );
                 if (ping.contains("firmware")) {
                     auto NewFirmware = ping["firmware"];
                     if (NewFirmware != DI_.lastFirmware) {
                         DI_.lastFirmware = NewFirmware;
-                        DI_.lastFirmwareUpdate = OpenWifi::Now();
+                        DI_.lastFirmwareUpdate = Utils::Now();
                     }
                 }
             } else if (Connection->contains("disconnection")) {
@@ -504,13 +506,13 @@ namespace OpenWifi {
                 poco_debug(Logger(),fmt::format("{}: connection message.", DI_.serialNumber));
                 got_connection = true;
                 DI_.connected = true;
-                DI_.lastConnection = OpenWifi::Now();
+                DI_.lastConnection = Utils::Now();
                 auto ConnectionData = (*Connection)["capabilities"];
                 if (ConnectionData.contains("firmware")) {
                     auto NewFirmware = ConnectionData["firmware"];
                     if (NewFirmware != DI_.lastFirmware) {
                         DI_.lastFirmware = NewFirmware;
-                        DI_.lastFirmwareUpdate = OpenWifi::Now();
+                        DI_.lastFirmwareUpdate = Utils::Now();
                     }
                 }
                 GetJSON("connectionIp", ConnectionData, DI_.connectionIp, std::string{} );
