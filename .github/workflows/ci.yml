@@ -26,7 +26,7 @@ jobs:
       DOCKER_REGISTRY_USERNAME: ucentral
     steps:
     - name: Checkout actions repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: Telecominfraproject/.github
         path: github
@@ -57,11 +57,11 @@ jobs:
     - name: Get base branch name and set as output
       id: get_base_branch
       run: |
-        echo ::set-output name=branch::$(echo ${GITHUB_BASE_REF##*/})
-        echo ::set-output name=owgw_branch::$(echo ${GITHUB_BASE_REF##*/} | sed 's/main/master/g')
+        echo "branch=$(echo ${GITHUB_BASE_REF##*/})" >> $GITHUB_OUTPUT
+        echo "owgw_branch=$(echo ${GITHUB_BASE_REF##*/} | sed 's/main/master/g')" >> $GITHUB_OUTPUT
 
     - name: Checkout actions repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: Telecominfraproject/.github
         path: github
@@ -86,7 +86,7 @@ jobs:
       - docker
     steps:
     - name: Checkout actions repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: Telecominfraproject/.github
         path: github
