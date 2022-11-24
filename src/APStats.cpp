@@ -210,7 +210,7 @@ namespace OpenWifi {
                             }
                         }
                     } catch(...) {
-                        std::cout << "Exception will parsing clients: " << InterfaceName << std::endl;
+                        std::cout << "Exception while parsing clients: " << InterfaceName << std::endl;
                     }
                 } else {
                     // std::cout <<"Interface: No clients: " << InterfaceName << std::endl;
@@ -312,9 +312,9 @@ namespace OpenWifi {
                                     if(!ClientInfo->second.ipv6_addresses.empty()) {
                                         WFH.ipv6 = ClientInfo->second.ipv6_addresses[0];
                                     }
-                                    std::cout << __LINE__ << ": " << InterfaceName << "   Mac Found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
+                                    // std::cout << __LINE__ << ": " << InterfaceName << "   Mac Found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
                                 } else {
-                                    std::cout << __LINE__ << ": " << InterfaceName << "   Mac NOT found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
+                                    // std::cout << __LINE__ << ": " << InterfaceName << "   Mac NOT found: " << ICEM.size() << " entries. " << WFH.station_id << std::endl;
                                 }
 
                                 for(const auto &rd:DTP.radio_data) {
