@@ -136,7 +136,7 @@ namespace OpenWifi {
                         if(radio.contains("band") && radio["band"].is_array()) {
                             auto BandArray = radio["band"];
                             RTP.band = BandToInt(BandArray[0]);
-                            std::cout << "BAND (radio): " << BandToInt(BandArray[0]) << std::endl;
+                            // std::cout << "BAND (radio): " << BandToInt(BandArray[0]) << std::endl;
                         } else {
                             RTP.band = RTP.channel <= 16 ? 2 : 5;
                         }
@@ -226,7 +226,7 @@ namespace OpenWifi {
                         if(ssid.contains("band")) {
                             std::string Band = ssid["band"];
                             SSIDTP.band = BandToInt(Band);
-                            std::cout << "BAND (ssid): " << SSIDTP.band << std::endl;
+                            // std::cout << "BAND (ssid): " << SSIDTP.band << std::endl;
                             auto radio = ssid["radio"];
                             if(radio.contains("$ref")) {
                                 auto ref = radio["$ref"];
