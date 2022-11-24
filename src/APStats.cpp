@@ -90,6 +90,13 @@ namespace OpenWifi {
         return false;
     }
 
+    static int BandToInt(const std::string &band) {
+        if(band=="2G") return 2;
+        if(band=="5G") return 5;
+        if(band=="6G") return 6;
+        return 2;
+    }
+
     void AP::UpdateStats(const std::shared_ptr<nlohmann::json> &State) {
         DI_.states++;
         DI_.connected =true;
@@ -126,7 +133,13 @@ namespace OpenWifi {
                     if (radio.contains("channel")) {
                         AnalyticsObjects::RadioTimePoint RTP;
                         GetJSON("channel", radio, RTP.channel, (uint64_t) 2);
-                        RTP.band = RTP.channel <= 16 ? 2 : 5;
+                        if(radio.contains("band") && radio["band"].is_array()) {
+                            auto BandArray = radio["band"];
+                            RTP.band = BandToInt(BandArray[0]);
+                            std::cout << "BAND (radio): " << BandToInt(BandArray[0]) << std::endl;
+                        } else {
+                            RTP.band = RTP.channel <= 16 ? 2 : 5;
+                        }
                         radio_map[radio_index++] = std::make_pair(RTP.band, RTP.channel);
                         GetJSON("busy_ms", radio, RTP.busy_ms, (uint64_t) 0);
                         GetJSON("receive_ms", radio, RTP.receive_ms, (uint64_t) 0);
@@ -209,7 +222,23 @@ namespace OpenWifi {
                         AnalyticsObjects::SSIDTimePoint   SSIDTP;
                         uint radio_location=0;
                         SSIDTP.band = 2;
-                        if(ssid.contains("radio")) {
+
+                        if(ssid.contains("band")) {
+                            std::string Band = ssid["band"];
+                            SSIDTP.band = BandToInt(Band);
+                            std::cout << "BAND (ssid): " << SSIDTP.band << std::endl;
+                            auto radio = ssid["radio"];
+                            if(radio.contains("$ref")) {
+                                auto ref = radio["$ref"];
+                                auto radio_parts = Poco::StringTokenizer(ref, "/");
+                                if(radio_parts.count()==3) {
+                                    radio_location = std::strtol(radio_parts[2].c_str(), nullptr, 10);
+                                    if(radio_map.find(radio_location)!=radio_map.end()) {
+                                        SSIDTP.channel = radio_map[radio_location].second;
+                                    }
+                                }
+                            }
+                        } else if(ssid.contains("radio")) {
                             auto radio = ssid["radio"];
                             if(radio.contains("$ref")) {
                                 auto ref = radio["$ref"];
