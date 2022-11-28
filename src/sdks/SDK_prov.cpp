@@ -57,15 +57,15 @@ namespace OpenWifi::SDK::Prov {
         bool Exists(RESTAPIHandler *client, const std::string &VenueId, bool & Exists) {
             std::string         EndPoint = "/api/v1/venue/" + VenueId ;
 
-            Exists = true;
+            Exists = false;
             auto API = OpenAPIRequestGet(uSERVICE_PROVISIONING, EndPoint, {} , 60000);
             auto CallResponse = Poco::makeShared<Poco::JSON::Object>();
 
             auto ResponseStatus = API.Do(CallResponse, client==nullptr ? "" : client->UserInfo_.webtoken.access_token_);
             if(ResponseStatus == Poco::Net::HTTPServerResponse::HTTP_OK) {
+                Exists = true;
                 return true;
             } else if (ResponseStatus == Poco::Net::HTTPResponse::HTTP_NOT_FOUND) {
-                Exists = false;
                 return true;
             }
             return false;
