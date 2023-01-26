@@ -14,7 +14,7 @@ namespace OpenWifi {
             return ReturnFieldList(DB_,*this);
         }
 
-        auto venue = GetParameter("venue","");
+        auto venue = ORM::Escape(GetParameter("venue",""));
         if(venue.empty()) {
             return BadRequest(RESTAPI::Errors::VenueMustExist);
         }
@@ -72,7 +72,7 @@ namespace OpenWifi {
             return UnAuthorized(RESTAPI::Errors::ACCESS_DENIED);
         }
 
-        auto venue = GetParameter("venue","");
+        auto venue = ORM::Escape(GetParameter("venue",""));
         if(venue.empty()) {
             return BadRequest(RESTAPI::Errors::VenueMustExist);
         }
