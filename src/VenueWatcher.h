@@ -4,86 +4,79 @@
 
 #pragma once
 
-#include "framework/SubSystemServer.h"
 #include "APStats.h"
-#include "RESTObjects/RESTAPI_AnalyticsObjects.h"
-#include "Poco/NotificationQueue.h"
 #include "Poco/Notification.h"
+#include "Poco/NotificationQueue.h"
+#include "RESTObjects/RESTAPI_AnalyticsObjects.h"
+#include "framework/SubSystemServer.h"
 
 namespace OpenWifi {
 
-    class VenueMessage : public Poco::Notification {
-    public:
-        enum MsgType {
-            connection,
-            state,
-            health
-        };
+	class VenueMessage : public Poco::Notification {
+	  public:
+		enum MsgType { connection, state, health };
 
-        explicit VenueMessage(uint64_t SerialNumber, MsgType Msg, std::shared_ptr<nlohmann::json> &M ) :
-                Payload_(M),
-                Type_(Msg),
-                SerialNumber_(SerialNumber) {
-        }
-        inline std::shared_ptr<nlohmann::json> & Payload() { return Payload_; }
-        inline auto SerialNumber() { return SerialNumber_; }
-        inline uint64_t Type() { return Type_; }
+		explicit VenueMessage(uint64_t SerialNumber, MsgType Msg,
+							  std::shared_ptr<nlohmann::json> &M)
+			: Payload_(M), Type_(Msg), SerialNumber_(SerialNumber) {}
+		inline std::shared_ptr<nlohmann::json> &Payload() { return Payload_; }
+		inline auto SerialNumber() { return SerialNumber_; }
+		inline uint64_t Type() { return Type_; }
 
-    private:
-        std::shared_ptr<nlohmann::json> Payload_;
-        MsgType                         Type_;
-        uint64_t                        SerialNumber_=0;
-    };
+	  private:
+		std::shared_ptr<nlohmann::json> Payload_;
+		MsgType Type_;
+		uint64_t SerialNumber_ = 0;
+	};
 
-    class VenueWatcher : public Poco::Runnable {
-    public:
-        explicit VenueWatcher(const std::string &boardId, const std::string &venue_id,Poco::Logger &L, const std::vector<uint64_t> & SerialNumbers) :
-                boardId_(boardId),
-                venue_id_(venue_id),
-                Logger_(L),
-                SerialNumbers_(SerialNumbers) {
-            std::sort(SerialNumbers_.begin(),SerialNumbers_.end());
-            auto last = std::unique(SerialNumbers_.begin(),SerialNumbers_.end());
-            SerialNumbers_.erase(last,SerialNumbers_.end());
-        }
+	class VenueWatcher : public Poco::Runnable {
+	  public:
+		explicit VenueWatcher(const std::string &boardId, const std::string &venue_id,
+							  Poco::Logger &L, const std::vector<uint64_t> &SerialNumbers)
+			: boardId_(boardId), venue_id_(venue_id), Logger_(L), SerialNumbers_(SerialNumbers) {
+			std::sort(SerialNumbers_.begin(), SerialNumbers_.end());
+			auto last = std::unique(SerialNumbers_.begin(), SerialNumbers_.end());
+			SerialNumbers_.erase(last, SerialNumbers_.end());
+		}
 
-        inline void PostState(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
-            std::lock_guard G(Mutex_);
-            Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::state, Msg));
-        }
+		inline void PostState(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
+			std::lock_guard G(Mutex_);
+			Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::state, Msg));
+		}
 
-        inline void PostConnection(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
-            std::lock_guard G(Mutex_);
-            Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::connection, Msg));
-        }
+		inline void PostConnection(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
+			std::lock_guard G(Mutex_);
+			Queue_.enqueueNotification(
+				new VenueMessage(SerialNumber, VenueMessage::connection, Msg));
+		}
 
-        inline void PostHealth(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
-            std::lock_guard G(Mutex_);
-            Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::health, Msg));
-        }
+		inline void PostHealth(uint64_t SerialNumber, std::shared_ptr<nlohmann::json> &Msg) {
+			std::lock_guard G(Mutex_);
+			Queue_.enqueueNotification(new VenueMessage(SerialNumber, VenueMessage::health, Msg));
+		}
 
-        void Start();
-        void Stop();
+		void Start();
+		void Stop();
 
-        void run() final;
-        inline Poco::Logger & Logger() { return Logger_; }
-        void ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers);
-        void GetDevices(std::vector<AnalyticsObjects::DeviceInfo> & DI);
+		void run() final;
+		inline Poco::Logger &Logger() { return Logger_; }
+		void ModifySerialNumbers(const std::vector<uint64_t> &SerialNumbers);
+		void GetDevices(std::vector<AnalyticsObjects::DeviceInfo> &DI);
 
-        void GetBandwidth(uint64_t start, uint64_t end, uint64_t interval , AnalyticsObjects::BandwidthAnalysis & BW);
-        inline std::string Venue() const {
-            return venue_id_;
-        }
-    private:
-        std::mutex                                  Mutex_;
-        std::string                                 boardId_;
-        std::string                                 venue_id_;
-        Poco::NotificationQueue                     Queue_;
-        Poco::Logger                                &Logger_;
-        Poco::Thread                                Worker_;
-        std::atomic_bool                            Running_=false;
-        std::vector<uint64_t>                       SerialNumbers_;
-        std::map<uint64_t, std::shared_ptr<AP>>     APs_;
-    };
+		void GetBandwidth(uint64_t start, uint64_t end, uint64_t interval,
+						  AnalyticsObjects::BandwidthAnalysis &BW);
+		inline std::string Venue() const { return venue_id_; }
 
-}
+	  private:
+		std::mutex Mutex_;
+		std::string boardId_;
+		std::string venue_id_;
+		Poco::NotificationQueue Queue_;
+		Poco::Logger &Logger_;
+		Poco::Thread Worker_;
+		std::atomic_bool Running_ = false;
+		std::vector<uint64_t> SerialNumbers_;
+		std::map<uint64_t, std::shared_ptr<AP>> APs_;
+	};
+
+} // namespace OpenWifi

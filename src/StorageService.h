@@ -14,32 +14,31 @@
 #include "storage/storage_wificlients.h"
 
 namespace OpenWifi {
-    class Storage : public StorageClass, Poco::Runnable {
-        public:
-            static auto instance() {
-                static auto instance_ = new Storage;
-                return instance_;
-            }
+	class Storage : public StorageClass, Poco::Runnable {
+	  public:
+		static auto instance() {
+			static auto instance_ = new Storage;
+			return instance_;
+		}
 
-            int 	Start() override;
-            void 	Stop() override;
+		int Start() override;
+		void Stop() override;
 
-            void run() final;
-            auto & BoardsDB() { return *BoardsDB_; };
-            auto & TimePointsDB() { return *TimePointsDB_; };
-            auto & WifiClientHistoryDB() { return *WifiClientHistoryDB_; };
-            void onTimer(Poco::Timer & timer);
+		void run() final;
+		auto &BoardsDB() { return *BoardsDB_; };
+		auto &TimePointsDB() { return *TimePointsDB_; };
+		auto &WifiClientHistoryDB() { return *WifiClientHistoryDB_; };
+		void onTimer(Poco::Timer &timer);
 
-          private:
-            std::unique_ptr<OpenWifi::BoardsDB>                 BoardsDB_;
-            std::unique_ptr<OpenWifi::TimePointDB>              TimePointsDB_;
-            std::unique_ptr<OpenWifi::WifiClientHistoryDB>      WifiClientHistoryDB_;
-            Poco::Thread                                        Updater_;
-            std::atomic_bool                                    Running_=false;
-            Poco::Timer                                         Timer_;
-            std::unique_ptr<Poco::TimerCallback<Storage>>       TimerCallback_;
-            uint64_t                                            PeriodicCleanup_=6*60*60;
-   };
-   inline auto StorageService() { return Storage::instance(); }
-}  // namespace
-
+	  private:
+		std::unique_ptr<OpenWifi::BoardsDB> BoardsDB_;
+		std::unique_ptr<OpenWifi::TimePointDB> TimePointsDB_;
+		std::unique_ptr<OpenWifi::WifiClientHistoryDB> WifiClientHistoryDB_;
+		Poco::Thread Updater_;
+		std::atomic_bool Running_ = false;
+		Poco::Timer Timer_;
+		std::unique_ptr<Poco::TimerCallback<Storage>> TimerCallback_;
+		uint64_t PeriodicCleanup_ = 6 * 60 * 60;
+	};
+	inline auto StorageService() { return Storage::instance(); }
+} // namespace OpenWifi

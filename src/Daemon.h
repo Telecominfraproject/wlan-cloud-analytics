@@ -9,45 +9,43 @@
 #pragma once
 
 #include <array>
-#include <iostream>
 #include <cstdlib>
-#include <vector>
+#include <iostream>
 #include <set>
+#include <vector>
 
 #include "Dashboard.h"
+#include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 #include "framework/MicroService.h"
 #include "framework/MicroServiceNames.h"
 #include "framework/OpenWifiTypes.h"
-#include "RESTObjects/RESTAPI_AnalyticsObjects.h"
 
 namespace OpenWifi {
 
-	[[maybe_unused]] inline static const char * vDAEMON_PROPERTIES_FILENAME = "owanalytics.properties";
-    [[maybe_unused]] inline static const char * vDAEMON_ROOT_ENV_VAR = "OWANALYTICS_ROOT";
-    [[maybe_unused]] inline static const char * vDAEMON_CONFIG_ENV_VAR = "OWANALYTICS_CONFIG";
-    [[maybe_unused]] inline static const char * vDAEMON_APP_NAME = uSERVICE_ANALYTICS.c_str() ;
-    [[maybe_unused]] inline static const uint64_t vDAEMON_BUS_TIMER = 10000;
+	[[maybe_unused]] inline static const char *vDAEMON_PROPERTIES_FILENAME =
+		"owanalytics.properties";
+	[[maybe_unused]] inline static const char *vDAEMON_ROOT_ENV_VAR = "OWANALYTICS_ROOT";
+	[[maybe_unused]] inline static const char *vDAEMON_CONFIG_ENV_VAR = "OWANALYTICS_CONFIG";
+	[[maybe_unused]] inline static const char *vDAEMON_APP_NAME = uSERVICE_ANALYTICS.c_str();
+	[[maybe_unused]] inline static const uint64_t vDAEMON_BUS_TIMER = 10000;
 
-    class Daemon : public MicroService {
-		public:
-			explicit Daemon(const std::string & PropFile,
-							const std::string & RootEnv,
-							const std::string & ConfigEnv,
-							const std::string & AppName,
-						  	uint64_t 	BusTimer,
-							const SubSystemVec & SubSystems) :
-				MicroService( PropFile, RootEnv, ConfigEnv, AppName, BusTimer, SubSystems) {};
+	class Daemon : public MicroService {
+	  public:
+		explicit Daemon(const std::string &PropFile, const std::string &RootEnv,
+						const std::string &ConfigEnv, const std::string &AppName, uint64_t BusTimer,
+						const SubSystemVec &SubSystems)
+			: MicroService(PropFile, RootEnv, ConfigEnv, AppName, BusTimer, SubSystems){};
 
-			void PostInitialization(Poco::Util::Application &self);
-			static Daemon *instance();
-			inline OpenWifi::AnalyticsDashboard & GetDashboard() { return DB_; }
-			Poco::Logger & Log() { return Poco::Logger::get(AppName()); }
-	  	private:
-			static Daemon 				*instance_;
-			OpenWifi::AnalyticsDashboard		DB_{};
-    };
+		void PostInitialization(Poco::Util::Application &self);
+		static Daemon *instance();
+		inline OpenWifi::AnalyticsDashboard &GetDashboard() { return DB_; }
+		Poco::Logger &Log() { return Poco::Logger::get(AppName()); }
 
-	inline Daemon * Daemon() { return Daemon::instance(); }
-    void DaemonPostInitialization(Poco::Util::Application &self);
-}
+	  private:
+		static Daemon *instance_;
+		OpenWifi::AnalyticsDashboard DB_{};
+	};
 
+	inline Daemon *Daemon() { return Daemon::instance(); }
+	void DaemonPostInitialization(Poco::Util::Application &self);
+} // namespace OpenWifi

@@ -7,24 +7,24 @@
 #include "VenueCoordinator.h"
 
 namespace OpenWifi {
-    void RESTAPI_board_devices_handler::DoGet() {
+	void RESTAPI_board_devices_handler::DoGet() {
 
-        auto id = GetBinding("id","");
+		auto id = GetBinding("id", "");
 
-        if(id.empty()) {
-            return BadRequest(RESTAPI::Errors::MissingUUID);
-        }
+		if (id.empty()) {
+			return BadRequest(RESTAPI::Errors::MissingUUID);
+		}
 
-        AnalyticsObjects::BoardInfo BI;
-        if(!StorageService()->BoardsDB().GetRecord("id",id,BI)) {
-            return NotFound();
-        }
+		AnalyticsObjects::BoardInfo BI;
+		if (!StorageService()->BoardsDB().GetRecord("id", id, BI)) {
+			return NotFound();
+		}
 
-        AnalyticsObjects::DeviceInfoList    DIL;
-        VenueCoordinator()->GetDevices(id,DIL);
+		AnalyticsObjects::DeviceInfoList DIL;
+		VenueCoordinator()->GetDevices(id, DIL);
 
-        Poco::JSON::Object  Answer;
-        DIL.to_json(Answer);
-        return ReturnObject(Answer);
-    }
-}
+		Poco::JSON::Object Answer;
+		DIL.to_json(Answer);
+		return ReturnObject(Answer);
+	}
+} // namespace OpenWifi
