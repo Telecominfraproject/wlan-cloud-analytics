@@ -42,7 +42,6 @@ find_package(OpenSSL    REQUIRED)
 find_package(ZLIB       REQUIRED)
 find_package(Poco       REQUIRED COMPONENTS Crypto JWT Net Util NetSSL Data DataSQLite)
 find_package(nlohmann_json  REQUIRED)
-find_package(nlohmann_json_schema_validator REQUIRED)
 find_package(fmt        REQUIRED)
 
 if(SMALL_BUILD)
@@ -155,6 +154,5 @@ target_link_libraries(owanalytics PUBLIC
                         ${MySQL_LIBRARIES}
                         ${ZLIB_LIBRARIES}
                         fmt::fmt
-                        CppKafka::cppkafka
-                        nlohmann_json_schema_validator)
+                        CppKafka::cppkafka)
 
