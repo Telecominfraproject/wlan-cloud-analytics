@@ -1,3 +1,5 @@
+<p align=center><img src=images/project/logo.svg?sanitize=true/ width="200px" height="200px"></p>
+
 # wlan-cloud-analytics
 OpenWiFi Analytics V0.01
 
