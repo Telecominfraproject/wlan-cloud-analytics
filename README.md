@@ -17,6 +17,15 @@ To build the microservice from source, please follow the instructions in [here](
 ## Docker
 To use the CLoudSDK deployment please follow [here](https://github.com/Telecominfraproject/wlan-cloud-ucentral-deploy)
 
+### Environment variables
+The following environment variables should be set from the root directory of the service. They tell the OWGW process where to find
+the configuration and the root directory.
+```bash
+export OWGW_ROOT=`pwd`
+export OWGW_CONFIG=`pwd`
+```
+You can run the shell script `set_env.sh` from the microservice root.
+
 ### OWANALYTICS Service Configuration
 The configuration is kept in a file called `owanalytics.properties`. To understand the content of this file,
 please look [here](https://github.com/Telecominfraproject/wlan-cloud-analytics/blob/main/CONFIGURATION.md)
