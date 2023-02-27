@@ -11,34 +11,67 @@ provisioning (OWPROV) entities or venues. OWANALYTICS, like all other OWSDK micr
 defined using an OpenAPI definition and uses the ucentral communication protocol to interact with Access Points. To use
 the OWANALYTICS, you either need to [build it](#building) or use the [Docker version](#docker).
 
+## OpenAPI
+You may get static page with OpenAPI docs generated from the definition on [GitHub Page](https://telecominfraproject.github.io/wlan-cloud-analytics/).
+Also, you may use [Swagger UI](https://petstore.swagger.io/#/) with OpenAPI definition file raw link (i.e. [latest version file](https://raw.githubusercontent.com/Telecominfraproject/wlan-cloud-analytics/main/openapi/owanalytics.yaml)) to get interactive docs page.
+
 ## Building
 To build the microservice from source, please follow the instructions in [here](./BUILDING.md)
 
 ## Docker
 To use the CLoudSDK deployment please follow [here](https://github.com/Telecominfraproject/wlan-cloud-ucentral-deploy)
 
+#### Expected directory layout
+From the directory where your cloned source is, you will need to create the `certs`, `logs`, and `uploads` directories.
+```bash
+mkdir certs
+mkdir certs/cas
+mkdir logs
+mkdir uploads
+```
+You should now have the following:
+```text
+--+-- certs
+  |   +--- cas
+  +-- cmake
+  +-- cmake-build
+  +-- logs
+  +-- src
+  +-- test_scripts
+  +-- openapi
+  +-- uploads
+  +-- owsec.properties
+```
+
+### Certificate
+The OWANALYTICS uses a certificate to provide security for the REST API Certificate to secure the Northbound API.
+
+#### The `certs` directory
+For all deployments, you will need the following `certs` directory, populated with the proper files.
+
+```text
+certs ---+--- restapi-ca.pem
+         +--- restapi-cert.pem
+         +--- restapi-key.pem
+```
+
+## Firewall Considerations
+| Port  | Description                                    | Configurable |
+|:------|:-----------------------------------------------|:------------:|
+| 16005 | Default port for REST API Access to the OWANALYTICS |     yes      |
+
 ### Environment variables
-The following environment variables should be set from the root directory of the service. They tell the OWGW process where to find
+The following environment variables should be set from the root directory of the service. They tell the OWANALYTICS process where to find
 the configuration and the root directory.
 ```bash
-export OWGW_ROOT=`pwd`
-export OWGW_CONFIG=`pwd`
+export OWANALYTICS_ROOT=`pwd`
+export OWANALYTICS_CONFIG=`pwd`
 ```
 You can run the shell script `set_env.sh` from the microservice root.
 
 ### OWANALYTICS Service Configuration
 The configuration is kept in a file called `owanalytics.properties`. To understand the content of this file,
 please look [here](https://github.com/Telecominfraproject/wlan-cloud-analytics/blob/main/CONFIGURATION.md)
-
-## OpenAPI
-You may get static page with OpenAPI docs generated from the definition on [GitHub Page](https://telecominfraproject.github.io/wlan-cloud-analytics/).
-
-Also, you may use [Swagger UI](https://petstore.swagger.io/#/) with OpenAPI definition file raw link (i.e. [latest version file](https://raw.githubusercontent.com/Telecominfraproject/wlan-cloud-analytics/main/openapi/owanalytics.yaml)) to get interactive docs page.
-
-## Firewall Considerations
-| Port  | Description                                    | Configurable |
-|:------|:-----------------------------------------------|:------------:|
-| 16005 | Default port for REST API Access to the OWPROV |     yes      |
 
 ## Kafka topics
 Toe read more about Kafka, follow the [document](https://github.com/Telecominfraproject/wlan-cloud-ucentralgw/blob/main/KAFKA.md)
