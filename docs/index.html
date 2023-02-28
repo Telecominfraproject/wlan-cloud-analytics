@@ -1202,6 +1202,17 @@ ul.nav-tabs {
     }
   }
 };
+    defs["ExtraSystemConfiguration_inner"] = {
+  "type" : "object",
+  "properties" : {
+    "parameterName" : {
+      "type" : "string"
+    },
+    "parameterValue" : {
+      "type" : "string"
+    }
+  }
+};
     defs["getSystemCommand_200_response"] = {
   "oneOf" : [ {
     "$ref" : "#/components/schemas/SystemInfoResults"
@@ -1973,6 +1984,16 @@ ul.nav-tabs {
                     </li>
                     <li data-group="SystemCommands" data-name="systemCommand" class="">
                       <a href="#api-SystemCommands-systemCommand">systemCommand</a>
+                    </li>
+                  <li class="nav-header" data-group="SystemConfiguration"><a href="#api-SystemConfiguration">API Methods - SystemConfiguration</a></li>
+                    <li data-group="SystemConfiguration" data-name="deleteSystemConfiguration" class="">
+                      <a href="#api-SystemConfiguration-deleteSystemConfiguration">deleteSystemConfiguration</a>
+                    </li>
+                    <li data-group="SystemConfiguration" data-name="getSystemConfiguration" class="">
+                      <a href="#api-SystemConfiguration-getSystemConfiguration">getSystemConfiguration</a>
+                    </li>
+                    <li data-group="SystemConfiguration" data-name="setSystemConfiguration" class="">
+                      <a href="#api-SystemConfiguration-setSystemConfiguration">setSystemConfiguration</a>
                     </li>
                   <li class="nav-header" data-group="WiFiClientHistory"><a href="#api-WiFiClientHistory">API Methods - WiFiClientHistory</a></li>
                     <li data-group="WiFiClientHistory" data-name="deleteWifiClientHistory" class="">
@@ -6922,6 +6943,1219 @@ $(document).ready(function() {
 
 
                             <div class="tab-content" id="responses-SystemCommands-systemCommand-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-SystemConfiguration">
+                  <h1>SystemConfiguration</h1>
+                    <div id="api-SystemConfiguration-deleteSystemConfiguration">
+                      <article id="api-SystemConfiguration-deleteSystemConfiguration-0" data-group="User" data-name="deleteSystemConfiguration" data-version="0">
+                        <div class="pull-left">
+                          <h1>deleteSystemConfiguration</h1>
+                          <p>Delete all additional system configuration</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/systemConfiguration</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-java">Java</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-python">Python</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-deleteSystemConfiguration-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-SystemConfiguration-deleteSystemConfiguration-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE \
+-H "X-API-KEY: [[apiKey]]" \
+ -H "Authorization: Bearer [[accessToken]]" \
+ "https://localhost:16009/api/v1/systemConfiguration"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.SystemConfigurationApi;
+
+import java.io.File;
+import java.util.*;
+
+public class SystemConfigurationApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+        
+        // Configure Bearer (JWT) access token for authorization: bearerAuth
+        HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setBearerToken("BEARER TOKEN");
+
+        // Create an instance of the API class
+        SystemConfigurationApi apiInstance = new SystemConfigurationApi();
+
+        try {
+            apiInstance.deleteSystemConfiguration();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SystemConfigurationApi#deleteSystemConfiguration");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.SystemConfigurationApi;
+
+public class SystemConfigurationApiExample {
+    public static void main(String[] args) {
+        SystemConfigurationApi apiInstance = new SystemConfigurationApi();
+
+        try {
+            apiInstance.deleteSystemConfiguration();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SystemConfigurationApi#deleteSystemConfiguration");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure API key authorization: (authentication scheme: ApiKeyAuth)
+[apiConfig setApiKey:@"YOUR_API_KEY" forApiKeyIdentifier:@"X-API-KEY"];
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//[apiConfig setApiKeyPrefix:@"Bearer" forApiKeyIdentifier:@"X-API-KEY"];
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+SystemConfigurationApi *apiInstance = [[SystemConfigurationApi alloc] init];
+
+// Delete all additional system configuration
+[apiInstance deleteSystemConfigurationWithCompletionHandler: 
+              ^(NSError* error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenWiFiAnalyticsService = require('open_wi_fi_analytics_service');
+var defaultClient = OpenWiFiAnalyticsService.ApiClient.instance;
+
+// Configure API key authorization: ApiKeyAuth
+var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
+ApiKeyAuth.apiKey = "YOUR API KEY";
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.apiKeyPrefix['X-API-KEY'] = "Token";
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+var bearerAuth = defaultClient.authentications['bearerAuth'];
+bearerAuth.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new OpenWiFiAnalyticsService.SystemConfigurationApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.deleteSystemConfiguration(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class deleteSystemConfigurationExample
+    {
+        public void main()
+        {
+            // Configure API key authorization: ApiKeyAuth
+            Configuration.Default.ApiKey.Add("X-API-KEY", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // Configuration.Default.ApiKeyPrefix.Add("X-API-KEY", "Bearer");
+            // Configure Bearer (JWT) access token for authorization: bearerAuth
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            // Create an instance of the API class
+            var apiInstance = new SystemConfigurationApi();
+
+            try {
+                // Delete all additional system configuration
+                apiInstance.deleteSystemConfiguration();
+            } catch (Exception e) {
+                Debug.Print("Exception when calling SystemConfigurationApi.deleteSystemConfiguration: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure API key authorization: ApiKeyAuth
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setApiKey('X-API-KEY', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// OpenAPITools\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-KEY', 'Bearer');
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\SystemConfigurationApi();
+
+try {
+    $api_instance->deleteSystemConfiguration();
+} catch (Exception $e) {
+    echo 'Exception when calling SystemConfigurationApi->deleteSystemConfiguration: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::SystemConfigurationApi;
+
+# Configure API key authorization: ApiKeyAuth
+$WWW::OPenAPIClient::Configuration::api_key->{'X-API-KEY'} = 'YOUR_API_KEY';
+# uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+#$WWW::OPenAPIClient::Configuration::api_key_prefix->{'X-API-KEY'} = "Bearer";
+
+# Configure Bearer (JWT) access token for authorization: bearerAuth
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::SystemConfigurationApi->new();
+
+eval {
+    $api_instance->deleteSystemConfiguration();
+};
+if ($@) {
+    warn "Exception when calling SystemConfigurationApi->deleteSystemConfiguration: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: ApiKeyAuth
+openapi_client.configuration.api_key['X-API-KEY'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# openapi_client.configuration.api_key_prefix['X-API-KEY'] = 'Bearer'
+
+# Configure Bearer (JWT) access token for authorization: bearerAuth
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.SystemConfigurationApi()
+
+try:
+    # Delete all additional system configuration
+    api_instance.delete_system_configuration()
+except ApiException as e:
+    print("Exception when calling SystemConfigurationApi->deleteSystemConfiguration: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-deleteSystemConfiguration-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate SystemConfigurationApi;
+
+pub fn main() {
+
+    let mut context = SystemConfigurationApi::Context::default();
+    let result = client.deleteSystemConfiguration(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-SystemConfiguration-deleteSystemConfiguration-title-200"></h3>
+                            <p id="examples-SystemConfiguration-deleteSystemConfiguration-description-200" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration200_description = ``;
+                              var responseSystemConfiguration200_description_break = responseSystemConfiguration200_description.indexOf('\n');
+                              if (responseSystemConfiguration200_description_break == -1) {
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-title-200").text("Status: 200 - " + responseSystemConfiguration200_description);
+                              } else {
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-title-200").text("Status: 200 - " + responseSystemConfiguration200_description.substring(0, responseSystemConfiguration200_description_break));
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-description-200").html(responseSystemConfiguration200_description.substring(responseSystemConfiguration200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-deleteSystemConfiguration-200" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-deleteSystemConfiguration-200-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-SystemConfiguration-deleteSystemConfiguration-title-403"></h3>
+                            <p id="examples-SystemConfiguration-deleteSystemConfiguration-description-403" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration403_description = ``;
+                              var responseSystemConfiguration403_description_break = responseSystemConfiguration403_description.indexOf('\n');
+                              if (responseSystemConfiguration403_description_break == -1) {
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-title-403").text("Status: 403 - " + responseSystemConfiguration403_description);
+                              } else {
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-title-403").text("Status: 403 - " + responseSystemConfiguration403_description.substring(0, responseSystemConfiguration403_description_break));
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-description-403").html(responseSystemConfiguration403_description.substring(responseSystemConfiguration403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-deleteSystemConfiguration-403" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-deleteSystemConfiguration-403-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-SystemConfiguration-deleteSystemConfiguration-title-404"></h3>
+                            <p id="examples-SystemConfiguration-deleteSystemConfiguration-description-404" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration404_description = ``;
+                              var responseSystemConfiguration404_description_break = responseSystemConfiguration404_description.indexOf('\n');
+                              if (responseSystemConfiguration404_description_break == -1) {
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-title-404").text("Status: 404 - " + responseSystemConfiguration404_description);
+                              } else {
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-title-404").text("Status: 404 - " + responseSystemConfiguration404_description.substring(0, responseSystemConfiguration404_description_break));
+                                $("#examples-SystemConfiguration-deleteSystemConfiguration-description-404").html(responseSystemConfiguration404_description.substring(responseSystemConfiguration404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-deleteSystemConfiguration-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-deleteSystemConfiguration-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-SystemConfiguration-getSystemConfiguration">
+                      <article id="api-SystemConfiguration-getSystemConfiguration-0" data-group="User" data-name="getSystemConfiguration" data-version="0">
+                        <div class="pull-left">
+                          <h1>getSystemConfiguration</h1>
+                          <p>Retrieve system configuration items</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/systemConfiguration</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-SystemConfiguration-getSystemConfiguration-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-java">Java</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-python">Python</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-getSystemConfiguration-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-SystemConfiguration-getSystemConfiguration-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+-H "X-API-KEY: [[apiKey]]" \
+ -H "Authorization: Bearer [[accessToken]]" \
+ -H "Accept: application/json" \
+ "https://localhost:16009/api/v1/systemConfiguration?entries=["element1","element1,element2,element3"]"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.SystemConfigurationApi;
+
+import java.io.File;
+import java.util.*;
+
+public class SystemConfigurationApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+        
+        // Configure Bearer (JWT) access token for authorization: bearerAuth
+        HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setBearerToken("BEARER TOKEN");
+
+        // Create an instance of the API class
+        SystemConfigurationApi apiInstance = new SystemConfigurationApi();
+        String entries = ["element1","element1,element2,element3"]; // String | Which parameters you want to retrieve
+
+        try {
+            array[List] result = apiInstance.getSystemConfiguration(entries);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SystemConfigurationApi#getSystemConfiguration");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.SystemConfigurationApi;
+
+public class SystemConfigurationApiExample {
+    public static void main(String[] args) {
+        SystemConfigurationApi apiInstance = new SystemConfigurationApi();
+        String entries = ["element1","element1,element2,element3"]; // String | Which parameters you want to retrieve
+
+        try {
+            array[List] result = apiInstance.getSystemConfiguration(entries);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SystemConfigurationApi#getSystemConfiguration");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure API key authorization: (authentication scheme: ApiKeyAuth)
+[apiConfig setApiKey:@"YOUR_API_KEY" forApiKeyIdentifier:@"X-API-KEY"];
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//[apiConfig setApiKeyPrefix:@"Bearer" forApiKeyIdentifier:@"X-API-KEY"];
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+SystemConfigurationApi *apiInstance = [[SystemConfigurationApi alloc] init];
+String *entries = ["element1","element1,element2,element3"]; // Which parameters you want to retrieve (optional) (default to null)
+
+// Retrieve system configuration items
+[apiInstance getSystemConfigurationWith:entries
+              completionHandler: ^(array[List] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenWiFiAnalyticsService = require('open_wi_fi_analytics_service');
+var defaultClient = OpenWiFiAnalyticsService.ApiClient.instance;
+
+// Configure API key authorization: ApiKeyAuth
+var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
+ApiKeyAuth.apiKey = "YOUR API KEY";
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.apiKeyPrefix['X-API-KEY'] = "Token";
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+var bearerAuth = defaultClient.authentications['bearerAuth'];
+bearerAuth.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new OpenWiFiAnalyticsService.SystemConfigurationApi()
+var opts = {
+  'entries': ["element1","element1,element2,element3"] // {String} Which parameters you want to retrieve
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getSystemConfiguration(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getSystemConfigurationExample
+    {
+        public void main()
+        {
+            // Configure API key authorization: ApiKeyAuth
+            Configuration.Default.ApiKey.Add("X-API-KEY", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // Configuration.Default.ApiKeyPrefix.Add("X-API-KEY", "Bearer");
+            // Configure Bearer (JWT) access token for authorization: bearerAuth
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            // Create an instance of the API class
+            var apiInstance = new SystemConfigurationApi();
+            var entries = ["element1","element1,element2,element3"];  // String | Which parameters you want to retrieve (optional)  (default to null)
+
+            try {
+                // Retrieve system configuration items
+                array[List] result = apiInstance.getSystemConfiguration(entries);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling SystemConfigurationApi.getSystemConfiguration: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure API key authorization: ApiKeyAuth
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setApiKey('X-API-KEY', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// OpenAPITools\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-KEY', 'Bearer');
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\SystemConfigurationApi();
+$entries = ["element1","element1,element2,element3"]; // String | Which parameters you want to retrieve
+
+try {
+    $result = $api_instance->getSystemConfiguration($entries);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling SystemConfigurationApi->getSystemConfiguration: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::SystemConfigurationApi;
+
+# Configure API key authorization: ApiKeyAuth
+$WWW::OPenAPIClient::Configuration::api_key->{'X-API-KEY'} = 'YOUR_API_KEY';
+# uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+#$WWW::OPenAPIClient::Configuration::api_key_prefix->{'X-API-KEY'} = "Bearer";
+
+# Configure Bearer (JWT) access token for authorization: bearerAuth
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::SystemConfigurationApi->new();
+my $entries = ["element1","element1,element2,element3"]; # String | Which parameters you want to retrieve
+
+eval {
+    my $result = $api_instance->getSystemConfiguration(entries => $entries);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling SystemConfigurationApi->getSystemConfiguration: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: ApiKeyAuth
+openapi_client.configuration.api_key['X-API-KEY'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# openapi_client.configuration.api_key_prefix['X-API-KEY'] = 'Bearer'
+
+# Configure Bearer (JWT) access token for authorization: bearerAuth
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.SystemConfigurationApi()
+entries = ["element1","element1,element2,element3"] # String | Which parameters you want to retrieve (optional) (default to null)
+
+try:
+    # Retrieve system configuration items
+    api_response = api_instance.get_system_configuration(entries=entries)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling SystemConfigurationApi->getSystemConfiguration: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-getSystemConfiguration-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate SystemConfigurationApi;
+
+pub fn main() {
+    let entries = ["element1","element1,element2,element3"]; // String
+
+    let mut context = SystemConfigurationApi::Context::default();
+    let result = client.getSystemConfiguration(entries, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">entries</td>
+<td>
+
+
+    <div id="d2e199_getSystemConfiguration_entries">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+Which parameters you want to retrieve
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-SystemConfiguration-getSystemConfiguration-title-200"></h3>
+                            <p id="examples-SystemConfiguration-getSystemConfiguration-description-200" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration200_description = `List of configuration elements`;
+                              var responseSystemConfiguration200_description_break = responseSystemConfiguration200_description.indexOf('\n');
+                              if (responseSystemConfiguration200_description_break == -1) {
+                                $("#examples-SystemConfiguration-getSystemConfiguration-title-200").text("Status: 200 - " + responseSystemConfiguration200_description);
+                              } else {
+                                $("#examples-SystemConfiguration-getSystemConfiguration-title-200").text("Status: 200 - " + responseSystemConfiguration200_description.substring(0, responseSystemConfiguration200_description_break));
+                                $("#examples-SystemConfiguration-getSystemConfiguration-description-200").html(responseSystemConfiguration200_description.substring(responseSystemConfiguration200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-getSystemConfiguration-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-SystemConfiguration-getSystemConfiguration-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-getSystemConfiguration-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-SystemConfiguration-getSystemConfiguration-200-schema">
+                                  <div id="responses-SystemConfiguration-getSystemConfiguration-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = ;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-SystemConfiguration-getSystemConfiguration-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-SystemConfiguration-getSystemConfiguration-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-SystemConfiguration-getSystemConfiguration-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-SystemConfiguration-getSystemConfiguration-title-403"></h3>
+                            <p id="examples-SystemConfiguration-getSystemConfiguration-description-403" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration403_description = ``;
+                              var responseSystemConfiguration403_description_break = responseSystemConfiguration403_description.indexOf('\n');
+                              if (responseSystemConfiguration403_description_break == -1) {
+                                $("#examples-SystemConfiguration-getSystemConfiguration-title-403").text("Status: 403 - " + responseSystemConfiguration403_description);
+                              } else {
+                                $("#examples-SystemConfiguration-getSystemConfiguration-title-403").text("Status: 403 - " + responseSystemConfiguration403_description.substring(0, responseSystemConfiguration403_description_break));
+                                $("#examples-SystemConfiguration-getSystemConfiguration-description-403").html(responseSystemConfiguration403_description.substring(responseSystemConfiguration403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-getSystemConfiguration-403" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-getSystemConfiguration-403-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-SystemConfiguration-getSystemConfiguration-title-404"></h3>
+                            <p id="examples-SystemConfiguration-getSystemConfiguration-description-404" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration404_description = ``;
+                              var responseSystemConfiguration404_description_break = responseSystemConfiguration404_description.indexOf('\n');
+                              if (responseSystemConfiguration404_description_break == -1) {
+                                $("#examples-SystemConfiguration-getSystemConfiguration-title-404").text("Status: 404 - " + responseSystemConfiguration404_description);
+                              } else {
+                                $("#examples-SystemConfiguration-getSystemConfiguration-title-404").text("Status: 404 - " + responseSystemConfiguration404_description.substring(0, responseSystemConfiguration404_description_break));
+                                $("#examples-SystemConfiguration-getSystemConfiguration-description-404").html(responseSystemConfiguration404_description.substring(responseSystemConfiguration404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-getSystemConfiguration-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-getSystemConfiguration-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-SystemConfiguration-setSystemConfiguration">
+                      <article id="api-SystemConfiguration-setSystemConfiguration-0" data-group="User" data-name="setSystemConfiguration" data-version="0">
+                        <div class="pull-left">
+                          <h1>setSystemConfiguration</h1>
+                          <p>Set some or all system configuration</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/systemConfiguration</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-SystemConfiguration-setSystemConfiguration-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-java">Java</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-python">Python</a></li>
+                          <li class=""><a href="#examples-SystemConfiguration-setSystemConfiguration-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-SystemConfiguration-setSystemConfiguration-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT \
+-H "X-API-KEY: [[apiKey]]" \
+ -H "Authorization: Bearer [[accessToken]]" \
+ -H "Content-Type: application/json" \
+ "https://localhost:16009/api/v1/systemConfiguration" \
+ -d '{
+  &quot;parameterName&quot; : &quot;parameterName&quot;,
+  &quot;parameterValue&quot; : &quot;parameterValue&quot;
+}'
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.SystemConfigurationApi;
+
+import java.io.File;
+import java.util.*;
+
+public class SystemConfigurationApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+        
+        // Configure Bearer (JWT) access token for authorization: bearerAuth
+        HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setBearerToken("BEARER TOKEN");
+
+        // Create an instance of the API class
+        SystemConfigurationApi apiInstance = new SystemConfigurationApi();
+        array[ExtraSystemConfiguration_inner] extraSystemConfigurationInner = ; // array[ExtraSystemConfiguration_inner] | 
+
+        try {
+            apiInstance.setSystemConfiguration(extraSystemConfigurationInner);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SystemConfigurationApi#setSystemConfiguration");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.SystemConfigurationApi;
+
+public class SystemConfigurationApiExample {
+    public static void main(String[] args) {
+        SystemConfigurationApi apiInstance = new SystemConfigurationApi();
+        array[ExtraSystemConfiguration_inner] extraSystemConfigurationInner = ; // array[ExtraSystemConfiguration_inner] | 
+
+        try {
+            apiInstance.setSystemConfiguration(extraSystemConfigurationInner);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SystemConfigurationApi#setSystemConfiguration");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure API key authorization: (authentication scheme: ApiKeyAuth)
+[apiConfig setApiKey:@"YOUR_API_KEY" forApiKeyIdentifier:@"X-API-KEY"];
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//[apiConfig setApiKeyPrefix:@"Bearer" forApiKeyIdentifier:@"X-API-KEY"];
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+SystemConfigurationApi *apiInstance = [[SystemConfigurationApi alloc] init];
+array[ExtraSystemConfiguration_inner] *extraSystemConfigurationInner = ; //  (optional)
+
+// Set some or all system configuration
+[apiInstance setSystemConfigurationWith:extraSystemConfigurationInner
+              completionHandler: ^(NSError* error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenWiFiAnalyticsService = require('open_wi_fi_analytics_service');
+var defaultClient = OpenWiFiAnalyticsService.ApiClient.instance;
+
+// Configure API key authorization: ApiKeyAuth
+var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
+ApiKeyAuth.apiKey = "YOUR API KEY";
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.apiKeyPrefix['X-API-KEY'] = "Token";
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+var bearerAuth = defaultClient.authentications['bearerAuth'];
+bearerAuth.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new OpenWiFiAnalyticsService.SystemConfigurationApi()
+var opts = {
+  'extraSystemConfigurationInner':  // {array[ExtraSystemConfiguration_inner]} 
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.setSystemConfiguration(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class setSystemConfigurationExample
+    {
+        public void main()
+        {
+            // Configure API key authorization: ApiKeyAuth
+            Configuration.Default.ApiKey.Add("X-API-KEY", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // Configuration.Default.ApiKeyPrefix.Add("X-API-KEY", "Bearer");
+            // Configure Bearer (JWT) access token for authorization: bearerAuth
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            // Create an instance of the API class
+            var apiInstance = new SystemConfigurationApi();
+            var extraSystemConfigurationInner = new array[ExtraSystemConfiguration_inner](); // array[ExtraSystemConfiguration_inner] |  (optional) 
+
+            try {
+                // Set some or all system configuration
+                apiInstance.setSystemConfiguration(extraSystemConfigurationInner);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling SystemConfigurationApi.setSystemConfiguration: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure API key authorization: ApiKeyAuth
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setApiKey('X-API-KEY', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// OpenAPITools\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-KEY', 'Bearer');
+
+// Configure Bearer (JWT) access token for authorization: bearerAuth
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\SystemConfigurationApi();
+$extraSystemConfigurationInner = ; // array[ExtraSystemConfiguration_inner] | 
+
+try {
+    $api_instance->setSystemConfiguration($extraSystemConfigurationInner);
+} catch (Exception $e) {
+    echo 'Exception when calling SystemConfigurationApi->setSystemConfiguration: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::SystemConfigurationApi;
+
+# Configure API key authorization: ApiKeyAuth
+$WWW::OPenAPIClient::Configuration::api_key->{'X-API-KEY'} = 'YOUR_API_KEY';
+# uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+#$WWW::OPenAPIClient::Configuration::api_key_prefix->{'X-API-KEY'} = "Bearer";
+
+# Configure Bearer (JWT) access token for authorization: bearerAuth
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::SystemConfigurationApi->new();
+my $extraSystemConfigurationInner = [WWW::OPenAPIClient::Object::array[ExtraSystemConfiguration_inner]->new()]; # array[ExtraSystemConfiguration_inner] | 
+
+eval {
+    $api_instance->setSystemConfiguration(extraSystemConfigurationInner => $extraSystemConfigurationInner);
+};
+if ($@) {
+    warn "Exception when calling SystemConfigurationApi->setSystemConfiguration: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: ApiKeyAuth
+openapi_client.configuration.api_key['X-API-KEY'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# openapi_client.configuration.api_key_prefix['X-API-KEY'] = 'Bearer'
+
+# Configure Bearer (JWT) access token for authorization: bearerAuth
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.SystemConfigurationApi()
+extraSystemConfigurationInner =  # array[ExtraSystemConfiguration_inner] |  (optional)
+
+try:
+    # Set some or all system configuration
+    api_instance.set_system_configuration(extraSystemConfigurationInner=extraSystemConfigurationInner)
+except ApiException as e:
+    print("Exception when calling SystemConfigurationApi->setSystemConfiguration: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SystemConfiguration-setSystemConfiguration-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate SystemConfigurationApi;
+
+pub fn main() {
+    let extraSystemConfigurationInner = ; // array[ExtraSystemConfiguration_inner]
+
+    let mut context = SystemConfigurationApi::Context::default();
+    let result = client.setSystemConfiguration(extraSystemConfigurationInner, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">extraSystemConfigurationInner </td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ExtraSystemConfiguration"
+      }
+    }
+  }
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_setSystemConfiguration_extraSystemConfigurationInner');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_setSystemConfiguration_extraSystemConfigurationInner"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-SystemConfiguration-setSystemConfiguration-title-200"></h3>
+                            <p id="examples-SystemConfiguration-setSystemConfiguration-description-200" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration200_description = ``;
+                              var responseSystemConfiguration200_description_break = responseSystemConfiguration200_description.indexOf('\n');
+                              if (responseSystemConfiguration200_description_break == -1) {
+                                $("#examples-SystemConfiguration-setSystemConfiguration-title-200").text("Status: 200 - " + responseSystemConfiguration200_description);
+                              } else {
+                                $("#examples-SystemConfiguration-setSystemConfiguration-title-200").text("Status: 200 - " + responseSystemConfiguration200_description.substring(0, responseSystemConfiguration200_description_break));
+                                $("#examples-SystemConfiguration-setSystemConfiguration-description-200").html(responseSystemConfiguration200_description.substring(responseSystemConfiguration200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-setSystemConfiguration-200" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-setSystemConfiguration-200-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-SystemConfiguration-setSystemConfiguration-title-403"></h3>
+                            <p id="examples-SystemConfiguration-setSystemConfiguration-description-403" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration403_description = ``;
+                              var responseSystemConfiguration403_description_break = responseSystemConfiguration403_description.indexOf('\n');
+                              if (responseSystemConfiguration403_description_break == -1) {
+                                $("#examples-SystemConfiguration-setSystemConfiguration-title-403").text("Status: 403 - " + responseSystemConfiguration403_description);
+                              } else {
+                                $("#examples-SystemConfiguration-setSystemConfiguration-title-403").text("Status: 403 - " + responseSystemConfiguration403_description.substring(0, responseSystemConfiguration403_description_break));
+                                $("#examples-SystemConfiguration-setSystemConfiguration-description-403").html(responseSystemConfiguration403_description.substring(responseSystemConfiguration403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-setSystemConfiguration-403" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-setSystemConfiguration-403-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-SystemConfiguration-setSystemConfiguration-title-404"></h3>
+                            <p id="examples-SystemConfiguration-setSystemConfiguration-description-404" class="marked"></p>
+                            <script>
+                              var responseSystemConfiguration404_description = ``;
+                              var responseSystemConfiguration404_description_break = responseSystemConfiguration404_description.indexOf('\n');
+                              if (responseSystemConfiguration404_description_break == -1) {
+                                $("#examples-SystemConfiguration-setSystemConfiguration-title-404").text("Status: 404 - " + responseSystemConfiguration404_description);
+                              } else {
+                                $("#examples-SystemConfiguration-setSystemConfiguration-title-404").text("Status: 404 - " + responseSystemConfiguration404_description.substring(0, responseSystemConfiguration404_description_break));
+                                $("#examples-SystemConfiguration-setSystemConfiguration-description-404").html(responseSystemConfiguration404_description.substring(responseSystemConfiguration404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-SystemConfiguration-setSystemConfiguration-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-SystemConfiguration-setSystemConfiguration-404-wrapper" style='margin-bottom: 10px;'>
                             </div>
                         </article>
                       </div>
