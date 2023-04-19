@@ -116,6 +116,7 @@ add_executable(owanalytics
         src/framework/MicroServiceExtra.h
         src/framework/ConfigurationValidator.cpp
         src/framework/ConfigurationValidator.h
+        src/framework/default_device_types.h
         src/RESTObjects/RESTAPI_SecurityObjects.h src/RESTObjects/RESTAPI_SecurityObjects.cpp
         src/RESTObjects/RESTAPI_GWobjects.h src/RESTObjects/RESTAPI_GWobjects.cpp
         src/RESTObjects/RESTAPI_FMSObjects.h src/RESTObjects/RESTAPI_FMSObjects.cpp
