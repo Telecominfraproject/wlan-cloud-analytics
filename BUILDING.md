@@ -16,15 +16,15 @@ from the master copy needed for cmake. Please use the version of this [Poco fix]
 Poco may take several minutes depending on the platform you are building on.
 
 ## Ubuntu
-These instructions have proven to work on Ubuntu 20.4.
+These instructions have proven to work on Ubuntu 23.04.
 ```bash
-sudo apt install git cmake g++ libssl-dev libmariadb-dev 
+sudo apt install git cmake g++ libssl-dev libmariadb-dev libmariadbclient-dev-compat
 sudo apt install libpq-dev libaprutil1-dev apache2-dev libboost-all-dev
-sudo apt install librdkafka-dev default-libmysqlclient-dev
-sudo apt install nlohmann-json-dev
+sudo apt install librdkafka-dev
+sudo apt install zlib1g-dev nlohmann-json3-dev ca-certificates libcurl4-openssl-dev
 
 cd ~
-git clone https://github.com/AriliaWireless/poco --branch poco-tip-v1
+git clone https://github.com/AriliaWireless/poco --branch poco-tip-v2
 cd poco
 mkdir cmake-build
 cd cmake-build
