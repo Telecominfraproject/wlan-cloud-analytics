@@ -60,7 +60,7 @@ namespace OpenWifi {
 		Utils::SetThreadName("venue-coord");
 		Running_ = true;
 		while (Running_) {
-			Poco::Thread::trySleep(20000);
+			Poco::Thread::trySleep(60000);
 			if (!Running_)
 				break;
 
