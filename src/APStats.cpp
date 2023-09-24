@@ -112,7 +112,7 @@ namespace OpenWifi {
 		DI_.connected = true;
 
 		AnalyticsObjects::DeviceTimePoint DTP;
-		poco_information(Logger(), fmt::format("{}: stats message.", DI_.serialNumber));
+		poco_trace(Logger(), fmt::format("{}: stats message.", DI_.serialNumber));
 
 		// find radios first to get associations.
 		try {
@@ -573,7 +573,7 @@ namespace OpenWifi {
 		try {
 			if (Connection->contains("ping")) {
 				got_connection = true;
-				poco_debug(Logger(), fmt::format("{}: ping message.", DI_.serialNumber));
+				poco_trace(Logger(), fmt::format("{}: ping message.", DI_.serialNumber));
 				DI_.connected = true;
 				DI_.lastPing = Utils::Now();
 				auto ping = (*Connection)["ping"];
@@ -589,13 +589,13 @@ namespace OpenWifi {
 					}
 				}
 			} else if (Connection->contains("disconnection")) {
-				poco_debug(Logger(), fmt::format("{}: disconnection message.", DI_.serialNumber));
+				poco_trace(Logger(), fmt::format("{}: disconnection message.", DI_.serialNumber));
 				auto Disconnection = (*Connection)["disconnection"];
 				GetJSON("timestamp", Disconnection, DI_.lastDisconnection, (uint64_t)0);
 				got_base = got_health = got_connection = false;
 				DI_.connected = false;
 			} else if (Connection->contains("capabilities")) {
-				poco_debug(Logger(), fmt::format("{}: connection message.", DI_.serialNumber));
+				poco_trace(Logger(), fmt::format("{}: connection message.", DI_.serialNumber));
 				got_connection = true;
 				DI_.connected = true;
 				DI_.lastConnection = Utils::Now();
@@ -621,7 +621,7 @@ namespace OpenWifi {
 			got_health = true;
 			GetJSON("timestamp", *Health, DI_.lastHealth, (uint64_t)0);
 			GetJSON("sanity", *Health, DI_.health, (uint64_t)0);
-			poco_debug(Logger(), fmt::format("{}: health message.", DI_.serialNumber));
+			poco_trace(Logger(), fmt::format("{}: health message.", DI_.serialNumber));
 		} catch (...) {
 			poco_information(Logger(),
 							 fmt::format("{}: error parsing health message.", DI_.serialNumber));

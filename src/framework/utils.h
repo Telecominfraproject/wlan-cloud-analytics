@@ -73,6 +73,7 @@ namespace OpenWifi::Utils {
 	[[nodiscard]] bool ValidSerialNumbers(const std::vector<std::string> &Serial);
 	[[nodiscard]] bool ValidUUID(const std::string &UUID);
 	[[nodiscard]] bool ValidHostname(const std::string &hostname);
+	[[nodiscard]] bool ValidNumber(const std::string &number, bool isSigned);
 
 	template <typename... Args> std::string ComputeHash(Args &&...args) {
 		Poco::SHA2Engine E;
@@ -245,5 +246,22 @@ namespace OpenWifi::Utils {
 
 		return count;
 	}
+
+    struct CSRCreationParameters {
+        std::string Country, Province, City,
+                    Organization, CommonName;
+        int         bits=2048;
+    };
+
+    struct CSRCreationResults {
+        std::string     CSR, PublicKey, PrivateKey;
+    };
+
+    bool CreateX509CSR(const CSRCreationParameters & Parameters, CSRCreationResults & Results);
+    std::string generateStrongPassword(int minLength, int maxLength, int numDigits, int minLowercase, int minSpecial, int minUppercase);
+    bool VerifyECKey(const std::string &key);
+    bool VerifyRSAKey(const std::string &key);
+    bool ValidX509Certificate(const std::string &Cert);
+    bool ValidX509Certificate(const std::vector<std::string> &Certs);
 
 } // namespace OpenWifi::Utils

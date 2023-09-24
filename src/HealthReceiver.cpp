@@ -78,7 +78,7 @@ namespace OpenWifi {
 
 	void HealthReceiver::HealthReceived(const std::string &Key, const std::string &Payload) {
 		std::lock_guard G(Mutex_);
-		poco_debug(Logger(), fmt::format("Device({}): Health message.", Key));
+		poco_trace(Logger(), fmt::format("Device({}): Health message.", Key));
 		Queue_.enqueueNotification(new HealthMessage(Key, Payload));
 	}
 } // namespace OpenWifi
