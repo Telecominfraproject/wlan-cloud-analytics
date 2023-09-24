@@ -80,7 +80,7 @@ namespace OpenWifi {
 	void DeviceStatusReceiver::DeviceStatusReceived(const std::string &Key,
 													const std::string &Payload) {
 		std::lock_guard G(Mutex_);
-		poco_debug(Logger(), fmt::format("Device({}): Connection/Ping message.", Key));
+		poco_trace(Logger(), fmt::format("Device({}): Connection/Ping message.", Key));
 		Queue_.enqueueNotification(new DeviceStatusMessage(Key, Payload));
 	}
 } // namespace OpenWifi
