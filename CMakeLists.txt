@@ -155,5 +155,7 @@ target_link_libraries(owanalytics PUBLIC
                         ${MySQL_LIBRARIES}
                         ${ZLIB_LIBRARIES}
                         fmt::fmt
-                        CppKafka::cppkafka)
+                        resolv
+                        CppKafka::cppkafka
+)
 
