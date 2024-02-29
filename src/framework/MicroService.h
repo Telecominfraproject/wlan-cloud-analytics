@@ -113,7 +113,8 @@ namespace OpenWifi {
 		void LoadMyConfig();
 		void initialize(Poco::Util::Application &self) override;
         void StartEverything(Poco::Util::Application &self);
-		void uninitialize() override;
+        void StopEverything(Poco::Util::Application &self);
+        void uninitialize() override;
 		void reinitialize(Poco::Util::Application &self) override;
 		void defineOptions(Poco::Util::OptionSet &options) override;
 		void handleHelp(const std::string &name, const std::string &value);
@@ -167,6 +168,15 @@ namespace OpenWifi {
         const ArgVec &Args() const { return Args_; }
 
         inline void SetConfigContent(const std::string &Content) { ConfigContent_ = Content; }
+
+        inline std::optional<OpenWifi::Types::MicroServiceMeta> GetPrivateEndPointServiceKey( const std::string & ServicePrivateEndPoint ) {
+            std::lock_guard   G(InfraMutex_);
+            auto K = Services_.find(ServicePrivateEndPoint);
+            if(K==end(Services_)) {
+                return std::nullopt;
+            }
+            return K->second;
+        }
 
 	  private:
 		static MicroService *instance_;
