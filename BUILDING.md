@@ -12,7 +12,7 @@ In order to build the OWANALYTICS, you will need to install its dependencies, wh
 
 The build is done in 2 parts. The first part is to build a local copy of the framework tailored to your environment. This
 framework is called [Poco](https://github.com/pocoproject/poco). The version used in this project has a couple of fixes
-from the master copy needed for cmake. Please use the version of this [Poco fix](https://github.com/AriliaWireless/poco). Building
+from the master copy needed for cmake. Please use the version of this [Poco fix](https://github.com/Telecominfraproject/wlan-cloud-lib-poco). Building
 Poco may take several minutes depending on the platform you are building on.
 
 ## Ubuntu
@@ -24,7 +24,7 @@ sudo apt install librdkafka-dev
 sudo apt install zlib1g-dev nlohmann-json3-dev ca-certificates libcurl4-openssl-dev
 
 cd ~
-git clone https://github.com/AriliaWireless/poco --branch poco-tip-v2
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-poco --branch poco-tip-v1 poco
 cd poco
 mkdir cmake-build
 cd cmake-build
@@ -33,7 +33,7 @@ cmake --build . --config Release
 sudo cmake --build . --target install
 
 cd ~
-git clone https://github.com/AriliaWireless/cppkafka --branch tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-cppkafka --branch tip-v1 cppkafka
 cd cppkafka
 mkdir cmake-build
 cd cmake-build
@@ -42,7 +42,7 @@ cmake --build . --config Release
 sudo cmake --build . --target install
 
 cd ~
-git clone https://github.com/AriliaWireless/valijson --branch tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-valijson --branch tip-v1 valijson
 cd valijson
 mkdir cmake-build
 cd cmake-build
@@ -71,11 +71,11 @@ make -j 8
 The following instructions have proven to work on Fedora 33
 ```bash
 sudo yum install cmake g++ openssl-devel mysql-devel mysql apr-util-devel boost boost-devel
-sudo yum install yaml-cpp-devel lua-devel 
+sudo yum install yaml-cpp-devel lua-devel
 sudo dnf install postgresql.x86_64 librdkafka-devel
 sudo dnf install postgresql-devel json-devel
 
-git clone https://github.com/AriliaWireless/poco --branch poco-tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-poco --branch poco-tip-v1
 cd poco
 mkdir cmake-build
 cd cmake-build
@@ -83,7 +83,7 @@ cmake ..
 cmake --build . --config Release
 sudo cmake --build . --target install
 
-git clone https://github.com/AriliaWireless/cppkafka --branch tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-cppkafka --branch tip-v1
 cd cppkafka
 mkdir cmake-build
 cd cmake-build
@@ -92,7 +92,7 @@ cmake --build . --config Release
 sudo cmake --build . --target install
 
 cd ~
-git clone https://github.com/AriliaWireless/valijson --branch tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-valijson --branch tip-v1
 cd valijson
 mkdir cmake-build
 cd cmake-build
@@ -125,7 +125,7 @@ brew install openssl \
 	nlohmann-json \
 	fmt
 
-git clone https://github.com/AriliaWireless/poco --branch poco-tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-poco --branch poco-tip-v1
 pushd poco
 mkdir cmake-build
 push cmake-build
@@ -135,7 +135,7 @@ sudo cmake --build . --target install
 popd
 popd
 
-git clone https://github.com/AriliaWireless/cppkafka --branch tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-cppkafka --branch tip-v1
 pushd cppkafka
 mkdir cmake-build
 pushd cmake-build
@@ -145,7 +145,7 @@ sudo cmake --build . --target install
 popd
 popd
 
-git clone https://github.com/AriliaWireless/valijson --branch tip-v1
+git clone https://github.com/Telecominfraproject/wlan-cloud-lib-valijson --branch tip-v1
 cd valijson
 mkdir cmake-build
 cd cmake-build
